@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script src="./voice_input.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Unit Business Group">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#080808">
+    <title>بنام کی شیٹ انٹری</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: right;
+            background-color: #0d0d0d;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        body.lang-en {
+            direction: ltr !important;
+            text-align: left !important;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            background: #1a1a1a;
+            border: 1px solid #c62828;
+            border-radius: 12px;
+            margin: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(198,40,40,0.2);
+            transition: all 0.25s ease;
+        }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+        .header-title { color: #ff5722; font-size: 20px; font-weight: bold; margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .dot { width: 14px; height: 14px; background-color: #ff5722; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+        .branch-mini-name {
+            font-size: 11px !important;
+            font-weight: normal !important;
+            color: #ffd54f !important;
+            background: rgba(255, 213, 79, 0.12);
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 213, 79, 0.3);
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+        body.lang-en .branch-mini-name {
+            margin-right: 0;
+            margin-left: 4px;
+        }
+
+        .btn-back {
+            padding: 6px 12px;
+            font-size: 14px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            box-sizing: border-box;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .btn-back:hover { background-color: #0056b3; }
+
+        .form-group { margin-bottom: 18px; position: relative; }
+        .form-group label { display: block; margin-bottom: 8px; color: #ff5722; font-size: 16px; font-weight: bold; }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a2a;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 6px;
+            font-size: 16.5px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            background-color: #4a0e0e !important;
+            border-color: #ff3b30 !important;
+            box-shadow: 0 0 10px rgba(255, 59, 48, 0.45) !important;
+            color: #ffffff !important;
+        }
+
+        .rate-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .rate-input-wrapper input {
+            padding-left: 80px;
+        }
+        body.lang-en .rate-input-wrapper input {
+            padding-left: 12px;
+            padding-right: 80px;
+        }
+
+        .rate-formula-select {
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 30px;
+            background: #c62828;
+            color: #ffffff;
+            border: 1px solid #ff5722;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 6px;
+            cursor: pointer;
+            outline: none;
+            direction: ltr;
+        }
+        body.lang-en .rate-formula-select {
+            left: auto;
+            right: 5px;
+        }
+
+        .dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: #2a2a2a; border: 1px solid #555; border-radius: 6px; max-height: 220px; overflow-y: auto; z-index: 1000; display: none; padding: 0; margin: 5px 0 0 0; list-style: none; }
+        .dropdown-list li { padding: 10px 12px; color: white; cursor: pointer; border-bottom: 1px solid #333; font-size: 15px; font-weight: bold; text-align: right; display: flex; justify-content: space-between; align-items: center; }
+        body.lang-en .dropdown-list li { text-align: left; }
+
+        .dropdown-list li:hover, .dropdown-list li.selected { background: #ff5722; color: white; }
+        .dropdown-list li .item-account-no { font-size: 12px; font-weight: bold; background: #1a1a1a; padding: 2px 7px; border-radius: 4px; border: 1px solid #555; color: #ffc107; }
+        .dropdown-list li:hover .item-account-no { background: #b71c1c; color: white; border-color: white; }
+        .dropdown-list li.no-result { color: #ff5722; cursor: default; background: transparent; font-weight: bold; text-align: center; justify-content: center; }
+
+        .btn-save { width: 100%; padding: 14px; background-color: #c62828; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.2s ease; }
+        .btn-save:hover { opacity: 0.9; }
+        .success-msg { color: #00e676; text-align: center; margin-bottom: 15px; font-weight: bold; display: none; }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 6px;
+                align-items: flex-start;
+            }
+            .form-container {
+                padding: 12px 14px;
+                margin: 4px auto;
+                border-radius: 10px;
+            }
+            .header-area {
+                margin-bottom: 12px;
+                padding-bottom: 6px;
+            }
+            .header-title {
+                font-size: 15px;
+                gap: 5px;
+            }
+            .branch-mini-name {
+                font-size: 9.5px !important;
+                padding: 1px 5px;
+            }
+            .dot {
+                width: 10px;
+                height: 10px;
+            }
+            .btn-back {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+            .form-group {
+                margin-bottom: 9px;
+            }
+            .form-group label {
+                margin-bottom: 3px;
+                font-size: 12.5px;
+            }
+            .form-group input {
+                padding: 7px 10px;
+                font-size: 14.5px;
+                height: 38px;
+            }
+            .rate-input-wrapper input {
+                padding-left: 70px;
+            }
+            body.lang-en .rate-input-wrapper input {
+                padding-left: 10px;
+                padding-right: 70px;
+            }
+            .rate-formula-select {
+                height: 26px;
+                font-size: 10px;
+                padding: 1px 4px;
+            }
+            .btn-save {
+                padding: 9px;
+                font-size: 16px;
+                margin-top: 8px;
+            }
+            .success-msg {
+                margin-bottom: 8px;
+                font-size: 13px;
+            }
+        }
+
+        body.light-theme {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+        body.light-theme .form-container {
+            background: #ffffff;
+            border-color: #dc3545;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        body.light-theme .header-area {
+            border-bottom-color: #e5e7eb;
+        }
+        body.light-theme .header-title {
+            color: #b91c1c;
+        }
+        body.light-theme .branch-mini-name {
+            background: #fef3c7 !important;
+            color: #b45309 !important;
+            border-color: #fde68a !important;
+        }
+        body.light-theme .btn-back {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+        }
+        body.light-theme .btn-back:hover {
+            background-color: #0056b3;
+        }
+        body.light-theme .form-group label {
+            color: #b91c1c;
+        }
+        body.light-theme .form-group input {
+            background: #f9fafb;
+            color: #111827;
+            border-color: #d1d5db;
+            font-weight: bold;
+        }
+
+        body.light-theme .form-group input:focus {
+            background-color: #fee2e2 !important;
+            border-color: #dc2626 !important;
+            color: #7f1d1d !important;
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.3) !important;
+        }
+
+        body.light-theme .rate-formula-select {
+            background: #dc3545;
+            border-color: #b91c1c;
+            color: #ffffff;
+        }
+        body.light-theme .dropdown-list {
+            background: #ffffff;
+            border-color: #d1d5db;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        body.light-theme .dropdown-list li {
+            color: #111827;
+            border-bottom-color: #f3f4f6;
+            font-weight: bold;
+        }
+        body.light-theme .dropdown-list li:hover,
+        body.light-theme .dropdown-list li.selected {
+            background: #dc3545;
+            color: #ffffff;
+        }
+        body.light-theme .dropdown-list li .item-account-no {
+            background: #f3f4f6;
+            color: #b45309;
+            border-color: #d1d5db;
+        }
+    </style>
+    <style>
+        input[type="date"] { -webkit-appearance: none; appearance: none; display: block; width: 100%; min-width: 0; max-width: 100%; text-align: start; }
+        input[type="date"]::-webkit-date-and-time-value { text-align: start; margin: 0; }
+        input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; }
+        .form-group input, .btn-save { font-family: Arial, sans-serif; }
+        .header-container, .header-area { min-height: 44px; gap: 10px; }
+        .header-title { line-height: 1.3; }
+        @media (min-width: 601px) {
+            .header-title { flex-wrap: nowrap; min-width: 0; }
+            #titleText { white-space: nowrap; }
+            .branch-mini-name { flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        }
+        .btn-back { min-height: 36px; display: inline-flex; align-items: center; justify-content: center; }
+        .form-group label { line-height: 1.4; }
+        .form-group input { height: 44px; line-height: 1.2; }
+        .btn-save { height: 50px; line-height: 1; }
+        @media (max-width: 600px) {
+            body { padding: 12px 16px !important; }
+            .header-container, .header-area { gap: 6px; }
+            .header-title { font-size: 14px !important; gap: 5px !important; flex: 1 1 0; min-width: 0; justify-content: flex-end; }
+            #titleText { white-space: nowrap; }
+            .branch-mini-name { flex: 0 0 auto; }
+            .form-container { margin: 6px auto !important; padding: 14px 16px !important; }
+            .form-group input { height: 42px; }
+            .btn-save { height: 46px; }
+        }
+        .header-title { color: #ef4444 !important; }
+        .dot { background-color: #ef4444 !important; }
+        .form-group label { color: #ef4444 !important; }
+        .btn-save { background-color: #d32f2f !important; }
+        .rate-formula-select { background: #d32f2f !important; border-color: #ef4444 !important; }
+        .form-container { border-color: #d32f2f !important; box-shadow: 0 4px 15px rgba(211,47,47,0.2) !important; }
+        body.light-theme .header-title, body.light-theme .form-group label { color: #b91c1c !important; }
+        body.light-theme .dot { background-color: #dc2626 !important; }
+        body.light-theme .btn-save { background-color: #d32f2f !important; }
+    </style>
+    <style id="rowSpacing">
+        html body .form-group { margin-bottom: 22px !important; }
+        html body .form-group label { margin-bottom: 6px !important; }
+        @media (max-width: 600px) { html body .form-group { margin-bottom: 16px !important; } html body .form-group label { margin-bottom: 4px !important; } }
+    </style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+</head>
+<body>
+    <div class="form-container" id="mainBnamFormContainer">
+        <div class="header-area">
+            <div class="header-title" id="pageMainHeader">
+                <span class="dot" id="headerDot"></span>
+                <span id="titleText">بنام کی شیٹ انٹری</span>
+                <span id="headerBranchName" class="branch-mini-name">لوڈنگ...</span>
+            </div>
+            <a href="./home.html" class="btn-back" id="btnBackHome" tabindex="-1">واپس جائیں 🔙</a>
+        </div>
+        <div id="successMessage" class="success-msg">✅ بنام کی انٹری کامیابی سے محفوظ ہو گئی ہے!</div>
+        <form id="entryForm">
+            <div class="form-group" id="grpDate">
+                <label id="lblDate">(Date) تاریخ</label>
+                <input type="date" id="entryDate" required>
+            </div>
+
+            <div class="form-group" id="grpAccSearch">
+                <label id="lblAccSearch">کھاتہ نمبر (اختیاری)</label>
+                <input type="text" id="accSearch" inputmode="numeric" pattern="[0-9]*" placeholder="کھاتہ نمبر لکھیں..." autocomplete="off">
+            </div>
+
+            <div class="form-group" id="grpCustSearch">
+                <label id="lblCustSearch">گاہک / پارٹی کا نام منتخب کریں</label>
+                <input type="text" id="custSearch" placeholder="🔍 نام لکھ کر تلاش کریں..." autocomplete="off" required>
+                <input type="hidden" id="customer_id_hidden" required>
+                <ul class="dropdown-list" id="customer_dropdown"></ul>
+            </div>
+
+            <div class="form-group" id="grpDetails">
+                <label id="lblDetails">(Details) تفصیل</label>
+                <input type="text" id="details" placeholder="تفصیل لکھیں...">
+            </div>
+
+            <div class="form-group" id="grpExtra" style="display:none;">
+                <label id="lblExtra">اضافی کالم</label>
+                <input type="text" id="extraField" placeholder="اضافی معلومات لکھیں...">
+            </div>
+
+            <div class="form-group" id="grpPcs">
+                <label id="lblPcs">(Pcs) پیس</label>
+                <input type="number" min="0" id="pcs" inputmode="numeric" pattern="[0-9]*" placeholder="پیس لکھیں..." oninput="calculateTotal()">
+            </div>
+
+            <div class="form-group" id="grpWeight">
+                <label id="lblWeight">وزن - (Weight)</label>
+                <input type="number" min="0" step="0.001" id="weight" inputmode="decimal" placeholder="وزن لکھیں..." oninput="calculateTotal()">
+            </div>
+
+            <div class="form-group" id="grpRate">
+                <label id="lblRate">ریٹ - (Rate)</label>
+                <div class="rate-input-wrapper">
+                    <input type="number" min="0" step="0.01" id="rate" inputmode="decimal" placeholder="ریٹ لکھیں..." oninput="calculateTotal()">
+                    <select id="rateFormulaSelect" class="rate-formula-select" tabindex="-1" onchange="calculateTotal()" title="فارمولا تبدیل کریں">
+                        <option value="37.324">/ 37.324</option>
+                        <option value="40">/ 40</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" id="grpTotalAmount">
+                <label id="lblTotalAmount">کل رقم</label>
+                <input type="text" id="total_amount" inputmode="numeric" placeholder="کل رقم لکھیں یا خودکار آنے دیں..." oninput="formatAmountLive(this)">
+            </div>
+
+            <button type="submit" class="btn-save" id="btnSaveEntry">محفوظ کریں 💾</button>
+        </form>
+    </div>
+
+    <script>
+        function applySavedTheme() {
+            let savedTheme = App.store.get('rohan_theme_mode') || 'dark';
+            let themeMeta = document.querySelector('meta[name="theme-color"]');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#f3f4f6');
+            } else {
+                document.body.classList.remove('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#080808');
+            }
+        }
+        applySavedTheme();
+
+        let activeBranchId = sessionStorage.getItem('active_branch_id') || 'branch_1';
+        let activeBranchName = (sessionStorage.getItem('active_branch_name') || 'ڈرائی فروٹ ہاؤس').trim();
+        let branchOverrides = App.readObject('rohan_branch_lang_overrides');
+        let globalLang = App.store.get('rohan_global_lang') || 'ur';
+        let activeBranchLang = sessionStorage.getItem('active_branch_lang') || branchOverrides[activeBranchId] || globalLang;
+        let isEn = (activeBranchLang === 'en');
+
+        document.getElementById('headerBranchName').innerText = activeBranchName;
+
+        let masterSettings = App.loadSettings(activeBranchId);
+
+        if (masterSettings.maundUnit) {
+            document.getElementById('rateFormulaSelect').value = masterSettings.maundUnit;
+        }
+
+        if (masterSettings.cols) {
+            let grpExtra = document.getElementById('grpExtra');
+            grpExtra.style.display = 'none';
+
+            let grpPcs = document.getElementById('grpPcs');
+            if (masterSettings.cols.pcs.visible === false) {
+                grpPcs.style.display = 'none';
+            } else {
+                grpPcs.style.display = 'block';
+                if (masterSettings.cols.pcs.name) {
+                    document.getElementById('lblPcs').innerText = masterSettings.cols.pcs.name;
+                    document.getElementById('pcs').placeholder = isEn ? 'Enter ' + masterSettings.cols.pcs.name + '...' : masterSettings.cols.pcs.name + " لکھیں...";
+                }
+            }
+
+            let grpWeight = document.getElementById('grpWeight');
+            if (masterSettings.cols.weight.visible === false) {
+                grpWeight.style.display = 'none';
+            } else {
+                grpWeight.style.display = 'block';
+                if (masterSettings.cols.weight.name) {
+                    document.getElementById('lblWeight').innerText = masterSettings.cols.weight.name;
+                    document.getElementById('weight').placeholder = isEn ? 'Enter ' + masterSettings.cols.weight.name + '...' : masterSettings.cols.weight.name + " لکھیں...";
+                }
+            }
+
+            let grpRate = document.getElementById('grpRate');
+            if (masterSettings.cols.rate.visible === false) {
+                grpRate.style.display = 'none';
+            } else {
+                grpRate.style.display = 'block';
+                if (masterSettings.cols.rate.name) {
+                    document.getElementById('lblRate').innerText = masterSettings.cols.rate.name;
+                    document.getElementById('rate').placeholder = isEn ? 'Enter ' + masterSettings.cols.rate.name + '...' : masterSettings.cols.rate.name + " لکھیں...";
+                }
+            }
+
+            if (masterSettings.cols.amount && masterSettings.cols.amount.name) {
+                document.getElementById('lblTotalAmount').innerText = masterSettings.cols.amount.name;
+            }
+        }
+
+        let _extraCtl = App.buildEntryExtras(masterSettings, {
+            form: document.getElementById('entryForm'),
+            anchor: document.getElementById('btnSaveEntry'),
+            base: { pcs: document.getElementById('grpPcs'), weight: document.getElementById('grpWeight'), rate: document.getElementById('grpRate'), amount: document.getElementById('grpTotalAmount') },
+            inputs: { pcs: document.getElementById('pcs'), weight: document.getElementById('weight'), rate: document.getElementById('rate'), amount: document.getElementById('total_amount') },
+            isEn: isEn,
+            afterBase: calculateTotal
+        });
+
+        if (isEn) {
+            document.body.classList.add('lang-en');
+            document.documentElement.lang = 'en';
+            document.title = `Debit Entry Sheet - ${activeBranchName}`;
+
+            document.getElementById('titleText').innerText = `Debit Entry Sheet`;
+            document.getElementById('btnBackHome').innerText = 'Back 🔙';
+            document.getElementById('successMessage').innerText = '✅ Debit entry saved successfully!';
+
+            document.getElementById('lblDate').innerText = 'Date:';
+            document.getElementById('lblAccSearch').innerText = 'Account No (Optional):';
+            document.getElementById('accSearch').placeholder = 'Enter account number...';
+
+            document.getElementById('lblCustSearch').innerText = 'Select Customer / Party Name:';
+            document.getElementById('custSearch').placeholder = '🔍 Type name to search...';
+
+            document.getElementById('lblDetails').innerText = 'Description (Details):';
+            document.getElementById('details').placeholder = 'Enter description...';
+
+            if (!masterSettings.cols.amount.name || masterSettings.cols.amount.name === 'کل رقم') {
+                document.getElementById('lblTotalAmount').innerText = 'Total Amount:';
+            }
+            document.getElementById('total_amount').placeholder = 'Enter amount or auto calculate...';
+
+            document.getElementById('btnSaveEntry').innerText = 'Save Entry 💾';
+        } else {
+            document.body.classList.remove('lang-en');
+            document.documentElement.lang = 'ur';
+            document.title = `بنام کی شیٹ انٹری - ${activeBranchName}`;
+
+            document.getElementById('titleText').innerText = `بنام کی شیٹ انٹری`;
+        }
+
+        App.blockOwner(isEn, "⚠️ آپ کو بنام کی انٹری کرنے کی اجازت نہیں ہے!", "⚠️ You are not authorized to make a debit entry!", './home.html', 'btnBnamEntry');
+
+        document.getElementById('entryDate').value = App.defaultEntryDate(activeBranchId);
+        App.voiceMic({ isEn: isEn, bid: activeBranchId });
+
+        let customerKey = activeBranchId + '_customer_list';
+        let detailsKey = activeBranchId + '_customer_details';
+        let bnamRecordsKey = activeBranchId + '_bnam_records';
+
+        const dropdown = document.getElementById('customer_dropdown');
+
+        let customers = App.readArray(customerKey);
+
+        let customerDetails = App.readArray(detailsKey);
+
+        function getLatestCustInfo(custName) {
+            for (let i = customerDetails.length - 1; i >= 0; i--) {
+                if (customerDetails[i].name && customerDetails[i].name.toLowerCase() === custName.toLowerCase()) {
+                    return customerDetails[i];
+                }
+            }
+            return null;
+        }
+
+        function loadCustomers() {
+            dropdown.innerHTML = '';
+            if (customers.length === 0) {
+                let li = document.createElement('li');
+                li.className = 'no-result';
+                li.innerText = isEn ? '⚠️ No customer found! Please add customer first.' : '⚠️ کوئی گاہک موجود نہیں! پہلے گاہک شامل کریں۔';
+                dropdown.appendChild(li);
+            } else {
+                customers.forEach((name, index) => {
+                    let custInfo = getLatestCustInfo(name);
+                    let accountNo = (custInfo && custInfo.accountNo) ? custInfo.accountNo : '';
+
+                    let li = document.createElement('li');
+                    li.setAttribute('data-id', (custInfo && custInfo.id) ? custInfo.id : ('n' + index));
+                    li.setAttribute('data-orig-name', name);
+                    li.setAttribute('data-name', name.toLowerCase());
+                    li.setAttribute('data-account', accountNo.toString().toLowerCase().trim());
+
+                    let accountBadge = accountNo ? `<span class="item-account-no">${isEn ? 'Acc #' : 'کھاتہ #'} ${App.esc(accountNo)}</span>` : '';
+                    li.innerHTML = `<span>👤 ${App.esc(name)}</span> ${accountBadge}`;
+
+                    dropdown.appendChild(li);
+                });
+            }
+        }
+        loadCustomers();
+
+        const searchInput = document.getElementById('custSearch');
+        const accSearchInput = document.getElementById('accSearch');
+        const hiddenInput = document.getElementById('customer_id_hidden');
+        let options = Array.from(dropdown.getElementsByTagName('li'));
+
+        accSearchInput.addEventListener('input', function() {
+            let val = this.value.trim().toLowerCase();
+            if (!val) {
+                searchInput.value = "";
+                hiddenInput.value = "";
+                return;
+            }
+
+            let matchedCustomer = null;
+            let matchedIndex = -1;
+
+            for (let i = customers.length - 1; i >= 0; i--) {
+                let cName = customers[i];
+                let cInfo = getLatestCustInfo(cName);
+                if (cInfo && cInfo.accountNo && String(cInfo.accountNo).trim().toLowerCase() === val) {
+                    matchedCustomer = cName;
+                    matchedIndex = cInfo.id ? cInfo.id : ('n' + i);
+                    break;
+                }
+            }
+
+            if (matchedCustomer) {
+                searchInput.value = matchedCustomer;
+                hiddenInput.value = matchedIndex;
+                dropdown.style.display = 'none';
+            } else {
+                searchInput.value = "";
+                hiddenInput.value = "";
+            }
+        });
+
+        accSearchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (hiddenInput.value) {
+                    document.getElementById('details').focus();
+                } else {
+                    searchInput.focus();
+                }
+            }
+        });
+
+        searchInput.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.style.display = 'block';
+            updateSelection();
+        });
+
+        searchInput.addEventListener('input', function() {
+            dropdown.style.display = 'block';
+            let filter = this.value.toLowerCase().trim();
+            let hasResults = false;
+            hiddenInput.value = "";
+
+            let existingNoResult = dropdown.querySelector('.no-result');
+            if (existingNoResult) existingNoResult.remove();
+
+            options.forEach(li => {
+                let name = li.getAttribute('data-name') || '';
+                let account = li.getAttribute('data-account') || '';
+
+                if (name.includes(filter) || account.includes(filter)) {
+                    li.style.display = "flex";
+                    hasResults = true;
+                } else {
+                    li.style.display = "none";
+                }
+            });
+
+            if (!hasResults && customers.length > 0) {
+                let li = document.createElement('li');
+                li.className = 'no-result';
+                li.innerText = isEn ? '❌ No customer found with this name!' : '❌ اِس نام کا کوئی گاہک موجود نہیں!';
+                dropdown.appendChild(li);
+            }
+            updateSelection();
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                let visibleOption = options.find(li => li.style.display !== 'none' && !li.classList.contains('no-result'));
+                if (visibleOption) {
+                    selectCustomer(visibleOption);
+                }
+            }
+        });
+
+        dropdown.addEventListener('click', function(e) {
+            let targetLi = e.target.closest("li:not(.no-result)");
+            if (targetLi) {
+                selectCustomer(targetLi);
+            }
+        });
+
+        function selectCustomer(element) {
+            let nameSpan = element.querySelector('span');
+            let fullName = element.getAttribute('data-orig-name') || '';
+            let accNo = element.getAttribute('data-account') || '';
+
+            searchInput.value = fullName;
+            accSearchInput.value = accNo;
+            hiddenInput.value = element.getAttribute('data-id');
+            dropdown.style.display = 'none';
+            setTimeout(() => {
+                document.getElementById('details').focus();
+            }, 50);
+        }
+
+        function updateSelection() {
+            options.forEach(li => li.classList.remove('selected'));
+            let visibleOptions = options.filter(li => li.style.display !== "none" && !li.classList.contains('no-result'));
+            if (visibleOptions.length > 0) visibleOptions[0].classList.add('selected');
+        }
+
+        document.addEventListener('click', function() {
+            dropdown.style.display = 'none';
+        });
+
+        let totalManual = false;
+
+        function currentCalc() {
+            return App.calcEntry({
+                pcs: document.getElementById('pcs').value,
+                weight: document.getElementById('weight').value,
+                rate: document.getElementById('rate').value,
+                unit: document.getElementById('rateFormulaSelect').value,
+                settings: masterSettings
+            });
+        }
+
+        function calculateTotal() {
+            let r = currentCalc();
+            if (totalManual) return;
+            document.getElementById('total_amount').value = r.total > 0 ? r.total.toLocaleString('en-US') : '';
+        }
+
+        { const _ctOrig = calculateTotal; calculateTotal = function () { const r = _ctOrig.apply(this, arguments); try { _extraCtl.recalc(); } catch (e) {} return r; }; }
+
+        function formatAmountLive(input) {
+            let cleanVal = input.value.replace(/,/g, '').replace(/[^0-9]/g, '');
+            if (cleanVal) {
+                input.value = parseInt(cleanVal, 10).toLocaleString('en-US');
+            } else {
+                input.value = '';
+            }
+            totalManual = (input.value !== '');
+        }
+
+        document.getElementById('entryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!hiddenInput.value) {
+                alert(isEn ? "🛑 Error: This customer is not registered in the system!" : "🛑 غلطی: یہ گاہک پہلے سے سسٹم میں محفوظ نہیں ہے!");
+                return;
+            }
+            let canonicalName = customers.find(c => App.sameName(c, searchInput.value));
+            if (!canonicalName) {
+                alert(isEn ? "🛑 Error: This customer is not registered in the system!" : "🛑 غلطی: یہ گاہک پہلے سے سسٹم میں محفوظ نہیں ہے!");
+                return;
+            }
+
+            let dateVal = document.getElementById('entryDate').value;
+            if (!dateVal) { alert(isEn ? "🛑 Please select a date." : "🛑 براہِ کرم تاریخ منتخب کریں۔"); return; }
+
+            let pcsVal = parseFloat(document.getElementById('pcs').value) || 0;
+            let weightVal = parseFloat(document.getElementById('weight').value) || 0;
+            let rateVal = parseFloat(document.getElementById('rate').value) || 0;
+            if (pcsVal < 0 || weightVal < 0 || rateVal < 0) {
+                alert(isEn ? "🛑 Pcs, weight and rate cannot be negative." : "🛑 پیس، وزن اور ریٹ منفی نہیں ہو سکتے۔");
+                return;
+            }
+
+            let rawAmount = document.getElementById('total_amount').value.replace(/,/g, '').trim();
+            let finalAmount = parseFloat(rawAmount) || 0;
+            if (!document.getElementById('details').value.trim()) { alert(isEn ? "🛑 Please enter the details." : "🛑 براہِ کرم تفصیل لکھیں۔"); return; }
+            let _sb = document.getElementById('btnSaveEntry');
+            if (_sb) { if (_sb.disabled) return; _sb.disabled = true; setTimeout(function(){ _sb.disabled = false; }, 800); }
+
+            let _ex = App.readEntryExtras(masterSettings);
+            let extraVal = _ex.first;
+            let calc = currentCalc();
+            let custRec = getLatestCustInfo(canonicalName);
+
+            let entry = {
+                id: App.uid(),
+                date: dateVal,
+                customerName: canonicalName,
+                customerId: (custRec && custRec.id) ? custRec.id : '',
+                details: document.getElementById('details').value.trim(),
+                extra: extraVal,
+                extras: _ex.map,
+                pcs: pcsVal,
+                weight: weightVal,
+                rate: rateVal > 0 ? rateVal : "-",
+                rateUnit: calc.unit,
+                rateMode: calc.mode || '',
+                percentApplied: calc.percent,
+                totalManual: totalManual,
+                totalAmount: finalAmount,
+                type: 'BNAM',
+                no: 0,
+                createdAt: new Date().toISOString(),
+                createdBy: App.getRole()
+            };
+
+            if (!App.confirmWarnings(App.entryWarnings(activeBranchId, entry, isEn), isEn)) { return; }
+            if (App.loadSettings(activeBranchId).confirmSave && !confirm(isEn ? 'Save this entry?' : 'کیا یہ انٹری محفوظ کریں؟')) { return; }
+            entry.no = App.nextSerial(activeBranchId);
+
+            let bnamRecords = App.readArray(bnamRecordsKey);
+            bnamRecords.push(entry);
+            App.store.set(bnamRecordsKey, JSON.stringify(bnamRecords));
+            App.audit(activeBranchId, 'ADD', { minor: true, recordId: entry.id, no: entry.no, customer: entry.customerName, amount: entry.totalAmount, type: entry.type, date: entry.date, rec: JSON.parse(JSON.stringify(entry)),
+                summary: 'نئی انٹری / New entry #' + entry.no + ' ' + entry.customerName + ' ' + entry.totalAmount });
+
+            let msg = document.getElementById('successMessage');
+            msg.style.display = 'block';
+
+            document.getElementById('entryForm').reset();
+            hiddenInput.value = "";
+            totalManual = false;
+            if (masterSettings.maundUnit) document.getElementById('rateFormulaSelect').value = masterSettings.maundUnit;
+
+            accSearchInput.focus();
+            document.getElementById('entryDate').value = App.defaultEntryDate(activeBranchId);
+            setTimeout(function() { msg.style.display = 'none'; }, 3000);
+        });
+    </script>
+<style id="entryMobileSpacing">
+@media (max-width: 600px) {
+html body .form-group { margin-bottom: 26px !important; scroll-margin-top: 14px; }
+html body .form-group label { margin-bottom: 7px !important; }
+html body .btn-save { margin-top: 6px; }
+}
+#kbSpacer { display: none; }
+@media (max-width: 600px) { body.kb-open #kbSpacer { display: block; height: 58vh; } }
+</style>
+<script>
+(function () {
+    var timer = 0;
+    function box() { return document.querySelector('.form-container'); }
+    function spacer() {
+        var s = document.getElementById('kbSpacer');
+        if (!s && box()) { s = document.createElement('div'); s.id = 'kbSpacer'; box().appendChild(s); }
+        return s;
+    }
+    document.addEventListener('focusin', function (e) {
+        var t = e.target;
+        if (window.innerWidth > 600 || !t || !/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)) return;
+        spacer(); document.body.classList.add('kb-open');
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            try { (t.closest('.form-group') || t).scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (x) {}
+        }, 320);
+    });
+    document.addEventListener('focusout', function () {
+        setTimeout(function () {
+            var a = document.activeElement;
+            if (!a || !/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName)) document.body.classList.remove('kb-open');
+        }, 250);
+    });
+})();
+</script>
+</body>
+</html>

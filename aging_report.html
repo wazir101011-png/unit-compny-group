@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<meta name="theme-color" content="#080808">
+<title>ایجنگ رپورٹ - UNIT BUSINESS GROUP</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:Tahoma,Arial,sans-serif;margin:0;padding:14px;background:#0d0d0d;color:#fff;direction:rtl;text-align:right;min-height:100vh}
+body.lang-en{direction:ltr;text-align:left}
+:root{--bc:#ff9800}
+.wrap{max-width:1200px;margin:0 auto;background:transparent;border:2px solid var(--bc);border-radius:14px;padding:16px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--bc);flex-wrap:wrap}
+.hd{flex-wrap:nowrap}.hd .btn{white-space:nowrap;flex:0 0 auto}.hd h1{font-size:clamp(13px,4.2vw,22px);margin:0;flex:1;min-width:0;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:2;padding:2px 4px}
+.btn{display:inline-block;border:none;border-radius:8px;padding:9px 14px;font-weight:bold;font-size:13px;color:#fff;background:#444;cursor:pointer;text-decoration:none}
+#btnBack{background:#007bff}#btnBack:hover{background:#0056b3}
+.btn-g{background:var(--bc)}.btn-r{background:#c62828}.btn-b{background:#1565c0}
+input,select{padding:9px;border-radius:8px;border:1px solid #555;background:#111;color:#fff;font-size:14px;max-width:100%}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.bar{direction:ltr}.bar>*{direction:rtl}body.lang-en .bar>*{direction:ltr}.bar #btnOut{order:99;margin-left:auto}
+.scroll{overflow-x:auto;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:#111}
+th,td{border:1px solid #444;padding:7px 6px;text-align:center;vertical-align:middle}
+th{background:var(--bc);color:#fff;position:sticky;top:0}
+td.l{text-align:start}
+tr.over td{background:rgba(220,53,69,.18)}
+.jama{color:#4cd964;font-weight:bold}.bnam{color:#ff6b6b;font-weight:bold}
+.muted{opacity:.7;font-size:12px}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:bold;background:#555}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}@media(min-width:700px){.cards{grid-template-columns:repeat(4,1fr)}}
+.card{border:1px solid #444;border-radius:10px;padding:10px 6px;text-align:center;background:#111}.card small{display:block;font-size:12px;opacity:.8}.card b{font-size:clamp(16px,4.4vw,22px)}
+.empty{padding:26px;text-align:center;opacity:.7}
+body.light-theme{background:#f3f4f6;color:#111827}body.light-theme .wrap{background:transparent}
+body.light-theme input,body.light-theme select{background:#fff;color:#111827;border-color:#9ca3af}
+body.light-theme table,body.light-theme .card{background:#fff}body.light-theme th{background:var(--bc);color:#fff}body.light-theme th,body.light-theme td{border-color:#9ca3af}
+body.light-theme .jama{color:#15803d}body.light-theme .bnam{color:#b91c1c}
+@media(max-width:600px){
+body{padding:6px}.wrap{padding:8px;border-radius:10px;border-width:1.5px}.hd{margin-bottom:8px;padding-bottom:6px}
+.btn{padding:6px 9px;font-size:12px}input,select{padding:6px;font-size:12px}.bar{gap:5px;margin-bottom:8px}
+.cards{gap:5px;margin-bottom:8px}.card{padding:6px 3px;border-radius:8px}.card small{font-size:10.5px}.card b{font-size:clamp(13px,4vw,17px)}
+table{font-size:11px}th,td{padding:4px 3px}.chip{font-size:9.5px;padding:1px 5px}.muted{font-size:10.5px}
+}
+@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body,html{background:#fff!important;color:#000!important}body.light-theme,body.light-theme .wrap{background:#fff!important}.wrap{border:none!important;background:#fff!important}.btn,.bar,.noprint{display:none!important}
+.card,body.light-theme .card{background:#fff!important;border:1px solid #000!important;color:#000!important}.card small,.card b{color:#000!important;opacity:1!important}
+table,body.light-theme table{background:#fff!important}th,td,tr.over td{border-color:#000!important;color:#000!important;background:#fff!important}th{font-weight:bold!important}
+html body td.jama,html body .jama,html body td .jama{color:#1e7e34!important;font-weight:bold!important}html body td.bnam,html body .bnam,html body td .bnam{color:#bd2130!important;font-weight:bold!important}
+tr.over td{color:#000!important}tr.over td.jama{color:#1e7e34!important}tr.over td.bnam{color:#bd2130!important}.muted{color:#000!important;opacity:1!important}.chip{background:#fff!important;color:#000!important;border:1px solid #000}}
+
+</style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+<style id="agTotalsScale">
+@media print {
+html body table#agTable tr.agTotal td, html body table#agTable tr.agTotal td b { font-size: 13px !important; font-weight: 900 !important; }
+}
+@media screen and (min-width: 601px) {
+html body[data-page][data-page][data-page][data-page] tr.agTotal td, html body[data-page][data-page][data-page][data-page] tr.agTotal td b { font-size: 15.5px !important; font-weight: 900 !important; }
+}
+</style>
+<style id="agPrint">
+.ag-head { display: none; }
+@media print {
+  @page { size: A4 portrait; margin: 0 6mm 10mm 6mm; }
+  html body[data-page] .ubg-print-logo { display: none !important; }
+  .hd { display: none !important; }
+  .wrap { padding: 0 !important; margin: 0 !important; max-width: none !important; width: 100% !important; box-shadow: none !important; }
+  .scroll { overflow: visible !important; }
+  html body table#agTable { width: 100% !important; min-width: 0 !important; max-width: 100% !important; table-layout: auto !important; border-collapse: collapse !important; }
+  html body table#agTable th, html body table#agTable td { font-size: 10px !important; line-height: 1.7 !important; padding: 3px 3px !important; white-space: nowrap !important; overflow-wrap: normal !important; }
+  html body table#agTable td.l { white-space: normal !important; min-width: 22mm; }
+  html body table#agTable thead { display: table-header-group !important; }
+  html body table#agTable tr { break-inside: avoid !important; page-break-inside: avoid !important; }
+  html body table#agTable tr.ag-head { display: table-row !important; }
+  html body table#agTable tr.ag-head th { background: #fff !important; border: none !important; border-bottom: 2px solid #000 !important; padding: 9mm 2px 6px !important; vertical-align: middle !important; font-weight: bold !important; }
+  .ag-head .ag-logo { width: 22%; text-align: right; } .ag-head .ag-logo img { height: 46px; width: auto; object-fit: contain; display: inline-block; vertical-align: middle; }
+  html body table#agTable tr.ag-head th.ag-title { font-size: 18px !important; }
+  html body table#agTable tr.ag-head th.ag-date { font-size: 8.5px !important; }
+  html body table#agTable tr.ag-cards-row td { border: none !important; padding: 6px 0 4px !important; background: #fff !important; }
+  .ag-head .ag-title { text-align: center; font-size: 18px !important; font-weight: 900 !important; white-space: nowrap !important; color: #000 !important; }
+  .ag-head .ag-date { width: 22%; text-align: left; direction: ltr; font-size: 8.5px !important; line-height: 1.4 !important; color: #333 !important; white-space: nowrap !important; }
+  .cards { margin-top: 6px !important; }
+}
+</style>
+<script src="./print_footer.js"></script>
+</head>
+<body>
+<div class="wrap">
+ <div class="hd"><a href="./home.html" class="btn" id="btnBack">🔙</a><h1 id="pgTitle"></h1><span id="hdExtra"></span><button class="btn btn-g" id="btnOut"></button></div>
+
+ <div class="bar"><select id="side"></select><input id="q" style="flex:1;min-width:130px"></div>
+ <div class="cards" id="cards"></div>
+ <div class="scroll"><table id="agTable"><thead><tr class="ag-head"><th class="ag-logo" colspan="2"><img src="logo_print.png" alt="" onerror="this.style.display='none'"></th><th class="ag-title" id="agTitle" colspan="6"></th><th class="ag-date" id="agDate" colspan="2"></th></tr><tr id="thr"></tr></thead><tbody id="tb"></tbody></table></div>
+ <p class="muted" id="note"></p>
+
+</div>
+<script>
+App.guardOwner('btnAging', './home.html');
+(function(){
+ try{if((App.store.get('rohan_theme_mode')||'dark')==='light')document.body.classList.add('light-theme');}catch(e){}
+ try{const _b=App.getBranches().find(x=>x.id===(sessionStorage.getItem('active_branch_id')||'branch_1'));if(_b&&_b.color1)document.documentElement.style.setProperty('--bc',_b.color1);}catch(e){}
+})();
+const bid = sessionStorage.getItem('active_branch_id') || 'branch_1';
+const isEn = (sessionStorage.getItem('active_branch_lang') || (App.readObject('rohan_branch_lang_overrides')[bid]) || App.store.get('rohan_global_lang') || 'ur') === 'en';
+if (isEn) document.body.classList.add('lang-en');
+const branchName = (sessionStorage.getItem('active_branch_name') || '').trim();
+const TT = (u, e) => isEn ? e : u;
+const fmt = n => Number(n || 0).toLocaleString('en-US');
+document.getElementById('pgTitle').textContent = TT('⏰ ایجنگ رپورٹ', '⏰ Ageing Report') + (branchName ? ' - ' + branchName : '');
+document.getElementById('btnBack').textContent = TT('🔙 واپس', '🔙 Back');
+
+const due = App.dueDays(bid);
+document.getElementById('btnOut').textContent = TT('🖨️ پرنٹ','🖨️ Print');
+document.getElementById('q').placeholder = TT('🔎 گاہک تلاش کریں…','🔎 Search customer…');
+document.getElementById('side').innerHTML = `<option value="">${TT('جمع اور بنام دونوں','Both')}</option><option value="BNAM">${TT('صرف بنام (ہم نے لینے ہیں)','Debit only (to receive)')}</option><option value="JAMA">${TT('صرف جمع (ہم نے دینے ہیں)','Credit only (to pay)')}</option>`;
+const heads = [TT('کھاتہ','Acc'), TT('گاہک','Customer'), TT('قسم','Side'), TT('کل بقایا','Balance'), TT('سب سے پرانا','Oldest'), TT('دن','Days'), '0-' + App.agingStep(), (App.agingStep() + 1) + '-' + 2 * App.agingStep(), (2 * App.agingStep() + 1) + '-' + 3 * App.agingStep(), 3 * App.agingStep() + '+'];
+document.getElementById('thr').innerHTML = heads.map(h => `<th>${h}</th>`).join('');
+document.getElementById('note').textContent = due > 0 ? TT('🔴 ' + due + ' دن سے پرانا بقایا لال نشان کے ساتھ۔ حد بدلنے کے لیے: ہوم ← سیٹنگز۔', '🔴 Balances older than ' + due + ' days are marked red. Change in Home → Settings.') : TT('لال نشان بند ہے (سیٹنگ میں دن 0 ہیں)','Red marks are off (due days = 0 in Settings)');
+let view = [];
+function build() {
+  const q = document.getElementById('q').value.toLowerCase().trim(), side = document.getElementById('side').value;
+  const names = App.readArray(App.keysFor(bid).customers), by = App.recordsByCustomer(bid), det = App.readArray(App.keysFor(bid).details);
+  const out = [];
+  names.forEach(n => {
+    const ag = App.aging(by[App.norm(n)] || []); if (!ag) return;
+    if (side && ag.side !== side) return;
+    if (q && !n.toLowerCase().includes(q)) return;
+    const b = [0,0,0,0]; ag.items.forEach(it => { b[App.agingBucket(it.days)] += it.amount; });
+    const c = det.find(x => x && App.sameName(x.name, n));
+    out.push({ n, acc: c && c.accountNo || '', ag, b, over: due > 0 && ag.days > due });
+  });
+  out.sort((a, b2) => b2.ag.days - a.ag.days);
+  return out;
+}
+function draw() {
+  view = build();
+  const tb = document.getElementById('tb');
+  const tot = [0,0,0,0]; let totDr = 0, totCr = 0, overN = 0;
+  view.forEach(r => { r.b.forEach((v,i) => tot[i] += v); if (r.ag.side === 'BNAM') totDr += Math.abs(r.ag.net); else totCr += Math.abs(r.ag.net); if (r.over) overN++; });
+  document.getElementById('cards').innerHTML = [[TT('کل بنام بقایا','Total Debit'), fmt(totDr)], [TT('کل جمع بقایا','Total Credit'), fmt(totCr)], [TT('کھاتے','Accounts'), view.length], [TT('🔴 حد سے پرانے','🔴 Overdue'), overN]].map(c => `<div class="card"><small>${c[0]}</small><b>${c[1]}</b></div>`).join('');
+  if (!view.length) { tb.innerHTML = `<tr><td colspan="10" class="empty">${TT('کوئی بقایا نہیں ملا','No outstanding balances')}</td></tr>`; return; }
+  tb.innerHTML = view.map(r => { const isJ = r.ag.side === 'JAMA';
+    return `<tr class="${r.over ? 'over' : ''}"><td>${App.esc(r.acc || '-')}</td><td class="l">${App.esc(r.n)}</td><td class="${isJ?'jama':'bnam'}">${isJ?TT('جمع','Cr'):TT('بنام','Dr')}</td><td class="${isJ?'jama':'bnam'}">${fmt(Math.abs(r.ag.net))}</td><td>${App.fmtDMY(r.ag.oldestDate)}</td><td>${r.over ? '🔴 ' : ''}${r.ag.days}</td>` + r.b.map(v => `<td>${v ? fmt(v) : '-'}</td>`).join('') + '</tr>'; }).join('') +
+    `<tr class="agTotal"><td colspan="6"><b>${TT('ٹوٹل','Total')}</b></td>` + tot.map(v => `<td><b>${fmt(v)}</b></td>`).join('') + '</tr>';
+}
+['q','side'].forEach(id => document.getElementById(id).addEventListener('input', draw));
+draw();
+function agFillPrintHead() {
+  const n = new Date(), p2 = x => String(x).padStart(2, '0'); let h = n.getHours(); const ap = h >= 12 ? (isEn ? 'PM' : 'شام') : (isEn ? 'AM' : 'صبح'); h = h % 12 || 12;
+  document.getElementById('agTitle').textContent = document.getElementById('pgTitle').textContent;
+  document.getElementById('agDate').innerHTML = (isEn ? 'Date: ' : 'تاریخ: ') + p2(n.getDate()) + '/' + p2(n.getMonth() + 1) + '/' + n.getFullYear() + '<br>' + (isEn ? 'Time: ' : 'وقت: ') + h + ':' + p2(n.getMinutes()) + ' ' + ap;
+}
+var agHome = null, agRow = null;
+function agCardsIn() {
+  const c = document.getElementById('cards'), tb = document.getElementById('tb'); if (!c || !tb || agRow) return;
+  agHome = c.parentNode; agRow = document.createElement('tr'); agRow.className = 'ag-cards-row'; const td = document.createElement('td'); td.colSpan = 10; agRow.appendChild(td);
+  tb.insertBefore(agRow, tb.firstChild); td.appendChild(c);
+}
+function agCardsOut() {
+  const c = document.getElementById('cards'); if (agRow && c && agHome) { agHome.insertBefore(c, document.querySelector('.scroll')); agRow.remove(); } agRow = null;
+}
+window.addEventListener('beforeprint', () => { agFillPrintHead(); agCardsIn(); }); window.addEventListener('afterprint', agCardsOut);
+agFillPrintHead();
+document.getElementById('btnOut').onclick = () => { agFillPrintHead(); if (window.__ubgPrintFooterApply) __ubgPrintFooterApply(); return (window.App&&App.printNow?App.printNow({hide:'.btn,.btn-header,.btn-print,.btn-back,.bar,.noprint,.search-wrapper,.date-wrap,.date-wrapper,.top-actions',table:'#agTable',rowsPerPage:30}):window.print()); };
+
+</script>
+</body>
+</html>

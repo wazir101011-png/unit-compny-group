@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<meta name="theme-color" content="#080808">
+<title>ڈیلیٹ شدہ انٹریاں - UNIT BUSINESS GROUP</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:Tahoma,Arial,sans-serif;margin:0;padding:14px;background:#0d0d0d;color:#fff;direction:rtl;text-align:right;min-height:100vh}
+body.lang-en{direction:ltr;text-align:left}
+.wrap{max-width:1200px;margin:0 auto;background:#1a1a1a;border:2px solid #dc3545;border-radius:14px;padding:16px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #333;flex-wrap:wrap}
+.hd h1{font-size:clamp(15px,4.2vw,22px);margin:0;flex:1;text-align:center}
+.btn{display:inline-block;border:none;border-radius:8px;padding:9px 14px;font-weight:bold;font-size:13px;color:#fff;background:#444;cursor:pointer;text-decoration:none}
+#btnBack{background:#007bff}#btnBack:hover{background:#0056b3}
+.btn-g{background:#28a745}.btn-r{background:#c62828}.btn-b{background:#1565c0}
+input,select{padding:9px;border-radius:8px;border:1px solid #555;background:#111;color:#fff;font-size:14px;max-width:100%}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.scroll{overflow-x:auto;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:#111}
+th,td{border:1px solid #444;padding:7px 6px;text-align:center;vertical-align:middle}
+th{background:#262626;position:sticky;top:0}
+td.l{text-align:start}
+tr.over td{background:rgba(220,53,69,.18)}
+.jama{color:#4cd964;font-weight:bold}.bnam{color:#ff6b6b;font-weight:bold}
+.muted{opacity:.7;font-size:12px}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:bold;background:#555}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}@media(min-width:700px){.cards{grid-template-columns:repeat(4,1fr)}}
+.card{border:1px solid #444;border-radius:10px;padding:10px 6px;text-align:center;background:#111}.card small{display:block;font-size:12px;opacity:.8}.card b{font-size:clamp(16px,4.4vw,22px)}
+.empty{padding:26px;text-align:center;opacity:.7}
+body.light-theme{background:#f3f4f6;color:#111827}body.light-theme .wrap{background:#fff}body.light-theme .hd{border-color:#d1d5db}
+body.light-theme input,body.light-theme select{background:#fff;color:#111827;border-color:#9ca3af}
+body.light-theme table,body.light-theme .card{background:#fff}body.light-theme th{background:#e5e7eb}body.light-theme th,body.light-theme td{border-color:#9ca3af}
+body.light-theme .jama{color:#15803d}body.light-theme .bnam{color:#b91c1c}
+@media print{body{background:#fff!important;color:#000!important}.wrap{border:none!important;background:#fff!important}.btn,.bar,.noprint{display:none!important}th,td{border-color:#000!important;color:#000!important;background:#fff!important}}
+
+</style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+</head>
+<body>
+<div class="wrap">
+ <div class="hd"><a href="./home.html" class="btn" id="btnBack">🔙</a><h1 id="pgTitle"></h1><span id="hdExtra"></span></div>
+
+ <div class="bar"><input id="q" style="flex:1;min-width:150px"><span class="muted" id="cnt"></span></div>
+ <div class="scroll"><table><thead><tr id="thr"></tr></thead><tbody id="tb"></tbody></table></div>
+
+</div>
+<script>
+App.guardOwner('btnDelEntries', './home.html');
+(function(){
+ try{if((App.store.get('rohan_theme_mode')||'dark')==='light')document.body.classList.add('light-theme');}catch(e){}
+})();
+const bid = sessionStorage.getItem('active_branch_id') || 'branch_1';
+const isEn = (sessionStorage.getItem('active_branch_lang') || (App.readObject('rohan_branch_lang_overrides')[bid]) || App.store.get('rohan_global_lang') || 'ur') === 'en';
+if (isEn) document.body.classList.add('lang-en');
+const branchName = (sessionStorage.getItem('active_branch_name') || '').trim();
+const TT = (u, e) => isEn ? e : u;
+const fmt = n => Number(n || 0).toLocaleString('en-US');
+document.getElementById('pgTitle').textContent = TT('♻️ ڈیلیٹ شدہ انٹریاں (ری سائیکل بن)', '♻️ Deleted Entries (Recycle Bin)') + (branchName ? ' - ' + branchName : '');
+document.getElementById('btnBack').textContent = TT('🔙 واپس', '🔙 Back');
+
+document.getElementById('q').placeholder = TT('🔎 گاہک، رقم، نمبر یا تفصیل سے تلاش کریں…', '🔎 Search customer, amount, no. or details…');
+const heads = [TT('نمبر','No'), TT('ڈیلیٹ کب','Deleted'), TT('گاہک','Customer'), TT('قسم','Type'), TT('تاریخ','Date'), TT('تفصیل','Details'), TT('رقم','Amount'), TT('کس نے','By'), TT('وجہ','Reason'), !App.ownerCan('restoreEntries') ? '' : TT('بحال','Restore')];
+document.getElementById('thr').innerHTML = heads.map(h => `<th>${h}</th>`).join('');
+const REASON = { DELETE: TT('انٹری ڈیلیٹ','Entry deleted'), ACCOUNT_PERM_DELETE: TT('کھاتہ مستقل ختم','Account permanently deleted') };
+function draw() {
+  const q = document.getElementById('q').value.toLowerCase().replace(/,/g,'').trim();
+  App.purgeRecycle(bid);
+  const list = App.readArray(bid + '_deleted_entries').filter(Boolean).slice().reverse();
+  const rows = list.filter(it => { const r = it.rec || {}; return !q || [r.no, r.customerName, r.totalAmount, r.details, r.date].join(' ').toLowerCase().includes(q); });
+  document.getElementById('cnt').textContent = rows.length + ' / ' + list.length;
+  const tb = document.getElementById('tb');
+  if (!rows.length) { tb.innerHTML = `<tr><td colspan="10" class="empty">${TT('کوئی ڈیلیٹ شدہ انٹری نہیں ملی','No deleted entries found')}</td></tr>`; return; }
+  tb.innerHTML = rows.map(it => { const r = it.rec || {}, isJ = r.type === 'JAMA', d = new Date(it.deletedAt);
+    const p2 = n => String(n).padStart(2,'0'), when = isNaN(d) ? '-' : p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes());
+    return `<tr><td>${r.no ? '#' + r.no : '-'}</td><td>${when}</td><td class="l">${App.esc(r.customerName)}</td><td class="${isJ?'jama':'bnam'}">${isJ?TT('جمع','Credit'):TT('بنام','Debit')}</td><td>${App.fmtDMY(r.date)}</td><td class="l">${App.esc(r.details && r.details !== '-' ? r.details : '-')}</td><td class="${isJ?'jama':'bnam'}">${fmt(r.totalAmount)}</td><td>${App.esc(it.deletedBy||'')}</td><td>${App.esc(REASON[it.reason]||it.reason||'')}</td>` +
+      (!App.ownerCan('restoreEntries') ? '<td></td>' : `<td><button class="btn btn-g" onclick="restore('${App.esc(it.rid)}')">♻️</button></td>`) + '</tr>'; }).join('');
+}
+function restore(rid) {
+  if (!App.ownerCan('restoreEntries')) return;
+  let res = App.restoreEntry(bid, rid, {});
+  if (!res.ok && res.code === 'NO_CUSTOMER') {
+    if (!confirm(TT('اس گاہک کا کھاتہ اب موجود نہیں۔ کھاتہ دوبارہ بنا کر انٹری بحال کریں؟','This customer account no longer exists. Re-create it and restore the entry?'))) return;
+    res = App.restoreEntry(bid, rid, { recreate: true });
+  }
+  if (!res.ok) {
+    alert(res.code === 'ACCOUNT_DELETED' ? TT('یہ کھاتہ "ڈیلیٹ شدہ کھاتوں" میں ہے۔ پہلے کھاتہ بحال کریں۔','This account is in Deleted Accounts. Restore the account first.') : TT('انٹری نہیں ملی','Entry not found'));
+    return;
+  }
+  alert(TT('✅ انٹری بحال ہو گئی: #','✅ Entry restored: #') + (res.rec.no || '-'));
+  draw();
+}
+document.getElementById('q').addEventListener('input', draw);
+draw();
+
+</script>
+</body>
+</html>

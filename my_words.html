@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<meta name="theme-color" content="#080808">
+<title>میرے الفاظ - UNIT BUSINESS GROUP</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:Tahoma,Arial,sans-serif;margin:0;padding:14px;background:#0d0d0d;color:#fff;direction:rtl;text-align:right;min-height:100vh}
+body.lang-en{direction:ltr;text-align:left}
+.wrap{max-width:900px;margin:0 auto;background:#1a1a1a;border:2px solid #ffc107;border-radius:14px;padding:16px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #333}
+.hd h1{font-size:clamp(15px,4.2vw,22px);margin:0;flex:1;text-align:center}
+.btn{display:inline-block;border:none;border-radius:8px;padding:9px 14px;font-weight:bold;font-size:13px;color:#fff;background:#444;cursor:pointer;text-decoration:none}
+#btnBack{background:#007bff}#btnBack:hover{background:#0056b3}
+.btn-g{background:#28a745}.btn-r{background:#c62828}.btn-b{background:#1565c0}
+input{padding:10px;border-radius:8px;border:1px solid #555;background:#111;color:#fff;font-size:15px;width:100%}
+label{display:block;font-size:13px;opacity:.85;margin:8px 0 4px}
+.help{font-size:13px;line-height:1.8;opacity:.85;background:#111;border:1px solid #333;border-radius:10px;padding:10px;margin-bottom:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.item{display:flex;align-items:center;gap:8px;border:1px solid #444;border-radius:10px;padding:8px 10px;margin-bottom:6px;background:#111}
+.item .t{flex:1;min-width:0;word-break:break-word}.item .t b{font-size:16px}.item .t small{display:block;opacity:.65;font-size:12px}
+.empty{padding:22px;text-align:center;opacity:.7}
+.muted{opacity:.7;font-size:12px}
+body.light-theme{background:#f3f4f6;color:#111827}body.light-theme .wrap{background:#fff}body.light-theme .hd{border-color:#d1d5db}
+body.light-theme input{background:#fff;color:#111827;border-color:#9ca3af}body.light-theme .help,body.light-theme .item{background:#f9fafb;border-color:#d1d5db}
+</style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+</head>
+<body>
+<div class="wrap">
+ <div class="hd"><a href="./home.html" class="btn" id="btnBack">🔙</a><h1 id="pgTitle"></h1><span style="width:44px"></span></div>
+ <div class="help" id="help"></div>
+ <label id="lW"></label><input id="inW" autocomplete="off" dir="rtl">
+ <label id="lS"></label><input id="inS" autocomplete="off">
+ <div class="row"><button class="btn btn-g" id="btnAdd"></button><button class="btn" id="btnCancel" style="display:none"></button></div>
+ <input id="q" autocomplete="off" style="margin:8px 0">
+ <div id="list"></div>
+ <div class="row"><button class="btn btn-b" id="btnExp"></button><button class="btn btn-b" id="btnImp"></button><input type="file" id="fileImp" accept=".json,application/json" style="display:none"><span class="muted" id="cnt"></span></div>
+</div>
+<script>
+(function(){
+ try{if((App.store.get('rohan_theme_mode')||'dark')==='light')document.body.classList.add('light-theme');}catch(e){}
+ var bid=sessionStorage.getItem('active_branch_id')||'branch_1';
+ var isEn=(sessionStorage.getItem('active_branch_lang')||(App.readObject('rohan_branch_lang_overrides')[bid])||App.store.get('rohan_global_lang')||'ur')==='en';
+ if(isEn)document.body.classList.add('lang-en');
+ var T=function(u,e){return isEn?e:u;}, $=function(id){return document.getElementById(id);};
+ $('pgTitle').textContent=T('📝 میرے الفاظ (نام، بینک، جملے)','📝 My Words (names, banks, phrases)');
+ $('btnBack').textContent=T('🔙 واپس','🔙 Back');
+ $('help').innerHTML=T('یہاں وہ نام، بینک اور جملے لکھ لیں جو آپ اکثر بولتے ہیں۔ مائیک انہیں بولنے پر اسی طرح لکھے گا جیسا یہاں درج ہے۔<br>• صرف "اردو میں لکھا ہوا" خانہ بھرنا کافی ہے۔<br>• اگر مائیک کسی نام کو بالکل مختلف سنتا ہے تو دوسرے خانے میں وہ لکھ دیں جو مائیک ابھی لکھتا ہے۔',
+   'Add the names, banks and phrases you use often. The mic will write them exactly as listed here.<br>• Filling the "written" box is enough.<br>• If the mic hears a name very differently, put what it currently writes in the second box.');
+ $('lW').textContent=T('اردو میں جیسا لکھنا ہے','How it should be written (Urdu)');
+ $('lS').textContent=T('(اختیاری) مائیک ابھی کیا لکھتا ہے / آپ کیسے بولتے ہیں','(optional) What the mic writes now / how you say it');
+ $('inW').placeholder=T('مثلاً: عطاء اللہ ، میزان بینک ، رضوان کو نقدی دی ہے','e.g. Ataullah, Meezan Bank');
+ $('q').placeholder=T('🔍 تلاش…','🔍 Search…');
+ $('btnExp').textContent=T('⬇️ فہرست محفوظ کریں','⬇️ Export list');
+ $('btnImp').textContent=T('⬆️ فہرست لوڈ کریں','⬆️ Import list');
+ $('btnCancel').textContent=T('منسوخ','Cancel');
+ var list=App.voiceWords.load(), editing=-1;
+ function save(){ if(!App.voiceWords.save(list)) App.toast(T('⚠️ محفوظ نہیں ہو سکا','⚠️ Could not save')); }
+ function reset(){ editing=-1; $('inW').value=''; $('inS').value=''; $('btnAdd').textContent=T('➕ شامل کریں','➕ Add'); $('btnCancel').style.display='none'; }
+ function render(){
+  var q=$('q').value.trim().toLowerCase(), h='', n=0;
+  list.forEach(function(e,i){
+   if(q&&(e.w+' '+e.s).toLowerCase().indexOf(q)<0)return; n++;
+   h+='<div class="item"><div class="t"><b>'+App.esc(e.w)+'</b>'+(e.s?'<small>← '+App.esc(e.s)+'</small>':'')+'</div><button class="btn" data-e="'+i+'">✏️</button><button class="btn btn-r" data-d="'+i+'">🗑️</button></div>';
+  });
+  $('list').innerHTML=h||'<div class="empty">'+T('ابھی کوئی لفظ نہیں','Nothing yet')+'</div>';
+  $('cnt').textContent=list.length+' '+T('الفاظ','entries');
+ }
+ $('btnAdd').onclick=function(){
+  var w=$('inW').value.replace(/\s+/g,' ').trim(), s=$('inS').value.replace(/\s+/g,' ').trim();
+  if(!w){ $('inW').focus(); return; }
+  var dup=list.findIndex(function(e,i){return i!==editing&&e.w===w;});
+  if(dup>-1){ if(s)list[dup].s=s; if(editing>-1)list.splice(editing,1); }
+  else if(editing>-1)list[editing]={w:w,s:s}; else list.push({w:w,s:s});
+  save(); reset(); render(); $('inW').focus();
+ };
+ $('btnCancel').onclick=reset;
+ $('inW').onkeydown=$('inS').onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); $('btnAdd').click(); } };
+ $('q').oninput=render;
+ $('list').onclick=function(e){
+  var b=e.target.closest('button'); if(!b)return;
+  if(b.dataset.d!==undefined){ var i=+b.dataset.d; if(confirm(T('"'+list[i].w+'" حذف کریں؟','Delete "'+list[i].w+'"?'))){ list.splice(i,1); save(); reset(); render(); } }
+  else if(b.dataset.e!==undefined){ editing=+b.dataset.e; $('inW').value=list[editing].w; $('inS').value=list[editing].s; $('btnAdd').textContent=T('💾 محفوظ کریں','💾 Save'); $('btnCancel').style.display=''; $('inW').focus(); window.scrollTo(0,0); }
+ };
+ $('btnExp').onclick=function(){
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({app:'unit-business-group-words',words:list})],{type:'application/json'}));
+  a.download='my_words_'+App.localDate()+'.json'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+ };
+ $('btnImp').onclick=function(){ $('fileImp').click(); };
+ $('fileImp').onchange=function(){
+  var f=this.files[0]; this.value=''; if(!f)return;
+  var fr=new FileReader();
+  fr.onload=function(){
+   try{
+    var p=JSON.parse(fr.result), arr=Array.isArray(p)?p:p.words, add=0;
+    if(!Array.isArray(arr))throw 0;
+    arr.forEach(function(x){
+     if(typeof x==='string')x={w:x,s:''};
+     if(!x||typeof x.w!=='string'||!x.w.trim())return;
+     var w=x.w.replace(/\s+/g,' ').trim(), s=typeof x.s==='string'?x.s.replace(/\s+/g,' ').trim():'';
+     var k=list.findIndex(function(e){return e.w===w;});
+     if(k<0){ list.push({w:w,s:s}); add++; } else if(s&&!list[k].s)list[k].s=s;
+    });
+    save(); render(); App.toast(T('✅ '+add+' نئے الفاظ شامل ہوئے','✅ '+add+' new entries added'));
+   }catch(e){ App.toast(T('⚠️ فائل درست نہیں','⚠️ Invalid file')); }
+  };
+  fr.readAsText(f);
+ };
+ reset(); render();
+})();
+</script>
+</body>
+</html>

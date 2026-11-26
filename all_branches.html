@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<meta name="theme-color" content="#080808">
+<title>سب برانچز - UNIT BUSINESS GROUP</title>
+<script src="./vendor/offline-chart.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:Tahoma,Arial,sans-serif;margin:0;padding:14px;background:#0d0d0d;color:#fff;direction:rtl;text-align:right;min-height:100vh}
+body.lang-en{direction:ltr;text-align:left}
+.wrap{max-width:1200px;margin:0 auto;background:#1a1a1a;border:2px solid #00bcd4;border-radius:14px;padding:16px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #333;flex-wrap:wrap}
+.hd h1{font-size:clamp(15px,4.2vw,22px);margin:0;flex:1;text-align:center}
+.hd{direction:ltr}body:not(.lang-en) .hd h1{direction:rtl}#hdExtra:empty{display:none}.bar:empty{display:none}
+.btn{display:inline-block;border:none;border-radius:8px;padding:9px 14px;font-weight:bold;font-size:13px;color:#fff;background:#444;cursor:pointer;text-decoration:none}
+#btnBack{background:#007bff}#btnBack:hover{background:#0056b3}
+.btn-g{background:#28a745}.btn-r{background:#c62828}.btn-b{background:#1565c0}
+input,select{padding:9px;border-radius:8px;border:1px solid #555;background:#111;color:#fff;font-size:14px;max-width:100%}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.bar{direction:ltr}.bar>*{direction:rtl}body.lang-en .bar>*{direction:ltr}.bar #btnOut{order:99;margin-left:auto}
+.scroll{overflow-x:auto;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:#111}
+th,td{border:1px solid #444;padding:7px 6px;text-align:center;vertical-align:middle}
+th{background:#262626;position:sticky;top:0}
+td.l{text-align:start}
+tr.over td{background:rgba(220,53,69,.18)}
+.jama{color:#4cd964;font-weight:bold}.bnam{color:#ff6b6b;font-weight:bold}
+.muted{opacity:.7;font-size:12px}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:bold;background:#555}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}@media(min-width:700px){.cards{grid-template-columns:repeat(4,1fr)}}
+.card{border:1px solid #444;border-radius:10px;padding:10px 6px;text-align:center;background:#111}.card small{display:block;font-size:12px;opacity:.8}.card b{font-size:clamp(16px,4.4vw,22px)}
+.empty{padding:26px;text-align:center;opacity:.7}
+body.light-theme{background:#f3f4f6;color:#111827}body.light-theme .wrap{background:#fff}body.light-theme .hd{border-color:#d1d5db}
+body.light-theme input,body.light-theme select{background:#fff;color:#111827;border-color:#9ca3af}
+body.light-theme table,body.light-theme .card{background:#fff}body.light-theme th{background:#e5e7eb}body.light-theme th,body.light-theme td{border-color:#9ca3af}
+body.light-theme .jama{color:#15803d}body.light-theme .bnam{color:#b91c1c}
+@media print{body{background:#fff!important;color:#000!important}.wrap{border:none!important;background:#fff!important}.btn,.bar,.noprint{display:none!important}th,td{border-color:#000!important;color:#000!important;background:#fff!important}
+@page{size:A4 landscape;margin:8mm}
+html,body{width:100%!important;min-height:0!important;padding:0!important;margin:0!important}
+body{padding:0!important}
+.wrap{max-width:none!important;width:100%!important;padding:0!important;margin:0!important}
+.scroll{overflow:visible!important;width:100%!important}
+table{width:100%!important;table-layout:auto!important;font-size:9.5px!important;page-break-inside:auto}
+th,td{padding:3px 2px!important;white-space:normal!important;word-break:break-word;overflow-wrap:anywhere;position:static!important}
+th{position:static!important}
+tr{page-break-inside:avoid}thead{display:table-header-group}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html body .hero{background:#fff!important;color:#000!important;border:1px solid #000!important}.hero div small,.hero div b{color:#000!important;opacity:1!important}
+html body .hero .pos,html body .bc-net .pos,html body .bc-r b.jama,html body .jama{color:#1e7e34!important}html body .hero .neg,html body .bc-net .neg,html body .bc-r b.bnam,html body .bnam{color:#bd2130!important}
+html body .bc{background:#fff!important;color:#000!important;border:1px solid #000!important;break-inside:avoid;page-break-inside:avoid}
+html body .bc-h{background:#fff!important;color:#000!important;border-bottom:2px solid #000!important}html body .bc-h span{color:#000!important;opacity:1!important}
+html body .bc-net small,html body .bc-r span,html body .bc-r b{color:#000!important;opacity:1!important}html body .bc-r b.jama{color:#1e7e34!important}html body .bc-r b.bnam{color:#bd2130!important}
+html body .bc-r{border-color:#777!important}html body .bc-act{display:none!important}html body .card{background:#fff!important;border:1px solid #000!important;color:#000!important}.card small,.card b{color:#000!important;opacity:1!important}
+html body .sec{color:#000!important}
+.hero,.cards{page-break-inside:avoid}
+canvas{max-width:100%!important;height:auto!important}
+}
+
+.hero{border-radius:14px;padding:16px;margin-bottom:14px;background:linear-gradient(135deg,#0f3d5c,#0b6e8a);color:#fff;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;text-align:center}
+@media(min-width:760px){.hero{grid-template-columns:repeat(4,1fr)}}
+.hero div small{display:block;font-size:12px;opacity:.85;margin-bottom:3px}.hero div b{font-size:clamp(17px,4.6vw,26px)}
+.hero .pos{color:#86efac}.hero .neg{color:#fca5a5}
+.bgrid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:16px}@media(min-width:760px){.bgrid{grid-template-columns:repeat(2,1fr)}}@media(min-width:1100px){.bgrid{grid-template-columns:repeat(3,1fr)}}
+.bc{border-radius:14px;overflow:hidden;border:1px solid #3a3a3a;background:#141414}
+body.light-theme .bc{background:#fff;border-color:#d1d5db}
+.bc-h{padding:11px 14px;font-weight:bold;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:8px;color:#fff}
+.bc-h span{font-size:12px;opacity:.9;font-weight:normal;white-space:nowrap}
+.bc-net{padding:12px 14px 4px;text-align:center}.bc-net small{display:block;opacity:.75;font-size:12px}.bc-net b{font-size:clamp(20px,5.5vw,28px)}
+.bc-net .pos{color:#4cd964}.bc-net .neg{color:#ff6b6b}body.light-theme .bc-net .pos{color:#15803d}body.light-theme .bc-net .neg{color:#b91c1c}
+.bc-bar{display:flex;height:8px;margin:8px 14px;border-radius:5px;overflow:hidden;background:#333}.bc-bar i{display:block;height:100%}
+.bc-rows{padding:4px 14px 12px}.bc-r{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed #3a3a3a;font-size:13.5px}.bc-r:last-child{border:none}
+body.light-theme .bc-r{border-color:#d1d5db}.bc-r span{opacity:.8}.bc-r b{font-variant-numeric:tabular-nums}
+.bc-act{display:flex;gap:8px;padding:0 14px 14px}.bc-act .btn{flex:1;text-align:center;padding:9px 6px;font-size:12.5px}
+.sec{margin:18px 0 8px;font-size:15px;font-weight:bold}
+
+</style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+<script src="./print_footer.js"></script>
+</head>
+<body>
+<div class="wrap">
+ <div class="hd"><a href="./branches.html" class="btn" id="btnBack">🔙</a><h1 id="pgTitle"></h1><span id="hdExtra"></span><button class="btn btn-g noprint" id="btnOut"></button></div>
+
+ <div class="bar noprint"></div>
+ <div class="hero" id="hero"></div>
+ <div class="bgrid" id="bgrid"></div>
+ <div class="sec" id="secChart"></div>
+ <div style="height:240px;position:relative"><canvas id="abChart"></canvas></div>
+ <div class="sec" id="secTable"></div>
+ <div class="scroll"><table id="abTable"><thead><tr id="thr"></tr></thead><tbody id="tb"></tbody></table></div>
+
+</div>
+<script>
+App.guardOwner('allBranches', './branches.html');
+(function(){
+ try{if((App.store.get('rohan_theme_mode')||'dark')==='light')document.body.classList.add('light-theme');}catch(e){}
+})();
+const bid = sessionStorage.getItem('active_branch_id') || 'branch_1';
+const isEn = (sessionStorage.getItem('active_branch_lang') || (App.readObject('rohan_branch_lang_overrides')[bid]) || App.store.get('rohan_global_lang') || 'ur') === 'en';
+if (isEn) document.body.classList.add('lang-en');
+const branchName = (sessionStorage.getItem('active_branch_name') || '').trim();
+const TT = (u, e) => isEn ? e : u;
+const fmt = n => Number(n || 0).toLocaleString('en-US');
+document.getElementById('pgTitle').textContent = TT('🏢 سب برانچز کی مجموعی رپورٹ', '🏢 All Branches Report');
+document.getElementById('btnBack').textContent = TT('🔙 واپس', '🔙 Back');
+
+document.getElementById('btnOut').textContent = TT('🖨️ پرنٹ','🖨️ Print');
+document.getElementById('secChart').textContent = TT('📊 برانچ وار موازنہ: جمع بقایا بمقابلہ بنام بقایا','📊 Branch comparison: credit vs debit balances');
+document.getElementById('secTable').textContent = TT('📋 تفصیلی جدول','📋 Detailed table');
+const heads = [TT('برانچ','Branch'), TT('کھاتے','Accounts'), TT('انٹریاں','Entries'), TT('آج جمع','Today Cr'), TT('آج بنام','Today Dr'), TT('اس ماہ جمع','Month Cr'), TT('اس ماہ بنام','Month Dr'), TT('کل جمع بقایا','Total Cr'), TT('کل بنام بقایا','Total Dr'), TT('نیٹ','Net'), TT('🔴 پرانے','🔴 Overdue')];
+document.getElementById('thr').innerHTML = heads.map(h => `<th>${h}</th>`).join('');
+const today = App.localDate(), month = today.slice(0, 7), data = [];
+const gl = App.store.get('rohan_global_lang') || 'ur', ov = App.readObject('rohan_branch_lang_overrides');
+App.visibleBranches().forEach(b => {
+  const lang = ov[b.id] || gl;
+  const cu = (b.ur || '').replace(/برانچ نمبر \d+/g, '').replace(/#\d+/g, '').trim() || ('برانچ ' + b.num), ce = (b.en || '').replace(/Branch No\.? \d+/gi, '').replace(/#\d+/g, '').trim() || ('Branch ' + b.num);
+  const K = App.keysFor(b.id), names = App.readArray(K.customers), recs = App.readArray(K.records).filter(Boolean);
+  const by = App.recordsByCustomer(b.id), due = App.dueDays(b.id);
+  let cr = 0, dr = 0, over = 0, tj = 0, tbn = 0, mj = 0, mb = 0, last = '';
+  names.forEach(n => { const l = by[App.norm(n)] || [], bal = App.balanceOf(l); if (bal > 0) cr += bal; else dr += -bal;
+    const ag = App.aging(l); if (ag && due > 0 && ag.days > due) over++; });
+  const skipOpen = App.loadSettings(b.id).openingInTotals === false;
+  recs.forEach(r => { const a = parseFloat(r.totalAmount) || 0, j = r.type === 'JAMA';
+    if (!(skipOpen && r.isOpening)) {
+    if (r.date === today) { if (j) tj += a; else tbn += a; }
+    if ((r.date || '').slice(0, 7) === month) { if (j) mj += a; else mb += a; }
+    }
+    if ((r.date || '') > last) last = r.date; });
+  data.push({ id: b.id, name: lang === 'en' ? ce : cu, cu, ce, lang, bg: `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#111'})`, tx: b.text || '#fff', c1: b.color1 || '#0f3d5c', c2: b.color2 || '#0b6e8a', n: names.length, e: recs.length, tj, tb: tbn, mj, mb, cr, dr, over, last });
+});
+const _showAll = sessionStorage.getItem('ab_show_all') === '1';
+const _hidden = data.filter(r => !r.n && !r.e).length;
+if (!_showAll && _hidden && _hidden < data.length) { for (let i = data.length - 1; i >= 0; i--) if (!data[i].n && !data[i].e) data.splice(i, 1); }
+const _tg = document.createElement('button'); _tg.className = 'btn'; _tg.type = 'button';
+_tg.textContent = _showAll ? TT('خالی برانچیں چھپائیں','Hide empty branches') : (_hidden ? TT('خالی برانچیں دکھائیں (' + _hidden + ')','Show empty branches (' + _hidden + ')') : '');
+if (_tg.textContent) { _tg.onclick = () => { sessionStorage.setItem('ab_show_all', _showAll ? '0' : '1'); location.reload(); }; document.querySelector('.bar').appendChild(_tg); }
+const sum = k => data.reduce((a, r) => a + r[k], 0), net = sum('cr') - sum('dr');
+const sgn = v => v >= 0 ? 'pos' : 'neg';
+document.getElementById('hero').innerHTML = [[TT('کل جمع بقایا (ہم نے دینے)','Total Credit (payable)'), fmt(sum('cr'))], [TT('کل بنام بقایا (ہم نے لینے)','Total Debit (receivable)'), fmt(sum('dr'))], [TT('مجموعی نیٹ رقم','Overall Net'), `<span class="${sgn(net)}">${net < 0 ? '-' : ''}${fmt(Math.abs(net))}</span>`], [TT('🔴 پرانے بقایا کھاتے','🔴 Overdue accounts'), fmt(sum('over'))]].map(c => `<div><small>${c[0]}</small><b>${c[1]}</b></div>`).join('');
+document.getElementById('bgrid').innerHTML = data.map((r, i) => { const nt = r.cr - r.dr, tot = (r.cr + r.dr) || 1;
+  return `<div class="bc"><div class="bc-h" style="background:${r.bg}">🏢 ${App.esc(r.name)}<span>${r.n} ${TT('کھاتے','accounts')} · ${r.e} ${TT('انٹریاں','entries')}</span></div>
+  <div class="bc-net"><small>${TT('موجودہ نیٹ رقم (جمع − بنام)','Current net (Cr − Dr)')}</small><b class="${sgn(nt)}">${nt < 0 ? '-' : ''}${fmt(Math.abs(nt))}</b></div>
+  <div class="bc-bar"><i style="width:${r.cr / tot * 100}%;background:#28a745"></i><i style="width:${r.dr / tot * 100}%;background:#c62828"></i></div>
+  <div class="bc-rows">
+   <div class="bc-r"><span>${TT('جمع بقایا','Credit balance')}</span><b class="jama">${fmt(r.cr)}</b></div>
+   <div class="bc-r"><span>${TT('بنام بقایا','Debit balance')}</span><b class="bnam">${fmt(r.dr)}</b></div>
+   <div class="bc-r"><span>${TT('آج: جمع / بنام','Today: Cr / Dr')}</span><b>${fmt(r.tj)} / ${fmt(r.tb)}</b></div>
+   <div class="bc-r"><span>${TT('اس ماہ: جمع / بنام','This month: Cr / Dr')}</span><b>${fmt(r.mj)} / ${fmt(r.mb)}</b></div>
+   <div class="bc-r"><span>${TT('پرانے بقایا والے کھاتے','Overdue accounts')}</span><b>${r.over ? '🔴 ' : ''}${r.over}</b></div>
+   <div class="bc-r"><span>${TT('آخری انٹری','Last entry')}</span><b>${r.last ? App.fmtDMY(r.last) : '-'}</b></div>
+  </div>
+  <div class="bc-act noprint"><button class="btn btn-b" onclick="openBranch(${i})">${TT('کھولیں','Open')}</button><button class="btn btn-g" onclick="dlXlsx(${i})">📗 Excel</button></div></div>`; }).join('');
+function openBranch(i) { const r = data[i]; sessionStorage.setItem('active_branch_id', r.id); sessionStorage.setItem('active_branch_name', r.name); sessionStorage.setItem('active_branch_lang', r.lang); sessionStorage.setItem('active_branch_bg', r.bg); sessionStorage.setItem('active_branch_text', r.tx); location.href = './home.html'; }
+function dlXlsx(i) { const r = data[i]; sessionStorage.setItem('active_branch_lang', r.lang); App.downloadBranchXlsx(r.id, r.name); }
+document.getElementById('tb').innerHTML = data.map(r => `<tr><td class="l"><b>${App.esc(r.name)}</b></td><td>${r.n}</td><td>${r.e}</td><td class="jama">${fmt(r.tj)}</td><td class="bnam">${fmt(r.tb)}</td><td class="jama">${fmt(r.mj)}</td><td class="bnam">${fmt(r.mb)}</td><td class="jama">${fmt(r.cr)}</td><td class="bnam">${fmt(r.dr)}</td><td>${fmt(r.cr - r.dr)}</td><td>${r.over}</td></tr>`).join('') +
+  `<tr><td class="l"><b>${TT('ٹوٹل','Total')}</b></td><td>${sum('n')}</td><td>${sum('e')}</td><td>${fmt(sum('tj'))}</td><td>${fmt(sum('tb'))}</td><td>${fmt(sum('mj'))}</td><td>${fmt(sum('mb'))}</td><td>${fmt(sum('cr'))}</td><td>${fmt(sum('dr'))}</td><td>${fmt(net)}</td><td>${sum('over')}</td></tr>`;
+if (App.hasChart()) {
+  const light = document.body.classList.contains('light-theme'), tc = light ? '#111827' : '#fff';
+  new Chart(document.getElementById('abChart').getContext('2d'), { type: 'bar',
+    data: { labels: data.map(r => r.name), datasets: [{ data: data.map(r => r.cr), backgroundColor: '#28a745' }, { data: data.map(r => r.dr), backgroundColor: '#c62828' }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: light ? '#e5e7eb' : '#333' }, ticks: { color: tc } }, x: { grid: { display: false }, ticks: { color: tc } } } } });
+}
+document.getElementById('btnOut').onclick = () => (window.App&&App.printNow?App.printNow({hide:'.btn,.btn-header,.btn-print,.btn-back,.bar,.noprint,.search-wrapper,.date-wrap,.date-wrapper,.top-actions',table:'#abTable',rowsPerPage:30}):window.print());
+
+</script>
+</body>
+</html>

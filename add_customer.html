@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Unit Business Group">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#080808">
+    <title>نیا گاہک شامل کریں</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+            text-align: right;
+            background-color: #0d0d0d;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        body.lang-en {
+            direction: ltr !important;
+            text-align: left !important;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 580px;
+            padding: 32px 30px;
+            background: #1a1a1a;
+            border: 2px solid #ff9800;
+            border-radius: 14px;
+            box-sizing: border-box;
+            box-shadow: 0 6px 22px rgba(255,152,0,0.25);
+            transition: all 0.25s ease;
+        }
+
+        .header-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 12px;
+            transition: border-color 0.25s ease;
+        }
+        .title {
+            color: #ffc107;
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0;
+            transition: color 0.25s ease;
+        }
+
+        .btn-top-back {
+            padding: 7px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            background-color: #007bff;
+            border: none;
+            border-radius: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-top-back:hover {
+            background-color: #0056b3;
+            color: #ffffff;
+        }
+
+        .form-group { margin-bottom: 16px; text-align: right; }
+        body.lang-en .form-group { text-align: left; }
+
+        .form-group label {
+            display: block;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #ffb74d;
+            transition: color 0.25s ease;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15.5px;
+            background: #2b2b2b;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 7px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .form-control:focus { border-color: #00e676; }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            font-size: 17.5px;
+            font-weight: bold;
+            color: black;
+            background-color: #00e676;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            transition: background 0.2s ease, transform 0.15s ease;
+            margin-top: 18px;
+        }
+        .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+        .success-msg { color: #00e676; margin-bottom: 12px; font-weight: bold; font-size: 15px; display: none; text-align: center; }
+
+        body.light-theme {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+        body.light-theme .form-container {
+            background: #ffffff;
+            border-color: #d97706;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        }
+        body.light-theme .header-top-bar {
+            border-bottom-color: #e5e7eb;
+        }
+        body.light-theme .title {
+            color: #b45309;
+        }
+        body.light-theme .btn-top-back {
+            background-color: #007bff;
+            color: white;
+        }
+        body.light-theme .btn-top-back:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+        body.light-theme .form-group label {
+            color: #b45309;
+        }
+        body.light-theme .form-control {
+            background: #f9fafb;
+            color: #111827;
+            border-color: #d1d5db;
+        }
+        body.light-theme .form-control:focus {
+            border-color: #16a34a;
+            background: #ffffff;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .form-container { padding: 18px 15px; max-width: 100%; border-radius: 10px; }
+            .header-top-bar { margin-bottom: 15px; padding-bottom: 8px; }
+            .title { font-size: 17px; }
+            .btn-top-back { padding: 5px 10px; font-size: 12px; }
+            .form-group { margin-bottom: 12px; }
+            .form-group label { font-size: 13.5px; margin-bottom: 4px; }
+            .form-control { padding: 9px 12px; font-size: 14px; }
+            .btn-submit { padding: 11px; font-size: 15.5px; margin-top: 14px; }
+        }
+    </style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+</head>
+<body>
+    <div class="form-container" id="mainFormContainer">
+        <div class="header-top-bar">
+            <div class="title" id="pageTitle">➕ نیا گاہک / کھاتہ رجسٹر کریں</div>
+            <a href="./home.html" class="btn-top-back" id="btnBack">🔙 واپس</a>
+        </div>
+
+        <div id="successMessage" class="success-msg">✅ گاہک کامیابی سے رجسٹر ہو گیا ہے!</div>
+
+        <form id="customerForm">
+            <div class="form-group">
+                <label id="lblCustomerName">👤 نام گاہک / پارٹی:</label>
+                <input type="text" id="customerName" class="form-control" placeholder="گاہک کا نام لکھیں" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label id="lblAccountNo">🔢 کھاتہ نمبر (Khata / Account No):</label>
+                <input type="text" id="accountNo" class="form-control" placeholder="کھاتہ نمبر لکھیں" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label id="lblCustomerPhone">📱 موبائل نمبر:</label>
+                <input type="tel" id="customerPhone" class="form-control" placeholder="موبائیل نمبر لکھیں" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label id="lblCustomerCnic">🪪 شناختی کارڈ نمبر (CNIC):</label>
+                <input type="text" id="customerCnic" class="form-control" placeholder="شناختی کارڈ نمبر لکھیں" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label id="lblCustomerAddress">📍 پتہ (Address):</label>
+                <input type="text" id="customerAddress" class="form-control" placeholder="دوکان شہر کا پتہ لکھیں" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label id="lblCreditLimit">💳 کریڈٹ لمٹ (اختیاری، اس سے زیادہ بنام پر وارننگ):</label>
+                <input type="number" id="creditLimit" class="form-control" min="0" step="any" inputmode="decimal" placeholder="0" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label id="lblOpening">📂 کھلا بیلنس (اختیاری):</label>
+                <div style="display:flex;gap:8px">
+                    <input type="number" id="openingAmount" class="form-control" min="0" step="any" inputmode="decimal" placeholder="0" autocomplete="off" style="flex:2">
+                    <select id="openingSide" class="form-control" style="flex:1"><option value="BNAM" id="optOpenB">بنام</option><option value="JAMA" id="optOpenJ">جمع</option></select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmit">محفوظ کریں 💾</button>
+        </form>
+    </div>
+
+    <script>
+        function applySavedTheme() {
+            let savedTheme = App.store.get('rohan_theme_mode') || 'dark';
+            let themeMeta = document.querySelector('meta[name="theme-color"]');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#f3f4f6');
+            } else {
+                document.body.classList.remove('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#080808');
+            }
+        }
+        applySavedTheme();
+
+        let activeBranchId = sessionStorage.getItem('active_branch_id') || 'branch_1';
+        document.getElementById('creditLimit').value = App.loadSettings(activeBranchId).defaultCreditLimit || '';
+        let branchOverrides = App.readObject('rohan_branch_lang_overrides');
+        let globalLang = App.store.get('rohan_global_lang') || 'ur';
+        let activeBranchLang = sessionStorage.getItem('active_branch_lang') || branchOverrides[activeBranchId] || globalLang;
+        let isEn = (activeBranchLang === 'en');
+
+        (function(){ let en = (sessionStorage.getItem('active_branch_lang') || (App.readObject('rohan_branch_lang_overrides')[activeBranchId]) || App.store.get('rohan_global_lang') || 'ur') === 'en';
+            if (en) { document.getElementById('lblCreditLimit').innerText = '💳 Credit limit (optional; warns when debit exceeds it):'; document.getElementById('lblOpening').innerText = '📂 Opening balance (optional):'; document.getElementById('optOpenB').innerText = 'Debit'; document.getElementById('optOpenJ').innerText = 'Credit'; } })();
+        if (isEn) {
+            document.body.classList.add('lang-en');
+            document.documentElement.lang = 'en';
+            document.title = 'Add New Customer';
+
+            document.getElementById('pageTitle').innerText = '➕ Register New Customer';
+            document.getElementById('btnBack').innerText = '🔙 Back';
+            document.getElementById('successMessage').innerText = '✅ Customer registered successfully!';
+
+            document.getElementById('lblCustomerName').innerText = '👤 Customer / Party Name:';
+            document.getElementById('customerName').placeholder = 'Enter customer name';
+
+            document.getElementById('lblAccountNo').innerText = '🔢 Account / Khata No:';
+            document.getElementById('accountNo').placeholder = 'Enter account number';
+
+            document.getElementById('lblCustomerPhone').innerText = '📱 Mobile Number:';
+            document.getElementById('customerPhone').placeholder = 'Enter mobile number';
+
+            document.getElementById('lblCustomerCnic').innerText = '🪪 CNIC Number:';
+            document.getElementById('customerCnic').placeholder = 'Enter CNIC number';
+
+            document.getElementById('lblCustomerAddress').innerText = '📍 Address:';
+            document.getElementById('customerAddress').placeholder = 'Enter shop / city address';
+
+            document.getElementById('btnSubmit').innerText = 'Save Customer 💾';
+        } else {
+            document.body.classList.remove('lang-en');
+            document.documentElement.lang = 'ur';
+            document.title = 'نیا گاہک شامل کریں';
+        }
+
+        let savedBranchesConfig = App.store.get('rohan_branches_custom_config_v2');
+        if (savedBranchesConfig) {
+            try {
+                let branches = JSON.parse(savedBranchesConfig);
+                let currentBranch = branches.find(b => b.id === activeBranchId);
+                if (currentBranch && currentBranch.color1) {
+                    let container = document.getElementById('mainFormContainer');
+                    container.style.borderColor = currentBranch.color1;
+                    container.style.boxShadow = `0 6px 22px ${currentBranch.color1}40`;
+
+                    let btnSub = document.getElementById('btnSubmit');
+                    btnSub.style.backgroundColor = currentBranch.color1;
+                    btnSub.style.color = '#ffffff';
+                }
+            } catch(e){}
+        }
+
+        App.blockOwner(isEn, "⚠️ آپ کو نیا گاہک رجسٹر کرنے کی اجازت نہیں ہے!", "⚠️ You are not authorized to register a new customer!", './home.html', 'btnAddCustomer');
+
+        document.getElementById('customerName').focus();
+
+        document.getElementById('customerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const k = App.keysFor(activeBranchId);
+            const customerName = document.getElementById('customerName').value.trim().replace(/\s+/g, ' ');
+            const accountNo = document.getElementById('accountNo').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const cnic = document.getElementById('customerCnic').value.trim();
+            const address = document.getElementById('customerAddress').value.trim();
+
+            if (!customerName || !accountNo) return;
+
+            if (phone) {
+                let digits = phone.replace(/[^0-9]/g, '');
+                if (digits.length < 9 || digits.length > 15 || !/^[0-9+\-\s()]+$/.test(phone)) {
+                    alert(isEn ? "⚠️ Please enter a valid mobile number (9–15 digits)." : "⚠️ براہ کرم درست موبائل نمبر لکھیں (9 سے 15 ہندسے)۔");
+                    document.getElementById('customerPhone').focus();
+                    return;
+                }
+            }
+            if (cnic) {
+                let cd = cnic.replace(/[^0-9]/g, '');
+                if (cd.length !== 13 || !/^[0-9\-\s]+$/.test(cnic)) {
+                    alert(isEn ? "⚠️ CNIC must have 13 digits." : "⚠️ شناختی کارڈ نمبر 13 ہندسوں کا ہونا چاہیے۔");
+                    document.getElementById('customerCnic').focus();
+                    return;
+                }
+            }
+
+            let btn = document.getElementById('btnSubmit');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            setTimeout(function() { btn.disabled = false; }, 800);
+
+            let customerList = App.readArray(k.customers);
+            let customerDetails = App.readArray(k.details);
+
+            let activeSet = {};
+            customerList.forEach(n => { activeSet[App.norm(n)] = true; });
+            let activeCustomerDetails = customerDetails.filter(c => c && c.name && activeSet[App.norm(c.name)]);
+
+            let accountExists = activeCustomerDetails.some(c => App.norm(c.accountNo) === App.norm(accountNo));
+            if (accountExists) {
+                alert(isEn ? `⚠️ Account No. (${accountNo}) already exists in this branch!` : `⚠️ یہ کھاتہ نمبر (${accountNo}) پہلے سے اسی برانچ کے فعال کھاتے میں موجود ہے!`);
+                document.getElementById('accountNo').focus();
+                return;
+            }
+
+            if (activeSet[App.norm(customerName)]) {
+                alert(isEn ? "⚠️ A customer with this name already exists in this branch!" : "⚠️ اس نام کا کھاتہ پہلے سے اس برانچ میں موجود ہے!");
+                document.getElementById('customerName').focus();
+                return;
+            }
+
+            App.archiveDeletedSameName(activeBranchId, customerName, isEn);
+            customerDetails = App.readArray(k.details);
+
+            let newCustomer = {
+                id: App.uid(),
+                name: customerName,
+                accountNo: accountNo,
+                phone: phone || "-",
+                cnic: cnic || "-",
+                address: address || "-",
+                createdAt: new Date().toISOString()
+            };
+
+            let _lim = parseFloat(document.getElementById('creditLimit').value) || 0;
+            if (_lim > 0) newCustomer.creditLimit = _lim;
+            let _op = parseFloat(document.getElementById('openingAmount').value) || 0;
+
+            customerList.push(customerName);
+            customerDetails.push(newCustomer);
+            App.store.set(k.customers, JSON.stringify(customerList));
+            App.store.set(k.details, JSON.stringify(customerDetails));
+
+            if (_op > 0) {
+                let _recs = App.readArray(k.records);
+                let _side = document.getElementById('openingSide').value;
+                let _e = { id: App.uid(), date: App.localDate(), customerName: customerName, customerId: newCustomer.id,
+                    details: isEn ? 'Opening Balance' : 'کھلا بیلنس', extra: '', pcs: 0, weight: 0, rate: '-', totalManual: true, totalAmount: _op,
+                    type: _side === 'JAMA' ? 'JAMA' : 'BNAM', isOpening: true, no: 0, createdAt: new Date().toISOString(), createdBy: App.getRole() };
+                _e.no = App.nextSerial(activeBranchId);
+                _recs.push(_e);
+                App.store.set(k.records, JSON.stringify(_recs));
+            }
+
+            const msg = document.getElementById('successMessage');
+            msg.style.display = 'block';
+
+            document.getElementById('customerForm').reset();
+            document.getElementById('customerName').focus();
+
+            setTimeout(function() {
+                msg.style.display = 'none';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

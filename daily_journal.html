@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Unit Business Group">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#080808">
+    <title>روزانہ کا روزنامچہ</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="روزنامچہ">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <script src="./vendor/offline-chart.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 12px 18px;
+            direction: rtl;
+            text-align: right;
+            background-color: #0d0d0d;
+            color: white;
+            min-height: 100vh;
+            width: 100%;
+            max-width: 100%;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        body.lang-en {
+            direction: ltr !important;
+            text-align: left !important;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border: 1px solid #28a745;
+            padding: 14px 16px;
+            box-shadow: 0 4px 15px rgba(40,167,69,0.15);
+            border-radius: 10px;
+            transition: all 0.25s ease;
+        }
+
+        .top-header {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #28a745;
+            gap: 10px;
+        }
+        .main-title {
+            font-size: clamp(18px, 2.4vw, 26px);
+            font-weight: bold;
+            color: #ffc107;
+            order: 2;
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+        }
+        .btn-header {
+            padding: 7px 16px;
+            font-size: clamp(13px, 1.3vw, 15px);
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .btn-print { background-color: #28a745; color: white; order: 1; }
+        .btn-print:hover { opacity: 0.9; }
+        .btn-back { background-color: #007bff; color: white; order: 3; }
+        .btn-back:hover { background-color: #0056b3; }
+
+        .date-title { text-align: center; font-size: 15px; color: #ffc107; margin-bottom: 10px; font-weight: bold; }
+        .date-input { padding: 6px 12px; font-size: 14.5px; background-color: #151515; border: 1px solid #333; color: white; border-radius: 6px; font-weight: bold; outline: none; transition: all 0.2s ease; }
+        .date-input:focus { border-color: #28a745; }
+        .print-date-display { display: none; }
+
+        .search-wrapper { margin-bottom: 10px; width: 100%; }
+        .search-input { width: 100%; padding: 9px 14px; background-color: #151515; border: 1px solid #333; border-radius: 6px; color: white; font-size: 14.5px; font-weight: bold; box-sizing: border-box; direction: rtl; text-align: right; transition: all 0.2s ease; height: 40px; }
+        body.lang-en .search-input { direction: ltr !important; text-align: left !important; }
+        .search-input:focus { border-color: #28a745; outline: none; box-shadow: 0 0 6px rgba(40,167,69,0.3); }
+
+        .shared-scroll-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 6px;
+            background: #141414;
+            transition: all 0.25s ease;
+        }
+
+        .shared-inner-content {
+            min-width: 530px;
+            width: 100%;
+        }
+
+        .journal-chart-box {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            background: #151515;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #333;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+            gap: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+        }
+        .dashboard-stat-card {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 6px 10px;
+            background: #1f1f1f;
+            border-radius: 6px;
+            border-right: 4px solid #28a745;
+            text-align: right;
+            box-sizing: border-box;
+        }
+        body.lang-en .dashboard-stat-card {
+            border-right: none;
+            border-left: 4px solid #28a745;
+            text-align: left;
+        }
+        .dashboard-stat-card.bnam-card {
+            border-right-color: #dc3545;
+        }
+        body.lang-en .dashboard-stat-card.bnam-card {
+            border-left-color: #dc3545;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #bbb;
+            font-weight: bold;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            display: block;
+        }
+        .stat-value {
+            font-size: 16px;
+            font-weight: 900 !important;
+            white-space: nowrap;
+            display: block;
+        }
+        .stat-value.j-jama { color: #28a745; }
+        .stat-value.j-bnam { color: #dc3545; }
+
+        .chart-circle-wrapper {
+            flex: 0 0 72px;
+            height: 72px;
+            background: transparent;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: center; background-color: #151515; table-layout: fixed; transition: all 0.25s ease; }
+        th, td {
+            padding: 6px 2px;
+            text-align: center;
+            border: 1px solid #333;
+            font-size: 13.5px;
+            font-weight: bold;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+
+        th { background-color: #222; color: #ffc107; font-weight: bold; font-size: 13px; padding: 6px 2px; }
+
+        .th-khata-head {
+            font-size: 9.5px !important;
+            padding: 6px 1px !important;
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+        }
+
+        .th-pcs-head {
+            font-size: 10.5px !important;
+            padding: 6px 1px !important;
+            letter-spacing: -0.2px;
+        }
+
+        .bg-title-jama { background-color: #1b5e20; color: white; }
+        .bg-title-bnam { background-color: #7f1d1d; color: white; }
+        .bg-title-k-jama { background-color: #ffb74d; color: black; }
+        .bg-title-k-bnam { background-color: #d35400; color: white; }
+
+        .row-old-balance { background-color: #1f1f1f; border: 1px dashed #444; }
+        .text-right { text-align: right; padding-right: 8px; }
+        body.lang-en .text-right { text-align: left; padding-left: 8px; padding-right: 2px; }
+
+        .color-jama-text, .text-jama { color: #28a745 !important; font-weight: 900 !important; }
+        .color-bnam-text, .text-bnam { color: #dc3545 !important; font-weight: 900 !important; }
+
+        .journal-detail-text { color: #e0e0e0; font-weight: bold; }
+
+        .row-today-total { background-color: #222; }
+        .row-carton-record { background-color: #151515; color: white; border: 1px solid #333; }
+        .row-final-balance { background-color: #1a1a1a; color: white; }
+        .row-final-balance td.final-amount-cell { background-color: #151515; border: 2px solid #28a745; color: white; }
+        .no-records { color: #888; padding: 14px; font-size: 14px; }
+
+        body.light-theme { background-color: #f3f4f6; color: #111827; }
+        body.light-theme .container { background: #ffffff; border-color: #28a745; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        body.light-theme .main-title { color: #b45309; }
+        body.light-theme .date-title { color: #b45309; }
+        body.light-theme .date-input { background-color: #f9fafb; color: #111827; border-color: #d1d5db; }
+        body.light-theme .shared-scroll-wrapper { background: #ffffff; border-color: #e5e7eb; }
+        body.light-theme .journal-chart-box { background: #ffffff; border-color: #e5e7eb; color: #111827; box-shadow: 0 3px 8px rgba(0,0,0,0.05); }
+        body.light-theme .dashboard-stat-card { background: #f9fafb; }
+        body.light-theme .stat-label { color: #4b5563; }
+        body.light-theme .search-input { background-color: #f9fafb; color: #111827; border-color: #d1d5db; }
+        body.light-theme table { background-color: #ffffff; }
+        body.light-theme th, body.light-theme td { border-color: #e5e7eb; color: #111827; }
+        body.light-theme th { background-color: #f3f4f6; color: #111827; }
+        body.light-theme .color-jama-text, body.light-theme .text-jama, body.light-theme .stat-value.j-jama { color: #15803d !important; }
+        body.light-theme .color-bnam-text, body.light-theme .text-bnam, body.light-theme .stat-value.j-bnam { color: #b91c1c !important; }
+        body.light-theme .journal-detail-text { color: #111827 !important; }
+        body.light-theme tr:hover { background-color: #f9fafb; }
+        body.light-theme .row-old-balance { background-color: #f9fafb; border-color: #d1d5db; }
+        body.light-theme .row-today-total { background-color: #f3f4f6; color: #111827; }
+        body.light-theme .row-carton-record { background-color: #ffffff; color: #111827; border-color: #e5e7eb; }
+        body.light-theme .row-final-balance { background-color: #f3f4f6; color: #111827; }
+        body.light-theme .row-final-balance td.final-amount-cell { background-color: #ffffff; border-color: #28a745; }
+
+        @media (max-width: 600px) {
+            body { padding: 4px; padding-bottom: 12px; }
+            .container { padding: 5px; border: none; box-shadow: none; background: #121212; }
+            body.light-theme .container { background: #ffffff; }
+            .top-header { flex-direction: row !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px; padding-bottom: 6px; gap: 6px; }
+            .main-title { font-size: 14px !important; }
+            .btn-print, .btn-back { padding: 6px 12px !important; font-size: 12px !important; font-weight: 800 !important; border-radius: 6px !important; }
+            .date-title { font-size: 11.5px; margin-bottom: 6px; }
+            .date-input { padding: 4px 6px; font-size: 11.5px; }
+            .search-wrapper { margin-bottom: 6px; }
+            .search-input { padding: 5px 8px; font-size: 11px; height: 32px; }
+            .journal-chart-box { padding: 5px 6px !important; gap: 4px !important; margin-bottom: 6px; width: 100% !important; box-sizing: border-box !important; }
+            .dashboard-stat-card { padding: 4px 6px !important; border-right-width: 3px !important; min-width: 0 !important; flex: 1 1 0 !important; overflow: hidden !important; }
+            body.lang-en .dashboard-stat-card { border-right-width: 0 !important; border-left-width: 3px !important; }
+            .stat-label { font-size: 9.5px !important; letter-spacing: -0.2px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+            .stat-value { font-size: 13.5px !important; font-weight: 900 !important; white-space: nowrap !important; }
+            .chart-circle-wrapper { flex: 0 0 44px !important; width: 44px; height: 44px !important; padding: 0; overflow: hidden; }
+            .shared-scroll-wrapper { padding: 3px 3px 10px; border-radius: 6px; }
+            .shared-scroll-wrapper::-webkit-scrollbar { height: 9px; }
+            .shared-scroll-wrapper::-webkit-scrollbar-thumb { background: #28a745; border-radius: 6px; }
+            .shared-inner-content { min-width: 640px; width: 640px; }
+            table { font-size: 12px !important; width: 100% !important; }
+            th, td { padding: 9px 2px !important; font-size: 12px !important; line-height: 1.5 !important; vertical-align: middle !important; }
+            th { font-size: 11.5px !important; padding: 7px 2px !important; }
+            .th-khata-head { font-size: 8.5px !important; padding: 7px 1px !important; }
+            .th-pcs-head { font-size: 9.5px !important; padding: 7px 1px !important; }
+            td.col-cust-name { line-height: 1.6 !important; padding-top: 8px !important; padding-bottom: 8px !important; }
+            .stat-value, .color-bnam-text, .color-jama-text, .text-bnam, .text-jama { font-weight: 900 !important; }
+        }
+
+        @media print {
+            @page { size: auto; margin: 8mm; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; background-color: transparent !important; background-image: none !important; box-shadow: none !important; text-shadow: none !important; }
+            .btn-header, .journal-chart-box, .search-wrapper, .date-wrap { display: none !important; }
+            .print-date-display { display: inline-block !important; font-size: 14px !important; color: #000000 !important; font-weight: bold !important; direction: ltr !important; }
+            body { background: #ffffff !important; padding: 0 !important; width: 100% !important; color: #000000 !important; }
+            .container, .shared-scroll-wrapper { border: none !important; box-shadow: none !important; padding: 0 !important; background: #ffffff !important; overflow: visible !important; }
+            .shared-inner-content { min-width: 100% !important; width: 100% !important; }
+            .date-title { color: #000000 !important; font-size: 15px !important; margin-bottom: 12px !important; display: block !important; }
+            table { width: 100% !important; border-collapse: collapse !important; min-width: 100% !important; }
+            thead { display: table-header-group !important; }
+            tbody { display: table-row-group !important; }
+            tr { page-break-inside: avoid !important; }
+            th, td { border: 1px solid #000000 !important; padding: 4px 2px !important; font-size: 11px !important; color: #000000; }
+            th { background-color: #f5f5f5 !important; color: #000000 !important; }
+            .bg-title-jama { color: #1e7e34 !important; }
+            .bg-title-bnam { color: #bd2130 !important; }
+            .bg-title-k-jama { color: #d35400 !important; }
+            .bg-title-k-bnam { color: #bd2130 !important; }
+            .color-jama-text, .row-old-balance .text-jama { color: #1e7e34 !important; font-weight: 900 !important; }
+            .color-bnam-text, .row-old-balance .text-bnam { color: #bd2130 !important; font-weight: 900 !important; }
+            .journal-detail-text { color: #000000 !important; }
+            .row-old-balance, .row-today-total, .row-carton-record, .row-final-balance { background: transparent !important; }
+            .row-carton-record td { color: #000000 !important; font-weight: 900 !important; }
+            .row-final-balance td { color: #000000 !important; font-weight: 900 !important; }
+            .row-final-balance td.final-amount-cell { border: 1px solid #000000 !important; }
+        }
+    </style>
+<style id="printFlowFix">
+@media print {
+    html, body { width: 100% !important; max-width: 100% !important; min-width: 0 !important; height: auto !important; overflow: visible !important; }
+    .container, .ledger-container, .shared-scroll-wrapper, .shared-inner-content, .tables-container, .table-wrapper,
+    .summary-box, .summary-item, .footer-summary, .summary-column, .top-header, .customer-inline-info, .customer-name-row {
+        min-width: 0 !important; max-width: 100% !important; overflow: visible !important; box-sizing: border-box !important;
+    }
+    .container, .ledger-container, .shared-scroll-wrapper, .shared-inner-content { width: 100% !important; }
+    table { width: 100% !important; min-width: 0 !important; max-width: 100% !important; }
+    th, td {
+        white-space: normal !important; word-break: normal !important; overflow-wrap: anywhere !important;
+        text-overflow: clip !important; overflow: visible !important; max-width: none !important;
+    }
+    .customer-main-name, .khata-inline-badge, .customer-stats-subrow, .stat-badge, .main-amount-text, .main-title,
+    .branch-mini-name, .print-meta-left, .print-title-center, .print-acc-badge, .print-branch, .summary-item, .summary-item div,
+    .summary-item span, .summary-column h3, .col-details, .col-date, .col-amount {
+        white-space: normal !important; overflow-wrap: anywhere !important; text-overflow: clip !important;
+    }
+    .customer-stats-subrow, .customer-name-row { flex-wrap: wrap !important; }
+    .summary-box, .footer-summary { flex-wrap: wrap !important; }
+    .summary-item, .summary-column { flex: 1 1 28% !important; }
+    tr { page-break-inside: avoid !important; break-inside: avoid !important; }
+    thead { display: table-header-group !important; }
+}
+</style>
+<style id="journalTotalsScale">
+@media print {
+html body[data-page][data-page][data-page][data-page] .row-today-total td { font-size: 14.5px !important; font-weight: 900 !important; }
+html body[data-page][data-page][data-page][data-page] .row-carton-record td, html body[data-page][data-page][data-page][data-page] .row-final-balance td { font-size: 14px !important; }
+html body[data-page][data-page][data-page][data-page] .row-carton-record td span, html body[data-page][data-page][data-page][data-page] .row-final-balance td span { font-size: 15.5px !important; }
+}
+@media screen {
+html body .journal-data-row td, html body .row-old-balance td { font-size: 13px !important; }
+html body .row-today-total td { font-size: 17px !important; font-weight: 900 !important; }
+html body .row-carton-record td, html body .row-final-balance td { font-size: 16px !important; }
+html body .row-carton-record td span, html body .row-final-balance td span { font-size: 18px !important; }
+}
+@media screen and (max-width: 600px) {
+html body .shared-inner-content { min-width: 640px !important; width: 640px !important; }
+html body .shared-inner-content th#thAccNo { width: 8% !important; }
+html body .shared-inner-content th#thCustName { width: 16% !important; }
+html body .shared-inner-content th#thDetails { width: 13% !important; }
+html body .shared-inner-content th#thPcsBnam, html body .shared-inner-content th#thPcsJama { width: 9% !important; font-size: 10px !important; }
+html body .shared-inner-content th#thWeight { width: 8% !important; }
+html body .shared-inner-content th#thRate { width: 7% !important; }
+html body .shared-inner-content th#thBnam, html body .shared-inner-content th#thJama { width: 15% !important; }
+html body .shared-inner-content td, html body .shared-inner-content th { white-space: nowrap !important; overflow-wrap: normal !important; word-break: keep-all !important; }
+html body .shared-inner-content td.col-cust-name, html body .shared-inner-content td.journal-detail-text, html body .shared-inner-content th#thCustName, html body .shared-inner-content th#thDetails { white-space: normal !important; overflow-wrap: anywhere !important; }
+html body .journal-data-row td, html body .row-old-balance td { font-size: 12px !important; padding: 8px 2px !important; }
+html body .journal-data-row td strong { font-size: 12px !important; }
+html body .shared-scroll-wrapper th { font-size: 10.5px !important; padding: 8px 2px !important; }
+html body .row-today-total td { font-size: 15px !important; white-space: nowrap !important; }
+html body .row-carton-record td, html body .row-final-balance td { font-size: 14px !important; white-space: nowrap !important; }
+html body .row-carton-record td span, html body .row-final-balance td span { font-size: 16px !important; white-space: nowrap !important; }
+}
+</style>
+<style id="journalHeaderDate">
+@media screen {
+html body .top-header { flex-wrap: nowrap !important; align-items: center !important; }
+html body .top-header .main-title { flex: 1 1 0 !important; min-width: 0 !important; white-space: normal !important; overflow-wrap: anywhere; line-height: 1.25; }
+}
+@media screen and (max-width: 600px) {
+html body .top-header .main-title { font-size: 12.5px !important; }
+}
+.date-wrap { position: relative; display: inline-block; vertical-align: middle; }
+.date-wrap .date-input { color: transparent !important; cursor: pointer; min-width: 140px; box-sizing: border-box; }
+.date-wrap .date-input::-webkit-datetime-edit { color: transparent; }
+.date-wrap .date-fmt { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #fff; font-weight: bold; font-size: 14.5px; direction: ltr; unicode-bidi: isolate; }
+body.light-theme .date-wrap .date-fmt { color: #111827; }
+@media screen and (max-width: 600px) { .date-wrap .date-input { min-width: 118px; } .date-wrap .date-fmt { left: 6px; font-size: 11.5px; } }
+</style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+<script src="./print_footer.js"></script>
+<style id="print-uniform-sizes">
+/* print only: same number size everywhere, same header size everywhere (same ratio as mobile table) */
+@media print{
+html body[data-page][data-page][data-page] #journalTable thead th{font-size:10px !important}
+html body[data-page][data-page][data-page] #journalTable tbody td,html body[data-page][data-page][data-page] #journalTable tbody tr.row-today-total td{font-size:11px !important}
+html body[data-page][data-page][data-page] #journalTable tbody tr.row-carton-record td span,html body[data-page][data-page][data-page] #journalTable tbody tr.row-final-balance td span{font-size:11px !important}
+html body[data-page][data-page][data-page] #journalTable tbody td:not(.col-cust-name):not(.journal-detail-text):not(.no-records){padding-left:4px !important;padding-right:4px !important}
+}
+</style>
+
+<style id="journal-mobile-uniform">
+/* mobile only: all journal text is one size (1px smaller than before) and bold */
+@media screen and (max-width: 600px) {
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] *, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] th#thPcsBnam, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] th#thPcsJama, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] { font-size: calc(var(--t-num) - 1px) !important; font-weight: 800 !important; }
+
+/* header buttons (print / back): text and icon stay inside the button on small screens */
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] .top-header .btn-print, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] .top-header .btn-back { font-size: 11px !important; font-weight: 800 !important; padding: 5px 7px !important; flex: 0 0 auto !important; width: auto !important; min-width: 0 !important; white-space: nowrap !important; box-sizing: border-box !important; }
+}
+</style>
+</head>
+<body>
+
+    <div class="container" id="mainJournalContainer">
+        <div class="top-header" id="topHeaderArea">
+            <button onclick="(window.App&&App.printNow?App.printNow({hide:'.btn,.btn-header,.btn-print,.btn-back,.bar,.noprint,.search-wrapper,.date-wrap,.date-wrapper,.top-actions',table:'#journalTable',rowsPerPage:28}):window.print())" class="btn-header btn-print" id="btnPrintJournal">🖨️ پرنٹ کریں</button>
+            <div class="main-title" id="journalMainTitle">روزانہ کا روزنامچہ</div>
+            <a href="./home.html" class="btn-back btn-header" id="btnBackHome">🔙 واپس جائیں</a>
+        </div>
+
+        <div class="date-title">
+            <span>Date: </span>
+            <span class="date-wrap"><input type="date" class="date-input" id="journal_date" onchange="loadJournalData()"><span class="date-fmt" id="journalDateText" aria-hidden="true"></span></span>
+            <span class="print-date-display" id="printDateText"></span>
+        </div>
+
+        <div class="search-wrapper">
+            <input type="text" id="journalSearchInput" class="search-input" placeholder="🔍 روزنامچہ میں تلاش کریں (نام، تفصیل، وزن یا رقم لکھیں)...">
+        </div>
+
+        <div class="shared-scroll-wrapper">
+            <div class="shared-inner-content">
+
+                <div class="journal-chart-box">
+                    <div class="dashboard-stat-card">
+                        <span class="stat-label" id="lblStatJama">🟢 کل وصولی (JAMA)</span>
+                        <span id="infoJama" class="stat-value j-jama">0</span>
+                    </div>
+
+                    <div class="chart-circle-wrapper">
+                        <canvas id="journalCircleChart"></canvas>
+                    </div>
+
+                    <div class="dashboard-stat-card bnam-card">
+                        <span class="stat-label" id="lblStatBnam">🔴 کل ادائیگی (BNAM)</span>
+                        <span id="infoBnam" class="stat-value j-bnam">0</span>
+                    </div>
+                </div>
+
+                <table id="journalTable">
+                    <thead>
+                        <tr id="journalHeaderRow">
+                            <th class="th-khata-head" id="thAccNo" style="width: 6%;">کھاتہ نمبر</th>
+                            <th id="thCustName" style="width: 17%;">کسٹمر نام</th>
+                            <th id="thDetails" style="width: 17%;">تفصیل</th>
+                            <th id="thExtra" style="width: 11%; display: none;">اضافی</th>
+                            <th class="bg-title-k-bnam th-pcs-head" id="thPcsBnam" style="width: 6.5%;">پیس بنام</th>
+                            <th class="bg-title-k-jama th-pcs-head" id="thPcsJama" style="width: 6.5%;">پیس جمع</th>
+                            <th id="thWeight" style="width: 9%;">وزن</th>
+                            <th id="thRate" style="width: 9%;">ریٹ</th>
+                            <th class="bg-title-bnam" id="thBnam" style="width: 14%;">بنام</th>
+                            <th class="bg-title-jama" id="thJama" style="width: 14%;">جمع</th>
+                        </tr>
+                    </thead>
+                    <tbody id="journalTbody"></tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        App.guardOwner('lblBtnJournal', './home.html');
+        function applySavedTheme() {
+            let savedTheme = App.store.get('rohan_theme_mode') || 'dark';
+            let themeMeta = document.querySelector('meta[name="theme-color"]');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#f3f4f6');
+            } else {
+                document.body.classList.remove('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#080808');
+            }
+        }
+        applySavedTheme();
+
+        let activeBranchId = sessionStorage.getItem('active_branch_id') || 'branch_1';
+        let activeBranchName = (sessionStorage.getItem('active_branch_name') || 'ڈرائی فروٹ ہاؤس').trim();
+
+        let branchOverrides = App.readObject('rohan_branch_lang_overrides');
+        let globalLang = App.store.get('rohan_global_lang') || 'ur';
+        let activeBranchLang = sessionStorage.getItem('active_branch_lang') || branchOverrides[activeBranchId] || globalLang;
+        let isEn = (activeBranchLang === 'en');
+
+        let masterSettings = App.loadSettings(activeBranchId);
+
+        let extraList = App.visibleExtras(masterSettings);
+        let showExtra = extraList.length > 0;
+        const extraBlank = () => extraList.map(() => '<td>-</td>').join('');
+        let extraColName = (masterSettings.cols && masterSettings.cols.extra && masterSettings.cols.extra.name) ? masterSettings.cols.extra.name : (isEn ? 'Extra' : 'اضافی');
+        let showPcs = !masterSettings.cols || masterSettings.cols.pcs.visible !== false;
+        let pcsCustomName = (masterSettings.cols && masterSettings.cols.pcs && masterSettings.cols.pcs.name) ? masterSettings.cols.pcs.name : (isEn ? 'Pcs' : 'پیس');
+        let showWeight = !masterSettings.cols || masterSettings.cols.weight.visible !== false;
+        let weightCustomName = (masterSettings.cols && masterSettings.cols.weight && masterSettings.cols.weight.name) ? masterSettings.cols.weight.name : (isEn ? 'Weight' : 'وزن');
+        let showRate = !masterSettings.cols || masterSettings.cols.rate.visible !== false;
+        let rateCustomName = (masterSettings.cols && masterSettings.cols.rate && masterSettings.cols.rate.name) ? masterSettings.cols.rate.name : (isEn ? 'Rate' : 'ریٹ');
+
+        if (isEn) {
+            document.body.classList.add('lang-en');
+            document.documentElement.lang = 'en';
+            document.title = `Daily Journal - ${activeBranchName}`;
+
+            document.getElementById('btnPrintJournal').innerText = '🖨️ Print';
+            document.getElementById('btnBackHome').innerText = '🔙 Back';
+            document.getElementById('journalSearchInput').placeholder = '🔍 Search journal (Name, Details, Weight, Amount)...';
+
+            document.getElementById('lblStatJama').innerText = '🟢 Total Received (Cr)';
+            document.getElementById('lblStatBnam').innerText = '🔴 Total Paid (Dr)';
+
+            document.getElementById('thAccNo').innerText = 'Acc No';
+            document.getElementById('thCustName').innerText = 'Customer Name';
+            document.getElementById('thDetails').innerText = 'Details';
+            document.getElementById('thExtra').innerText = extraColName;
+            document.getElementById('thPcsBnam').innerText = `${pcsCustomName} Dr`;
+            document.getElementById('thPcsJama').innerText = `${pcsCustomName} Cr`;
+            document.getElementById('thWeight').innerText = weightCustomName;
+            document.getElementById('thRate').innerText = rateCustomName;
+            document.getElementById('thBnam').innerText = 'Debit';
+            document.getElementById('thJama').innerText = 'Credit';
+        } else {
+            document.body.classList.remove('lang-en');
+            document.documentElement.lang = 'ur';
+            document.title = `روزنامچہ - ${activeBranchName}`;
+
+            document.getElementById('thExtra').innerText = extraColName;
+            document.getElementById('thPcsBnam').innerText = `${pcsCustomName} بنام`;
+            document.getElementById('thPcsJama').innerText = `${pcsCustomName} جمع`;
+            document.getElementById('thWeight').innerText = weightCustomName;
+            document.getElementById('thRate').innerText = rateCustomName;
+        }
+
+        document.getElementById('thExtra').style.display = 'none';
+        extraList.forEach(function (e) {
+            let th = document.createElement('th'); th.className = 'col-extra'; th.textContent = e.name;
+            document.getElementById('thExtra').parentNode.insertBefore(th, document.getElementById('thPcsBnam'));
+        });
+        document.getElementById('thPcsBnam').style.display = showPcs ? '' : 'none';
+        document.getElementById('thPcsJama').style.display = showPcs ? '' : 'none';
+        document.getElementById('thWeight').style.display = showWeight ? '' : 'none';
+        document.getElementById('thRate').style.display = showRate ? '' : 'none';
+
+        function getTotalVisibleCols() {
+            let count = 5;
+            count += extraList.length;
+            if (showPcs) count += 2;
+            if (showWeight) count++;
+            if (showRate) count++;
+            return count;
+        }
+
+        function getLeftSpanCols() {
+            let count = 3;
+            count += extraList.length;
+            if (showPcs) count += 2;
+            if (showWeight) count++;
+            if (showRate) count++;
+            return count;
+        }
+
+        let savedBranchesConfig = App.store.get('rohan_branches_custom_config_v2');
+        if (savedBranchesConfig) {
+            try {
+                let branches = JSON.parse(savedBranchesConfig);
+                let currentBranch = branches.find(b => b.id === activeBranchId);
+                if (currentBranch && currentBranch.color1) {
+                    let primaryColor = currentBranch.color1;
+                    let container = document.getElementById('mainJournalContainer');
+                    container.style.borderColor = primaryColor;
+                    container.style.boxShadow = `0 4px 18px ${primaryColor}35`;
+
+                    let topH = document.getElementById('topHeaderArea');
+                    if (topH) topH.style.borderBottomColor = primaryColor;
+
+                    let prBtn = document.getElementById('btnPrintJournal');
+                    if (prBtn) prBtn.style.backgroundColor = primaryColor;
+                }
+            } catch(e){}
+        }
+
+        document.getElementById('journal_date').value = (function(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})();
+
+        window.syncJournalDateText = function() {
+            var inp = document.getElementById('journal_date'), out = document.getElementById('journalDateText');
+            if (!inp || !out) return;
+            var p = (inp.value || '').split('-');
+            out.innerText = p.length === 3 ? (p[2] + '/' + p[1] + '/' + p[0]) : 'dd/mm/yyyy';
+        };
+        (function() {
+            var inp = document.getElementById('journal_date');
+            if (!inp) return;
+            inp.addEventListener('input', window.syncJournalDateText);
+            inp.addEventListener('change', window.syncJournalDateText);
+            inp.addEventListener('click', function() { try { if (inp.showPicker) inp.showPicker(); } catch (e) {} });
+            window.syncJournalDateText();
+        })();
+        let myChart = null;
+
+        function loadJournalData() {
+            if (window.syncJournalDateText) window.syncJournalDateText();
+            let selectedDate = document.getElementById('journal_date').value;
+            if (!selectedDate) { selectedDate = App.localDate(); document.getElementById('journal_date').value = selectedDate; }
+
+            if (selectedDate) {
+                let parts = selectedDate.split('-');
+                if (parts.length === 3) {
+                    document.getElementById('printDateText').innerText = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                } else {
+                    document.getElementById('printDateText').innerText = selectedDate;
+                }
+            }
+
+            const tbody = document.getElementById('journalTbody');
+            tbody.innerHTML = '';
+
+            let mainTitleText = isEn ? `Daily Journal - ${activeBranchName}` : `روزنامچہ - ${activeBranchName}`;
+            document.getElementById('journalMainTitle').innerText = mainTitleText;
+
+            let customerKey = activeBranchId + '_customer_list';
+            let detailsKey = activeBranchId + '_customer_details';
+            let bnamRecordsKey = activeBranchId + '_bnam_records';
+
+            let activeSet = App.activeNameSet(activeBranchId);
+            let delMap = App.getDeletionMap(activeBranchId);
+            let customerDetails = App.readArray(detailsKey);
+            let bnamRecords = App.readArray(bnamRecordsKey);
+
+            let liveRecords = bnamRecords.filter(r => r && r.customerName && App.liveOn(r.customerName, selectedDate, activeSet, delMap));
+
+            let openingCartons = 0;
+            let openingAmount = 0;
+
+            liveRecords.forEach(r => {
+                if (r.date && (r.date < selectedDate || (r.date === selectedDate && r.isOpening && masterSettings.openingInTotals === false))) {
+                    let amt = parseFloat(r.totalAmount) || 0;
+                    let pcs = parseFloat(r.pcs) || 0;
+                    if (r.type === 'JAMA') {
+                        openingAmount += amt;
+                        openingCartons += pcs;
+                    } else {
+                        openingAmount -= amt;
+                        openingCartons -= pcs;
+                    }
+                }
+            });
+
+            let activeEntries = liveRecords.filter(r => r.date === selectedDate && !(r.isOpening && masterSettings.openingInTotals === false));
+
+            let oldBalLabel = isEn ? "Previous Balance" : "پرانا حساب";
+            let totalCols = getTotalVisibleCols();
+            let leftCols = getLeftSpanCols();
+
+            let oldRow = document.createElement('tr');
+            oldRow.className = 'row-old-balance static-row';
+            oldRow.innerHTML = `
+                <td>-</td>
+                <td>${oldBalLabel}</td>
+                <td>-</td>
+                ${extraBlank()}
+                ${showPcs ? `<td class="text-bnam">${openingCartons < 0 ? Math.abs(openingCartons) : '-'}</td><td class="text-jama">${openingCartons >= 0 ? openingCartons : '-'}</td>` : ''}
+                ${showWeight ? '<td>-</td>' : ''}
+                ${showRate ? '<td>-</td>' : ''}
+                <td class="text-bnam">${openingAmount < 0 ? Math.abs(openingAmount).toLocaleString('en-US') : '-'}</td>
+                <td class="text-jama">${openingAmount >= 0 ? openingAmount.toLocaleString('en-US') : '-'}</td>
+            `;
+            tbody.appendChild(oldRow);
+
+            let todayBnamCash = 0, todayJamaCash = 0;
+            let todayBnamCartons = 0, todayJamaCartons = 0;
+
+            if (activeEntries.length === 0) {
+                let emptyMsg = isEn ? "❌ No entries recorded for this selected date!" : "❌ منتخب کردہ تاریخ میں ابھی کوئی انٹری موجود نہیں ہے!";
+                let emptyRow = document.createElement('tr');
+                emptyRow.className = 'journal-data-row';
+                emptyRow.innerHTML = `<td colspan="${totalCols}" class="no-records">${emptyMsg}</td>`;
+                tbody.appendChild(emptyRow);
+            } else {
+                activeEntries.forEach(item => {
+                    let amt = parseFloat(item.totalAmount) || 0;
+                    let pcs = parseFloat(item.pcs) || 0;
+                    let weight = parseFloat(item.weight) || 0;
+                    let rate = parseFloat(item.rate) || 0;
+
+                    let isBnam = (item.type !== 'JAMA');
+
+                    let pcsBnam = "-", pcsJama = "-";
+                    let cashBnam = "-", cashJama = "-";
+
+                    if (isBnam) {
+                        pcsBnam = pcs > 0 ? pcs : "-";
+                        cashBnam = amt;
+                        todayBnamCash += amt;
+                        todayBnamCartons += pcs;
+                    } else {
+                        pcsJama = pcs > 0 ? pcs : "-";
+                        cashJama = amt;
+                        todayJamaCash += amt;
+                        todayJamaCartons += pcs;
+                    }
+
+                    let custInfo = customerDetails.find(c => c && c.name && App.sameName(c.name, item.customerName));
+                    let accountNoText = custInfo && custInfo.accountNo ? custInfo.accountNo : '-';
+
+                    let tr = document.createElement('tr');
+                    tr.className = 'journal-data-row';
+                    tr.innerHTML = `
+                        <td>${App.esc(accountNoText)}</td>
+                        <td class="col-cust-name"><strong>${App.esc(item.customerName)}</strong></td>
+                        <td class="text-right journal-detail-text">${App.esc(item.details || "-")}</td>
+                        ${extraList.map(function (e) { return `<td class="journal-detail-text">${App.esc(App.extraVal(item, e.id) || '-')}</td>`; }).join('')}
+                        ${showPcs ? `<td class="color-bnam-text">${pcsBnam}</td><td class="color-jama-text">${pcsJama}</td>` : ''}
+                        ${showWeight ? `<td>${weight > 0 ? weight : "-"}</td>` : ''}
+                        ${showRate ? `<td>${rate > 0 ? rate : "-"}</td>` : ''}
+                        <td class="color-bnam-text">${cashBnam > 0 ? cashBnam.toLocaleString('en-US') : "-"}</td>
+                        <td class="color-jama-text">${cashJama > 0 ? cashJama.toLocaleString('en-US') : "-"}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            let todayTotalLabel = isEn ? "Today's Total" : "آج کا ٹوٹل";
+
+            let totalRow = document.createElement('tr');
+            totalRow.className = 'row-today-total static-row';
+            totalRow.innerHTML = `
+                <td>-</td>
+                <td>${todayTotalLabel}</td>
+                <td>-</td>
+                ${extraBlank()}
+                ${showPcs ? `<td>-</td><td>-</td>` : ''}
+                ${showWeight ? '<td>-</td>' : ''}
+                ${showRate ? '<td>-</td>' : ''}
+                <td class="color-bnam-text">${todayBnamCash.toLocaleString('en-US')}</td>
+                <td class="color-jama-text">${todayJamaCash.toLocaleString('en-US')}</td>
+            `;
+            tbody.appendChild(totalRow);
+
+            let finalCartons = openingCartons + (todayJamaCartons - todayBnamCartons);
+            let finalAmount = openingAmount + (todayJamaCash - todayBnamCash);
+
+            let cartonRecLabel = isEn ? `${App.esc(pcsCustomName)} Record` : `${App.esc(pcsCustomName)} ریکارڈ`;
+            let balRecLabel = isEn ? "Balance Record" : "بیلنس ریکارڈ";
+
+            if (showPcs) {
+                let cartonRow = document.createElement('tr');
+                cartonRow.className = 'row-carton-record static-row';
+                cartonRow.innerHTML = `
+                    <td colspan="${leftCols}" class="text-right" style="color: #007bff !important; font-weight: bold; font-size: 14.5px;">${cartonRecLabel}</td>
+                    <td colspan="2">
+                        <span style="color: ${finalCartons >= 0 ? '#28a745' : '#dc3545'}; font-weight: 900; font-size: 15px;">
+                            ${Math.abs(finalCartons)}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(cartonRow);
+            }
+
+            let finalRow = document.createElement('tr');
+            finalRow.className = 'row-final-balance static-row';
+            finalRow.innerHTML = `
+                <td colspan="${leftCols}" class="text-right" style="color: #007bff !important; font-weight: bold; font-size: 14.5px;">${balRecLabel}</td>
+                <td colspan="2" class="final-amount-cell">
+                    <span class="${finalAmount >= 0 ? 'color-jama-text' : 'color-bnam-text'}" style="font-size: 15px; font-weight: 900;">
+                        ${Math.abs(finalAmount).toLocaleString('en-US')}
+                    </span>
+                </td>
+            `;
+            tbody.appendChild(finalRow);
+
+            document.getElementById('infoJama').innerText = todayJamaCash.toLocaleString('en-US');
+            document.getElementById('infoBnam').innerText = todayBnamCash.toLocaleString('en-US');
+
+            updateChart(todayJamaCash, todayBnamCash);
+        }
+
+        function updateChart(jama, bnam) {
+            if (!App.hasChart()) { document.querySelector('.chart-circle-wrapper').style.display = 'none'; return; }
+            const ctx = document.getElementById('journalCircleChart').getContext('2d');
+            const chartData = (jama === 0 && bnam === 0) ? [1, 1] : [jama, bnam];
+
+            let isLight = App.store.get('rohan_theme_mode') === 'light';
+            let emptyColor1 = isLight ? '#e5e7eb' : '#333';
+            let emptyColor2 = isLight ? '#d1d5db' : '#444';
+            const chartColors = (jama === 0 && bnam === 0) ? [emptyColor1, emptyColor2] : ['#28a745', '#dc3545'];
+
+            if (myChart) myChart.destroy();
+
+            let chartLabels = isEn ? ['Credit (Cr)', 'Debit (Dr)'] : ['جمع', 'بنام'];
+
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{ data: chartData, backgroundColor: chartColors, borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '68%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: (jama > 0 || bnam > 0) } }
+                }
+            });
+        }
+
+        document.getElementById('journalSearchInput').addEventListener('input', function() {
+            let filterValue = this.value.toLowerCase().replace(/,/g, '').trim();
+            let tbody = document.getElementById('journalTbody');
+            let dataRows = tbody.querySelectorAll('.journal-data-row');
+
+            dataRows.forEach(row => {
+                if (filterValue === "") {
+                    row.style.display = "";
+                } else {
+                    let rowText = row.innerText.toLowerCase().replace(/,/g, '');
+                    row.style.display = rowText.includes(filterValue) ? "" : "none";
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", loadJournalData);
+    </script>
+</body>
+</html>

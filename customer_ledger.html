@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Unit Business Group">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#080808">
+<title>لیجر کھاتہ</title>
+
+<style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 12px 18px;
+        direction: rtl;
+        text-align: right;
+        background-color: #0d0d0d;
+        color: white;
+        min-height: 100vh;
+        width: 100%;
+        max-width: 100%;
+        transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    body.lang-en {
+        direction: ltr !important;
+        text-align: left !important;
+    }
+
+    .ledger-container {
+        width: 100%;
+        background: #1a1a1a;
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px solid #28a745;
+        box-shadow: 0 4px 15px rgba(40,167,69,0.15);
+        transition: all 0.25s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #28a745;
+        gap: 8px;
+    }
+    .btn-print {
+        padding: 8px 18px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    .btn-print:hover { opacity: 0.9; }
+
+    .customer-title {
+        font-size: clamp(18px, 2.4vw, 26px);
+        font-weight: bold;
+        color: #ffc107;
+        margin: 0;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: baseline;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .acc-no-badge {
+        font-size: clamp(12px, 1.5vw, 15px);
+        color: #888888;
+        font-weight: normal;
+        background: transparent;
+        border: none;
+        padding: 0;
+        display: inline-block;
+    }
+
+    .branch-sub-tag {
+        font-size: clamp(12px, 1.5vw, 15px);
+        color: #888888;
+        font-weight: normal;
+    }
+
+    .btn-back {
+        padding: 8px 18px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    .btn-back:hover { background-color: #0056b3; }
+
+    .controls-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 14px;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    .search-wrapper {
+        flex: 1 1 200px;
+        min-width: 150px;
+    }
+    .date-search-wrapper { flex: 0 1 auto; min-width: 0; }
+    .date-search-inner { display: flex; gap: 6px; align-items: center; }
+    .date-range-field { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #aaa; font-weight: bold; white-space: nowrap; }
+    body.light-theme .date-range-field { color: #555; }
+    .controls-wrapper { flex-wrap: nowrap; gap: 6px; }
+    .controls-wrapper .search-wrapper { flex: 1 1 120px; min-width: 60px; }
+    .controls-wrapper .search-input { height: 34px; padding-top: 4px; padding-bottom: 4px; font-size: 13px; }
+    .controls-wrapper .pen-toolbar { padding: 0; border: none; background: transparent; height: auto; }
+    .date-search-inner { flex-wrap: nowrap; }
+    .pen-toolbar { position: relative; height: auto; padding: 0; border: none; background: transparent; }
+    .pen-toggle { height: 34px; padding: 0 10px; border-radius: 6px; border: 1px solid #555; background: #222; color: #fff; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+    body.light-theme .pen-toggle { background: #f3f4f6; color: #111827; border-color: #d1d5db; }
+    .pen-menu { display: none; position: fixed; z-index: 9999; flex-direction: column; gap: 5px; padding: 8px; background: #111; border: 1px solid #444; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.5); min-width: 120px; }
+    .pen-menu.open { display: flex; }
+    body.light-theme .pen-menu { background: #fff; border-color: #d1d5db; }
+    .pen-menu .pen-btn { width: 100%; justify-content: flex-start; height: 32px; font-size: 13px; }
+    .date-search-inner .date-picker-input { flex: 0 0 auto; width: 118px !important; height: 34px !important; font-size: 12px !important; padding: 2px 6px !important; color-scheme: dark; cursor: pointer; }
+    body.light-theme .date-search-inner .date-picker-input { color-scheme: light; }
+    .btn-date-clear { flex: 0 0 auto; height: 34px; padding: 0 10px; border: 1px solid #555; border-radius: 6px; background: #2a2a2a; color: #ff7676; font-weight: bold; cursor: pointer; }
+    body.light-theme .btn-date-clear { background: #f3f4f6; border-color: #d1d5db; color: #b91c1c; }
+    @media (max-width: 600px) {
+        .date-search-wrapper { flex: 0 0 auto !important; }
+        .date-search-inner { gap: 3px; }
+        .date-range-field { gap: 1px; font-size: 10px; }
+        .date-search-inner .date-picker-input { width: 82px !important; font-size: 10px !important; padding: 2px 1px !important; }
+        .btn-date-clear { padding: 0 6px; height: 34px; }
+    }
+    .search-input {
+        width: 100%;
+        padding: 10px 14px;
+        background-color: #151515;
+        border: 1px solid #333;
+        border-radius: 6px;
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        box-sizing: border-box;
+        direction: rtl;
+        text-align: right;
+        outline: none;
+        transition: all 0.2s ease;
+        height: 42px;
+    }
+    body.lang-en .search-input {
+        direction: ltr !important;
+        text-align: left !important;
+    }
+    .search-input:focus { border-color: #28a745; }
+
+    .pen-toolbar {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        background: #111;
+        padding: 4px 8px;
+        border-radius: 8px;
+        border: 1px solid #333;
+        height: 42px;
+        box-sizing: border-box;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    .pen-btn {
+        padding: 5px 10px;
+        border-radius: 5px;
+        border: 1px solid #444;
+        background: #222;
+        color: #fff;
+        font-size: 13px;
+        font-weight: bold;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+        user-select: none;
+    }
+    .pen-btn:hover { transform: translateY(-1px); }
+    .pen-btn.active-pen {
+        border-color: #ffffff !important;
+        box-shadow: 0 0 10px rgba(255,255,255,0.4);
+        transform: scale(1.05);
+    }
+    .pen-btn.pen-yellow { color: #fef08a; border-color: #854d0e; }
+    .pen-btn.pen-yellow.active-pen { background: #854d0e; color: #ffffff; }
+
+    .pen-btn.pen-blue { color: #7dd3fc; border-color: #0369a1; }
+    .pen-btn.pen-blue.active-pen { background: #0369a1; color: #ffffff; }
+
+    .pen-btn.pen-red { color: #fca5a5; border-color: #b91c1c; }
+    .pen-btn.pen-red.active-pen { background: #b91c1c; color: #ffffff; }
+
+    .pen-btn.pen-eraser { color: #9ca3af; }
+    .pen-btn.pen-eraser.active-pen { background: #dc2626; color: #ffffff; border-color: #fff; }
+
+    .shared-scroll-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 6px;
+        background: #141414;
+        transition: all 0.25s ease;
+    }
+    .shared-inner-content { width: 100%; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+        background-color: #151515;
+        table-layout: auto;
+        transition: all 0.25s ease;
+    }
+
+    th, td {
+        padding: 8px 6px;
+        border: 1px solid #333;
+        font-weight: bold;
+        white-space: nowrap;
+        font-size: 16px;
+    }
+    th {
+        background-color: #222;
+        color: #ffc107;
+        font-size: 16px;
+        padding: 10px 6px;
+    }
+    tr:hover { background-color: #1d1d1d; }
+
+    tr.ledger-data-row {
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .col-date { font-size: 15px; }
+    .col-details { text-align: right; padding-right: 8px; font-size: 15px; white-space: normal; }
+    body.lang-en .col-details { text-align: left; padding-left: 8px; padding-right: 4px; }
+    .col-extra { font-size: 14.5px; }
+    .col-pcs { font-size: 16px; }
+    .col-weight { font-size: 16px; }
+    .col-rate { font-size: 15px; }
+    .col-amount { font-size: 16px; }
+
+    .col-balance { color: #17a2b8 !important; }
+    .col-jama { color: #00e676 !important; font-weight: 900 !important; }
+    .col-bnam { color: #ff5252 !important; font-weight: 900 !important; }
+
+    .edit-th {
+        font-size: 11px !important;
+        padding: 4px 2px !important;
+    }
+    .action-cell { white-space: nowrap; }
+
+    .btn-pen-edit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        background: #252525;
+        border: 1px solid #ffc107;
+        color: #ffc107;
+        border-radius: 3px;
+        font-size: 9px;
+        cursor: pointer;
+        line-height: 1;
+        transition: transform 0.15s ease;
+        vertical-align: middle;
+    }
+    .btn-pen-edit:hover {
+        transform: scale(1.15);
+        background: #ffc107;
+        color: black;
+    }
+
+    tr.hl-yellow, tr.hl-yellow td { background-color: #423600 !important; }
+    tr.hl-blue, tr.hl-blue td { background-color: #023859 !important; }
+    tr.hl-red, tr.hl-red td { background-color: #520606 !important; }
+
+    .age-dot-btn { position: relative; width: 14px; height: 14px; border-radius: 50%; background: #e11d48; border: 2px solid #fff; padding: 0; margin: 0 5px; vertical-align: middle; cursor: pointer; box-shadow: 0 0 0 2px rgba(225,29,72,.35); }
+    .age-dot-btn::after { content: ''; position: absolute; inset: -9px; }
+    .age-dot-btn:hover { background: #be123c; }
+    @media print { .age-dot-btn { display: none !important; } }
+    .footer-summary {
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 10px;
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        transition: all 0.25s ease;
+    }
+    .summary-column {
+        background: #151515;
+        padding: 12px 16px;
+        border-radius: 6px;
+        border-right: 5px solid #007bff;
+        flex: 1;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        transition: all 0.25s ease;
+    }
+    body.lang-en .summary-column {
+        border-right: none;
+        border-left: 5px solid #007bff;
+    }
+    .summary-column.bnam-border { border-right-color: #ff5722; }
+    body.lang-en .summary-column.bnam-border { border-left-color: #ff5722; }
+    .summary-column.jama-border { border-right-color: #28a745; }
+    body.lang-en .summary-column.jama-border { border-left-color: #28a745; }
+
+    .summary-column h3 {
+        margin: 0 0 10px 0;
+        font-size: 16.5px;
+        color: #ffc107;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 15px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    .summary-item span:first-child { color: #cccccc; }
+    .summary-item span:last-child { font-size: 16px; }
+
+    .summary-item:last-child {
+        margin-bottom: 0;
+        border-top: 1px dashed #555;
+        padding-top: 8px;
+        margin-top: 6px;
+    }
+    .summary-item:last-child span:first-child { color: #ffffff !important; font-size: 16px !important; font-weight: 800 !important; }
+    .summary-item:last-child span:last-child { font-size: 18.5px !important; font-weight: 900 !important; }
+
+    .danger-zone {
+        margin-top: 15px;
+        border-top: 1px solid #333;
+        padding-top: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .btn-delete-account {
+        padding: 9px 18px;
+        background-color: #bd2130;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14.5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+    .btn-delete-account:hover { background-color: #8b0000; }
+
+    .btn-restore-account {
+        padding: 9px 18px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14.5px;
+        font-weight: bold;
+        cursor: pointer;
+        display: none;
+        transition: background-color 0.2s ease;
+    }
+    .btn-restore-account:hover { background-color: #218838; }
+
+    .print-repeat-row { display: none; }
+
+    body.light-theme { background-color: #f3f4f6; color: #111827; }
+    body.light-theme .ledger-container { background: #ffffff; border-color: #28a745; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    body.light-theme .customer-title { color: #b45309; }
+    body.light-theme .acc-no-badge { color: #6b7280; }
+    body.light-theme .search-input { background-color: #f9fafb; color: #111827; border-color: #d1d5db; }
+    body.light-theme .pen-toolbar { background: #ffffff; border-color: #d1d5db; }
+    body.light-theme .pen-btn { background: #f3f4f6; color: #111827; border-color: #d1d5db; }
+    body.light-theme .shared-scroll-wrapper { background: #ffffff; border-color: #e5e7eb; }
+    body.light-theme table { background-color: #ffffff; }
+    body.light-theme th, body.light-theme td { border-color: #e5e7eb; color: #111827; }
+    body.light-theme th { background-color: #f3f4f6; color: #111827; }
+    body.light-theme tr:hover { background-color: #f9fafb; }
+    body.light-theme .col-jama { color: #15803d !important; }
+    body.light-theme .col-bnam { color: #b91c1c !important; }
+    body.light-theme .col-balance { color: #0369a1 !important; }
+    body.light-theme .footer-summary { background-color: #ffffff; border-color: #e5e7eb; }
+    body.light-theme .summary-column { background: #f9fafb; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    body.light-theme .summary-column h3 { color: #b45309; border-bottom-color: #e5e7eb; }
+    body.light-theme .summary-item span:first-child { color: #4b5563; }
+    body.light-theme .summary-item:last-child { border-top-color: #d1d5db; }
+    body.light-theme .summary-item:last-child span:first-child { color: #111827 !important; }
+
+    body.light-theme tr.hl-yellow, body.light-theme tr.hl-yellow td { background-color: #fef08a !important; }
+    body.light-theme tr.hl-blue, body.light-theme tr.hl-blue td { background-color: #bae6fd !important; }
+    body.light-theme tr.hl-red, body.light-theme tr.hl-red td { background-color: #fecaca !important; }
+
+    @media (max-width: 600px) {
+        body { padding: 3px; padding-bottom: 12px; }
+        .ledger-container { padding: 6px; border: none; background: #0d0d0d; }
+        body.light-theme .ledger-container { background: #ffffff; }
+        .header-section { gap: 6px; margin-bottom: 8px; padding-bottom: 6px; }
+        .customer-title { font-size: 15px; font-weight: bold; }
+        .acc-no-badge { font-size: 11px; }
+        .branch-sub-tag { font-size: 11px; }
+
+        .btn-print, .btn-back {
+            padding: 7px 12px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border-radius: 6px !important;
+        }
+
+        .controls-wrapper {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            margin-bottom: 6px !important;
+            align-items: center !important;
+            width: 100% !important;
+        }
+        .search-wrapper {
+            flex: 1 1 48% !important;
+            min-width: 130px !important;
+        }
+        .search-input {
+            padding: 6px 8px !important;
+            font-size: 11px !important;
+            height: 34px !important;
+        }
+
+        .controls-wrapper { flex-wrap: nowrap !important; gap: 3px !important; }
+        .controls-wrapper .search-wrapper { flex: 1 1 40px !important; min-width: 40px !important; }
+        .pen-toggle { height: 34px; padding: 0 5px; font-size: 11px; gap: 2px; }
+        .pen-menu .pen-btn { font-size: 12px !important; height: 30px !important; padding: 3px 8px !important; }
+
+        .shared-scroll-wrapper { padding: 2px; border-radius: 6px; }
+        .shared-inner-content { min-width: 480px; }
+
+        th, td { padding: 5px 2px !important; font-size: 12px !important; font-weight: bold !important; }
+        th { font-size: 12px !important; padding: 6px 2px !important; font-weight: 800 !important; }
+
+        .col-date { font-size: 11px !important; }
+        .col-details { font-size: 11.5px !important; }
+        .col-extra { font-size: 11px !important; }
+        .col-pcs { font-size: 11.5px !important; }
+        .col-weight { font-size: 11.5px !important; }
+        .col-rate { font-size: 11.5px !important; }
+        .col-amount { font-size: 12px !important; }
+
+        .edit-th { font-size: 9px !important; padding: 2px 0 !important; }
+        .btn-pen-edit { width: 15px; height: 15px; font-size: 8px; border-radius: 2px; }
+
+        .footer-summary {
+            padding: 4px !important;
+            gap: 4px !important;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+        }
+        .summary-column {
+            padding: 4px 6px !important;
+            border-right-width: 3px !important;
+        }
+        body.lang-en .summary-column {
+            border-right-width: 0 !important;
+            border-left-width: 3px !important;
+        }
+        .summary-column h3 {
+            font-size: 11.5px !important;
+            margin: 0 0 3px 0 !important;
+            padding-bottom: 2px !important;
+            font-weight: 800 !important;
+            line-height: 1.2 !important;
+        }
+        .summary-item {
+            font-size: 11px !important;
+            margin-bottom: 2px !important;
+            font-weight: bold !important;
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            line-height: 1.2 !important;
+        }
+        .summary-item span:first-child { font-size: 10.5px !important; }
+        .summary-item span:last-child { font-size: 11.5px !important; font-weight: bold !important; }
+        .summary-item:last-child { padding-top: 3px !important; margin-top: 2px !important; }
+        .summary-item:last-child span:first-child { font-size: 11px !important; font-weight: 800 !important; }
+        .summary-item:last-child span:last-child { font-size: 13px !important; font-weight: 900 !important; }
+
+        .danger-zone {
+            margin-top: 8px;
+            padding-top: 8px;
+            gap: 8px;
+            flex-direction: row-reverse;
+        }
+        .btn-delete-account, .btn-restore-account {
+            flex: 1;
+            padding: 8px 4px !important;
+            font-size: 11.5px !important;
+            font-weight: bold !important;
+            text-align: center;
+        }
+    }
+
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 6mm 6mm 10mm 6mm !important;
+            @bottom-left {
+                content: "";
+                font-size: 8.5px;
+                font-weight: bold;
+                color: #333333;
+            }
+            @bottom-right {
+                content: "Page " counter(page);
+                font-size: 8.5px;
+                font-weight: bold;
+                color: #333333;
+            }
+        }
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        html, body {
+            width: 100% !important;
+            min-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+        }
+        .ledger-container, .shared-scroll-wrapper {
+            width: 100% !important;
+            min-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            background: transparent !important;
+            overflow: visible !important;
+            display: block !important;
+        }
+        .shared-inner-content {
+            min-width: 100% !important;
+            width: 100% !important;
+        }
+
+        .header-section, .btn-print, .btn-back, button, .danger-zone, .controls-wrapper, .pen-toolbar, .edit-th, .action-cell {
+            display: none !important;
+        }
+
+        table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            background: transparent !important;
+            table-layout: auto !important;
+        }
+
+        thead {
+            display: table-header-group !important;
+        }
+
+        tbody {
+            display: table-row-group !important;
+        }
+
+        tr {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .print-repeat-row {
+            display: table-row !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .print-head-cell {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: none !important;
+            border-bottom: 2px solid #000000 !important;
+            padding: 6px 2px !important;
+            vertical-align: middle !important;
+        }
+
+        .print-logo-box-right {
+            text-align: right !important;
+            direction: rtl !important;
+            width: 20% !important;
+        }
+
+        .print-logo-img {
+            height: 46px !important;
+            width: auto !important;
+            max-width: 100% !important;
+            object-fit: contain !important;
+            border-radius: 0 !important;
+            border: 0 !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+
+        .print-title-center {
+            text-align: center !important;
+            direction: rtl !important;
+            font-size: 18px !important;
+            font-weight: 900 !important;
+            color: #000000 !important;
+            line-height: 1.4 !important;
+            word-break: normal !important;
+            white-space: normal !important;
+            width: 60% !important;
+        }
+        body.lang-en .print-title-center {
+            direction: ltr !important;
+        }
+
+        .print-meta-left {
+            text-align: left !important;
+            direction: ltr !important;
+            font-size: 8.5px !important;
+            font-weight: bold !important;
+            color: #333333 !important;
+            line-height: 1.3 !important;
+            white-space: nowrap !important;
+            width: 20% !important;
+        }
+
+        .print-acc-badge {
+            font-size: 11.5px !important;
+            font-weight: normal !important;
+            color: #444444 !important;
+            margin-left: 4px !important;
+            display: inline-block !important;
+        }
+
+        .print-branch {
+            font-size: 11.5px !important;
+            font-weight: normal !important;
+            color: #444444 !important;
+            margin-right: 4px !important;
+        }
+
+        th, td {
+            border: 1px solid #000000 !important;
+            padding: 4px 3px !important;
+            font-size: 10.5px !important;
+            color: #000000;
+        }
+        thead tr.table-columns-header th {
+            background-color: #f0f0f0 !important;
+            color: #000000 !important;
+            font-weight: bold !important;
+        }
+
+        .col-jama { color: #1e7e34 !important; font-weight: 900 !important; }
+        .col-bnam { color: #bd2130 !important; font-weight: 900 !important; }
+        .col-balance { color: #0056b3 !important; font-weight: 900 !important; }
+
+        tr.hl-yellow, tr.hl-yellow td { background-color: #fef08a !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        tr.hl-blue, tr.hl-blue td { background-color: #bae6fd !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        tr.hl-red, tr.hl-red td { background-color: #fecaca !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+        .footer-summary {
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: space-between !important;
+            width: 100% !important;
+            gap: 8px !important;
+            padding: 6px 0 !important;
+            margin-top: 10px !important;
+            margin-bottom: 8px !important;
+            border: none !important;
+            background: transparent !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            order: 99 !important;
+        }
+        .summary-column {
+            flex: 1 !important;
+            background: #ffffff !important;
+            border: 1px solid #000000 !important;
+            padding: 5px !important;
+        }
+        .summary-column h3 {
+            color: #000000 !important;
+            border-bottom: 1px solid #000000 !important;
+            font-size: 11px !important;
+            margin-bottom: 4px !important;
+        }
+        .summary-item {
+            font-size: 10px !important;
+            color: #000000 !important;
+        }
+        .summary-item:last-child {
+            margin-top: 4px !important;
+            padding-top: 4px !important;
+            border-top: 1px solid #000000 !important;
+        }
+        .summary-item:last-child span:first-child {
+            font-size: 12px !important;
+            font-weight: 900 !important;
+            color: #000000 !important;
+        }
+        .summary-item:last-child span:last-child {
+            font-weight: 900 !important;
+            font-size: 15.5px !important;
+            display: inline-block !important;
+        }
+        .summary-item:last-child span:last-child.col-jama { color: #1e7e34 !important; }
+        .summary-item:last-child span:last-child.col-bnam { color: #bd2130 !important; }
+    }
+</style>
+<style id="printFlowFix">
+@media print {
+    html body #ledgerControlsWrapper, html body #ledgerControlsWrapper *, html body .search-wrapper, html body .date-search-wrapper, html body #ledgerSearchInput, html body #ledgerDateFrom, html body #ledgerDateTo, html body #penToolbarBox, html body #filterNote { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; border: 0 !important; overflow: hidden !important; }
+    html, body { width: 100% !important; max-width: 100% !important; min-width: 0 !important; height: auto !important; overflow: visible !important; }
+    html body, html body .container, html body .ledger-container { min-height: 0 !important; height: auto !important; }
+    html body .controls-wrapper, html body .pen-toolbar, html body #filterNote:empty { display: none !important; }
+    .container, .ledger-container, .shared-scroll-wrapper, .shared-inner-content, .tables-container, .table-wrapper,
+    .summary-box, .summary-item, .footer-summary, .summary-column, .top-header, .customer-inline-info, .customer-name-row {
+        min-width: 0 !important; max-width: 100% !important; overflow: visible !important; box-sizing: border-box !important;
+    }
+    .container, .ledger-container, .shared-scroll-wrapper, .shared-inner-content { width: 100% !important; }
+    table { width: 100% !important; min-width: 0 !important; max-width: 100% !important; }
+    th, td {
+        white-space: normal !important; word-break: normal !important; overflow-wrap: anywhere !important;
+        text-overflow: clip !important; overflow: visible !important; max-width: none !important;
+    }
+    .customer-main-name, .khata-inline-badge, .customer-stats-subrow, .stat-badge, .main-amount-text, .main-title,
+    .branch-mini-name, .print-meta-left, .print-title-center, .print-acc-badge, .print-branch, .summary-item, .summary-item div,
+    .summary-item span, .summary-column h3, .col-details, .col-date, .col-amount {
+        white-space: normal !important; overflow-wrap: anywhere !important; text-overflow: clip !important;
+    }
+    .customer-stats-subrow, .customer-name-row { flex-wrap: wrap !important; }
+    .summary-box, .footer-summary { flex-wrap: wrap !important; }
+    .summary-item, .summary-column { flex: 1 1 28% !important; }
+    tr { page-break-inside: avoid !important; break-inside: avoid !important; }
+    thead { display: table-header-group !important; }
+    html body tr.table-columns-header th { background-color: #f0f0f0 !important; color: #000000 !important; font-weight: bold !important; }
+    html body tr.table-columns-header th.col-jama { color: #1e7e34 !important; }
+    html body tr.table-columns-header th.col-bnam { color: #bd2130 !important; }
+    html body tr.table-columns-header th.col-balance { color: #0056b3 !important; }
+}
+</style>
+<style id="footerMobileFix">
+@media screen {
+html body #ledgerTable th, html body #ledgerTable td, html body #ledgerTable .col-date, html body #ledgerTable .col-details, html body #ledgerTable .col-extra, html body #ledgerTable .col-pcs, html body #ledgerTable .col-weight, html body #ledgerTable .col-rate, html body #ledgerTable .col-amount { font-size: 13.5px !important; }
+html body .footer-summary .summary-column h3 { font-size: 18px !important; }
+html body .footer-summary .summary-item span:first-child { font-size: 16px !important; }
+html body .footer-summary .summary-item span:last-child { font-size: 20px !important; font-weight: 900 !important; }
+.footer-summary .summary-item { gap: 8px; }
+}
+@media screen and (max-width: 600px) {
+html body #ledgerTable th, html body #ledgerTable td, html body #ledgerTable .col-date, html body #ledgerTable .col-details, html body #ledgerTable .col-extra, html body #ledgerTable .col-pcs, html body #ledgerTable .col-weight, html body #ledgerTable .col-rate, html body #ledgerTable .col-amount { font-size: 9.5px !important; }
+html body #ledgerTable .edit-th { font-size: 8px !important; }
+.footer-summary { flex-wrap: nowrap !important; gap: 3px !important; padding: 3px !important; max-width: 100%; box-sizing: border-box; overflow: visible !important; }
+.footer-summary .summary-column { flex: 1 1 0 !important; min-width: 0 !important; padding: 4px 3px 4px 4px !important; box-sizing: border-box; overflow: visible !important; }
+html body .footer-summary .summary-column h3 { font-size: 2.15vw !important; overflow: hidden; text-overflow: ellipsis; max-width: 100%; white-space: nowrap; letter-spacing: -0.2px; }
+.footer-summary .summary-item { flex-direction: row !important; flex-wrap: nowrap !important; align-items: baseline !important; justify-content: space-between !important; white-space: nowrap !important; gap: 2px !important; margin-bottom: 2px !important; }
+html body .footer-summary .summary-item span:first-child { font-size: 2.55vw !important; letter-spacing: -0.2px; }
+html body .footer-summary .summary-item span:last-child { font-size: 3vw !important; font-weight: 900 !important; letter-spacing: -0.2px; }
+}
+</style>
+<style id="printDateFix">
+@media print {
+    html body #ledgerTable th.col-date, html body #ledgerTable td.col-date { white-space: nowrap !important; overflow-wrap: normal !important; word-break: keep-all !important; width: 1% !important; min-width: 62px !important; padding-left: 3px !important; padding-right: 3px !important; }
+    html body .footer-summary .summary-item span:first-child { color: #000 !important; }
+}
+</style>
+<style>
+@media screen {
+
+html body .controls-wrapper{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;gap:4px!important;width:100%!important;max-width:100%!important;margin-bottom:8px!important}
+html body .controls-wrapper .search-wrapper{flex:1 1 0!important;min-width:0!important;width:auto!important;max-width:none!important}
+html body .controls-wrapper .search-wrapper .search-input{width:100%!important;min-width:0!important;height:34px!important}
+html body .controls-wrapper .date-search-wrapper{flex:0 0 auto!important;min-width:0!important;width:auto!important;max-width:none!important;margin:0!important}
+html body .controls-wrapper .date-search-inner{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:3px!important}
+html body .controls-wrapper .date-range-field{flex:0 0 auto!important;gap:2px!important;font-size:11px!important;margin:0!important}
+html body .controls-wrapper .date-search-inner .date-picker-input{width:112px!important;min-width:0!important;font-size:12px!important;padding:2px 4px!important}
+html body .controls-wrapper .btn-date-clear{padding:0 7px!important;min-width:0!important}
+html body .controls-wrapper .pen-toolbar{flex:0 0 auto!important;margin:0!important;width:auto!important}
+html body .controls-wrapper .pen-toggle{padding:0 8px!important}
+@media (max-width:700px){
+ html body .controls-wrapper{gap:2px!important}
+ html body .controls-wrapper .date-search-inner{gap:2px!important}
+ html body .controls-wrapper .date-range-field{font-size:9px!important;gap:1px!important}
+ html body .controls-wrapper .date-search-inner .date-picker-input{width:74px!important;font-size:9.5px!important;padding:2px 0 2px 2px!important;letter-spacing:-.3px}
+ html body .controls-wrapper .date-picker-input::-webkit-calendar-picker-indicator{display:none!important}
+ html body .controls-wrapper .btn-date-clear{padding:0 5px!important;font-size:11px}
+ html body .controls-wrapper .pen-toggle{padding:0 4px!important;font-size:10px!important;gap:1px!important}
+ html body .controls-wrapper .search-wrapper .search-input{padding:4px 3px!important;font-size:11px!important}
+}
+@media (max-width:480px){
+ html body .controls-wrapper .date-search-inner .date-picker-input{width:64px!important;font-size:8.5px!important;letter-spacing:-.4px;padding:2px 0 2px 1px!important}
+ html body .controls-wrapper .date-range-field{font-size:8.5px!important}
+ html body .controls-wrapper .btn-date-clear{padding:0 4px!important}
+ html body .controls-wrapper .pen-toggle{font-size:9.5px!important;padding:0 3px!important}
+}
+@media (max-width:359px){
+ html body .controls-wrapper .date-range-field>span:first-child{display:none!important}
+ html body .controls-wrapper .date-search-inner .date-picker-input{width:66px!important;font-size:9px!important}
+}
+}
+</style>
+<style>
+@media screen {
+
+html body .controls-wrapper .dbox{position:relative;display:inline-flex;align-items:center;flex:0 0 auto}
+html body .controls-wrapper .dbox .date-picker-input{cursor:pointer}
+html body .controls-wrapper .dbox .date-picker-input::-webkit-calendar-picker-indicator{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;opacity:0!important;cursor:pointer!important}
+html body .controls-wrapper .dbox .dicon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:16px;pointer-events:none}
+html body .controls-wrapper .dbox .date-picker-input:not(.has-val){color:transparent!important}
+html body .controls-wrapper .dbox .date-picker-input:not(.has-val)::-webkit-datetime-edit{opacity:0}
+html body .controls-wrapper .dbox .date-picker-input.has-val+.dicon{display:none}
+html body .controls-wrapper .dbox .date-picker-input.has-val{color:#fff!important}
+html body.light-theme .controls-wrapper .dbox .date-picker-input.has-val{color:#111!important}
+html body .controls-wrapper .date-search-inner .dbox .date-picker-input{width:42px!important}
+html body .controls-wrapper .date-search-inner .dbox .date-picker-input.has-val{width:88px!important;font-size:10.5px!important;letter-spacing:0!important}
+@media (max-width:480px){
+ html body .controls-wrapper .date-search-inner .dbox .date-picker-input{width:34px!important}
+ html body .controls-wrapper .date-search-inner .dbox .date-picker-input.has-val{width:66px!important;font-size:8.5px!important;letter-spacing:-.4px!important}
+ html body .controls-wrapper .dbox .dicon{font-size:14px}
+}
+}
+</style>
+<style id="printSizeBoost">
+@media print {
+html body #ledgerTable th:not(.print-head-cell), html body #ledgerTable td { font-size: 12.5px !important; }
+html body #ledgerTable td span { font-size: 11px !important; }
+html body[data-page][data-page][data-page][data-page] #ledgerTable .footer-summary .summary-column h3 { font-size: 18px !important; white-space: nowrap !important; padding-bottom: 3px !important; }
+html body[data-page][data-page][data-page][data-page] #ledgerTable .footer-summary .summary-item { line-height: 1.5 !important; }
+html body[data-page][data-page][data-page][data-page] #ledgerTable .footer-summary .summary-item span:first-child { font-size: 16px !important; }
+html body[data-page][data-page][data-page][data-page] #ledgerTable .footer-summary .summary-item span:last-child { font-size: 17px !important; font-weight: 900 !important; }
+html body[data-page][data-page][data-page][data-page] #ledgerTable .footer-summary .summary-item:last-child span:first-child { font-size: 17px !important; }
+html body[data-page][data-page][data-page][data-page] #ledgerTable .footer-summary .summary-item:last-child span:last-child { font-size: 19.5px !important; }
+}
+@media screen and (min-width: 601px) {
+html body[data-page][data-page][data-page][data-page] .footer-summary .summary-column h3 { font-size: 18px !important; }
+html body[data-page][data-page][data-page][data-page] .footer-summary .summary-item span:first-child { font-size: 16px !important; }
+html body[data-page][data-page][data-page][data-page] .footer-summary .summary-item span:last-child { font-size: 18px !important; }
+html body[data-page][data-page][data-page][data-page] .footer-summary .summary-item:last-child span:first-child { font-size: 17px !important; }
+html body[data-page][data-page][data-page][data-page] .footer-summary .summary-item:last-child span:last-child { font-size: 21px !important; }
+}
+</style>
+<script>
+(function () {
+    function place() {
+        try {
+            if (!document.body.classList.contains('lang-en')) return;
+            var lg = document.querySelector('#ledgerThead .print-logo-box-right'), mt = document.getElementById('printLedgerDateTime');
+            if (!lg || !mt || !lg.parentNode) return;
+            var row = lg.parentNode;
+            if (row.lastElementChild !== lg) { row.insertBefore(mt, row.firstElementChild); row.appendChild(lg); }
+        } catch (e) {}
+    }
+    document.addEventListener('DOMContentLoaded', place);
+    window.addEventListener('load', place);
+    window.addEventListener('beforeprint', place);
+})();
+</script>
+<style id="mobileHeaderLayout">
+.mob-sub { display: none; }
+@media screen and (max-width: 600px) {
+    .header-section { display: grid !important; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "back title print" "branch title acc"; align-items: center; row-gap: 8px; column-gap: 6px; padding-bottom: 14px !important; margin-bottom: 12px !important; }
+    .header-section .btn-print { grid-area: print; justify-self: stretch; }
+    .header-section .btn-back { grid-area: back; justify-self: stretch; }
+    .header-section .customer-title { grid-area: title; }
+    .customer-title .acc-no-badge, .customer-title .branch-sub-tag { display: none !important; }
+    .mob-sub { display: block; font-size: 11px; line-height: 1.7; font-weight: normal; color: #cfcfcf; text-align: center; white-space: normal; overflow-wrap: anywhere; margin-top: 2px; }
+    .mob-acc { grid-area: acc; }
+    .mob-branch { grid-area: branch; }
+    body.light-theme .mob-sub { color: #374151; }
+    .header-section .customer-title, .mob-sub { direction: rtl !important; }
+    body.lang-en .header-section .customer-title, body.lang-en .mob-sub { direction: ltr !important; }
+}
+
+@media screen {
+    html body .danger-zone { margin-top: 56px !important; padding-top: 14px !important; justify-content: center !important; }
+    html body .btn-delete-account, html body .btn-restore-account { flex: 0 0 auto !important; width: auto !important; padding: 6px 14px !important; font-size: 12px !important; border-radius: 6px !important; }
+}
+@media print { .mob-sub { display: none !important; } }
+</style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+<style id="print-narrow-fit">
+/* print on a narrow (phone) layout only: no scroll box, table fits the page width, rows never split, header repeats on every page.
+   Desktop print (wide layout) is not affected. */
+@media print and (max-width: 700px) {
+html body[data-page][data-page] #ledgerTablesContainer.shared-scroll-wrapper { overflow: visible !important; height: auto !important; max-height: none !important; width: 100% !important; min-width: 0 !important; }
+html body[data-page][data-page] .shared-inner-content { min-width: 0 !important; width: 100% !important; }
+html body[data-page][data-page] #ledgerTable { width: 100% !important; min-width: 0 !important; max-width: 100% !important; table-layout: auto !important; zoom: 1 !important; }
+html body[data-page][data-page] #ledgerTable th:not(.print-head-cell), html body[data-page][data-page] #ledgerTable td { font-size: 8px !important; padding: 3px 1px !important; white-space: nowrap !important; }
+html body[data-page][data-page] #ledgerTable td.col-details { white-space: normal !important; overflow-wrap: break-word !important; }
+html body[data-page][data-page] #ledgerTable td span { font-size: 7.5px !important; }
+html body[data-page][data-page] #ledgerTable #printHeaderTitleCell, html body[data-page][data-page] #ledgerTable #printHeaderTitleCell * { white-space: normal !important; }
+html body[data-page][data-page] #ledgerTable .print-logo-img { max-width: 38px !important; height: auto !important; }
+html body[data-page][data-page] #ledgerTable th.print-head-cell { min-width: 0 !important; }
+html body[data-page][data-page] #ledgerTable thead { display: table-header-group !important; }
+html body[data-page][data-page] #ledgerTable tr { break-inside: avoid !important; page-break-inside: avoid !important; }
+html body[data-page][data-page] #ledgerTable th.print-head-cell { white-space: normal !important; font-size: 11px !important; padding-left: 3px !important; padding-right: 3px !important; }
+}
+</style>
+<style id="print-title-right">
+/* print: customer name / account no / branch are centred on the page, between the date (left) and the logo (right) */
+@media print {
+html body[data-page][data-page] #ledgerTable th#printHeadWrap { padding-left: 4px !important; padding-right: 4px !important; }
+html body[data-page][data-page] #ledgerTable .ph-row { display: flex !important; align-items: center !important; direction: rtl !important; width: 100% !important; gap: 6px !important; }
+html body.lang-en[data-page][data-page] #ledgerTable .ph-row { direction: ltr !important; }
+html body[data-page][data-page] #ledgerTable .ph-side { flex: 1 1 0 !important; min-width: 0 !important; width: auto !important; }
+html body[data-page][data-page] #ledgerTable .ph-mid { flex: 0 1 auto !important; max-width: 62% !important; width: auto !important; text-align: center !important; padding: 0 !important; font-size: 16px !important; line-height: 1.35 !important; }
+html body[data-page][data-page] #ledgerTable .ph-mid #printHeaderTitleCell { position: static !important; transform: none !important; display: block !important; text-align: center !important; white-space: normal !important; }
+html body[data-page][data-page] #ledgerTable .ph-mid .print-branch, html body[data-page][data-page] #ledgerTable .ph-mid .print-acc-badge { font-size: 10.5px !important; display: inline !important; margin: 0 3px !important; }
+html body[data-page][data-page] #ledgerTable .ph-side.print-logo-box-right { text-align: right !important; }
+html body[data-page][data-page] #ledgerTable .ph-side.print-meta-left { text-align: left !important; direction: ltr !important; }
+html body[data-page][data-page] #ledgerTable .print-meta-left .pm-l { display: block !important; white-space: nowrap !important; }
+}
+</style>
+<style id="ledger-print-auto-cols">
+/* desktop print only: every column is sized by its own content (free space is shared in proportion), so the details column does not swallow the page */
+@media print and (min-width: 701px) {
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable { table-layout: auto !important; width: 100% !important; }
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable th.table-col, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tr.table-columns-header th, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tbody td { width: auto !important; min-width: 0 !important; }
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable th.col-details, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable td.col-details { width: auto !important; min-width: 0 !important; white-space: normal !important; overflow-wrap: anywhere !important; }
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tr.table-columns-header th:not(.col-details), html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tbody td:not(.col-details) { white-space: nowrap !important; }
+}
+</style>
+<style id="ledger-print-auto-cols-mobile">
+/* phone print only: every column is sized by its own content (free space is shared in proportion), so the details column does not swallow the page */
+@media print and (max-width: 700px) {
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable { table-layout: auto !important; width: 100% !important; }
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tr.table-columns-header th, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tbody td { width: auto !important; min-width: 0 !important; }
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tr.table-columns-header th.col-details, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tbody td.col-details { white-space: normal !important; overflow-wrap: anywhere !important; }
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tr.table-columns-header th:not(.col-details), html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page][data-page] #ledgerTable tbody td:not(.col-details) { white-space: nowrap !important; }
+}
+</style>
+</head>
+<body>
+
+    <div class="ledger-container" id="mainLedgerContainer">
+
+        <div class="header-section" id="ledgerHeaderSection">
+            <button onclick="triggerLedgerPrint()" class="btn-print" id="btnLedgerPrint">پرنٹ 🖨️</button>
+            <h1 class="customer-title" id="ledgerCustomerTitle">👤 لوڈنگ...</h1>
+            <button onclick="goBackSmartly()" class="btn-back" id="btnLedgerBack">واپس 🔙</button>
+            <div class="mob-sub mob-acc" id="mobAccNo"></div>
+            <div class="mob-sub mob-branch" id="mobBranchName"></div>
+        </div>
+
+        <div class="controls-wrapper" id="ledgerControlsWrapper">
+            <div class="search-wrapper">
+                <input type="text" id="ledgerSearchInput" class="search-input" placeholder="🔍 انٹری / تفصیل / آئٹم تلاش کریں...">
+            </div>
+
+            <div class="date-search-wrapper">
+                <div class="date-search-inner">
+                    <label class="date-range-field"><span id="lblDateFrom">از</span><span class="dbox"><input type="date" id="ledgerDateFrom" class="search-input date-picker-input"><i class="dicon" aria-hidden="true">📅</i></span></label>
+                    <label class="date-range-field"><span id="lblDateTo">تا</span><span class="dbox"><input type="date" id="ledgerDateTo" class="search-input date-picker-input"><i class="dicon" aria-hidden="true">📅</i></span></label>
+                    <button type="button" id="btnDateClear" class="btn-date-clear" title="تاریخ صاف کریں">✕</button>
+                </div>
+            </div>
+
+            <div class="pen-toolbar" id="penToolbarBox">
+                <button type="button" class="pen-toggle" id="penToggleBtn" aria-haspopup="true" aria-expanded="false"><span id="penToggleLabel">🖊 رنگ</span> <span>▾</span></button>
+                <div class="pen-menu" id="penMenu">
+                <span id="lblPenToolbar" style="font-size:12px; font-weight:bold; color:#ffc107;">ہائی لائٹر پین:</span>
+                <button type="button" class="pen-btn pen-yellow" id="penBtnYellow" onclick="setHighlighterPen('yellow')">🖊 پیلا</button>
+                <button type="button" class="pen-btn pen-blue" id="penBtnBlue" onclick="setHighlighterPen('blue')">🖊️ نیلا</button>
+                <button type="button" class="pen-btn pen-red" id="penBtnRed" onclick="setHighlighterPen('red')">🖊️ سرخ</button>
+                <button type="button" class="pen-btn pen-eraser" id="penBtnEraser" onclick="setHighlighterPen('')">❌ ختم</button>
+                </div>
+            </div>
+        </div>
+        <div id="filterNote" style="display:none;width:100%;margin-top:6px;text-align:center;color:#ffc107;font-weight:bold;font-size:13px;padding:4px 0;">⚠️ سرچ فعال ہے: نیچے کے ٹوٹل صرف دکھائی گئی انٹریز کے ہیں / Filter active: totals cover visible rows only</div>
+
+        <div class="footer-summary" id="footerSummaryBox">
+
+            <div class="summary-column jama-border" id="colSumPcs">
+                <h3 id="lblH3Pcs">پیس</h3>
+                <div class="summary-item"><span id="lblSumBnamPcs">کل بنام:</span><span class="col-bnam" id="fBnamPcs">0</span></div>
+                <div class="summary-item"><span id="lblSumJamaPcs">کل جمع:</span><span class="col-jama" id="fJamaPcs">0</span></div>
+                <div class="summary-item"><span id="lbl-cartons-total">ٹوٹل:</span><span id="final-cartons-total">0</span></div>
+            </div>
+
+            <div class="summary-column bnam-border" id="colSumWeight">
+                <h3 id="lblH3Weight">وزن</h3>
+                <div class="summary-item"><span id="lblSumBnamW">کل بنام:</span><span class="col-bnam" id="fBnamW">0.00</span></div>
+                <div class="summary-item"><span id="lblSumJamaW">کل جمع:</span><span class="col-jama" id="fJamaW">0.00</span></div>
+                <div class="summary-item"><span id="lbl-weight-total">ٹوٹل:</span><span id="final-weight-total">0.00</span></div>
+            </div>
+
+            <div class="summary-column" id="colSumCash">
+                <h3 id="lblH3Cash">رقم</h3>
+                <div class="summary-item"><span id="lblSumBnamCash">کل بنام:</span><span class="col-bnam" id="fBnamCash">0</span></div>
+                <div class="summary-item"><span id="lblSumJamaCash">کل جمع:</span><span class="col-jama" id="fJamaCash">0</span></div>
+                <div class="summary-item"><span id="lbl-money-total">ٹوٹل:</span><span id="final-money-total">0</span></div>
+            </div>
+        </div>
+
+        <div class="shared-scroll-wrapper" id="ledgerTablesContainer">
+            <div class="shared-inner-content">
+
+                <table id="ledgerTable">
+                    <thead id="ledgerThead">
+                        <tr class="print-repeat-row">
+                            <th id="printHeadWrap" colspan="9" class="print-head-cell">
+                                <div class="ph-row">
+                                    <div class="ph-side print-logo-box-right">
+                                        <img src="logo_print.png" alt="Logo" class="print-logo-img" onerror="this.style.display='none'">
+                                    </div>
+                                    <div id="printCenterTh" class="ph-mid print-title-center">
+                                        <span id="printHeaderTitleCell"></span>
+                                    </div>
+                                    <div class="ph-side print-meta-left" id="printLedgerDateTime"></div>
+                                </div>
+                            </th>
+                        </tr>
+                        <tr class="print-repeat-row print-summary-row"><th id="printSummaryCell" colspan="9"></th></tr>
+                        <tr class="table-columns-header">
+                            <th class="col-date" id="thDate">تاریخ</th>
+                            <th class="col-details" id="thDetails">تفصیل</th>
+                            <th class="col-extra" id="thExtra" style="display: none;">اضافی</th>
+                            <th class="col-pcs" id="thPcs">پیس</th>
+                            <th class="col-weight" id="thWeight">وزن</th>
+                            <th class="col-rate" id="thRate">ریٹ</th>
+                            <th class="col-amount col-bnam" id="thBnam">بنام رقم</th>
+                            <th class="col-amount col-jama" id="thJama">جمع رقم</th>
+                            <th class="col-amount col-balance" id="thBalance">ٹوٹل بیلنس</th>
+                            <th id="actionHeaderCol" class="edit-th">ایڈٹ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerTbody"></tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="danger-zone" id="dangerZoneContainer">
+            <button id="btnRestoreAccount" onclick="handleAccountRestore()" class="btn-restore-account">کھاتہ بحال کریں 🔄 (Restore)</button>
+            <button id="btnMainDeleteAccount" onclick="handleAccountDeletion()" class="btn-delete-account">پورا کھاتہ ڈیلیٹ کریں (ریکارڈ محفوظ ہوگا) 🚨</button>
+        </div>
+    </div>
+
+    <script>
+        function applySavedTheme() {
+            let savedTheme = App.store.get('rohan_theme_mode') || 'dark';
+            let themeMeta = document.querySelector('meta[name="theme-color"]');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#f3f4f6');
+            } else {
+                document.body.classList.remove('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#080808');
+            }
+        }
+        applySavedTheme();
+
+        let currentCustomer = sessionStorage.getItem('active_ledger_customer') || "";
+        if (!currentCustomer) { document.documentElement.style.display = 'none'; location.replace('./summary.html'); throw new Error('no-customer'); }
+        let activeBranchId = sessionStorage.getItem('active_branch_id') || 'branch_1';
+        let activeBranchName = (sessionStorage.getItem('active_branch_name') || 'ڈرائی فروٹ ہاؤس').trim();
+
+        let branchOverrides = App.readObject('rohan_branch_lang_overrides');
+        let globalLang = App.store.get('rohan_global_lang') || 'ur';
+        let activeBranchLang = sessionStorage.getItem('active_branch_lang') || branchOverrides[activeBranchId] || globalLang;
+        let isEn = (activeBranchLang === 'en');
+
+        let customerKey = activeBranchId + '_customer_list';
+        let bnamRecordsKey = activeBranchId + '_bnam_records';
+        let detailsKey = activeBranchId + '_customer_details';
+        let deletedKey = activeBranchId + '_deleted_customers';
+
+        let masterSettings = App.loadSettings(activeBranchId);
+
+        let extraList = App.visibleExtras(masterSettings);
+        let showExtra = extraList.length > 0;
+        let extraColName = (masterSettings.cols && masterSettings.cols.extra && masterSettings.cols.extra.name) ? masterSettings.cols.extra.name : (isEn ? 'Extra' : 'اضافی');
+
+        let showPcs = !masterSettings.cols || masterSettings.cols.pcs.visible !== false;
+        let pcsCustomName = (masterSettings.cols && masterSettings.cols.pcs && masterSettings.cols.pcs.name) ? masterSettings.cols.pcs.name : (isEn ? 'Pcs' : 'پیس');
+
+        let showWeight = !masterSettings.cols || masterSettings.cols.weight.visible !== false;
+        let weightCustomName = (masterSettings.cols && masterSettings.cols.weight && masterSettings.cols.weight.name) ? masterSettings.cols.weight.name : (isEn ? 'Weight' : 'وزن');
+
+        let showRate = !masterSettings.cols || masterSettings.cols.rate.visible !== false;
+        let rateCustomName = (masterSettings.cols && masterSettings.cols.rate && masterSettings.cols.rate.name) ? masterSettings.cols.rate.name : (isEn ? 'Rate' : 'ریٹ');
+
+        let amountCustomName = (masterSettings.cols && masterSettings.cols.amount && masterSettings.cols.amount.name) ? masterSettings.cols.amount.name : '';
+
+        document.getElementById('thExtra').style.display = 'none';
+        extraList.forEach(function (e) {
+            let th = document.createElement('th'); th.className = 'col-extra'; th.textContent = e.name;
+            document.getElementById('thExtra').parentNode.insertBefore(th, document.getElementById('thPcs'));
+        });
+        document.getElementById('thPcs').style.display = showPcs ? '' : 'none';
+        document.getElementById('thWeight').style.display = showWeight ? '' : 'none';
+        document.getElementById('thRate').style.display = showRate ? '' : 'none';
+
+        document.getElementById('colSumPcs').style.display = showPcs ? '' : 'none';
+        document.getElementById('colSumWeight').style.display = showWeight ? '' : 'none';
+
+        function applyLedgerBoxPlacement() {
+            let summaryBox = document.getElementById('footerSummaryBox');
+            let controlsWrapper = document.getElementById('ledgerControlsWrapper');
+            let dangerZone = document.getElementById('dangerZoneContainer');
+            document.body.classList.toggle('box-bottom', masterSettings.ledgerBoxPos !== 'top_search');
+
+            if (masterSettings.ledgerBoxPos === 'top_search') {
+                if (controlsWrapper && summaryBox) {
+                    controlsWrapper.insertAdjacentElement('afterend', summaryBox);
+                }
+            } else {
+                if (dangerZone && summaryBox) {
+                    dangerZone.insertAdjacentElement('beforebegin', summaryBox);
+                }
+            }
+        }
+        applyLedgerBoxPlacement();
+
+        let customerDetails = App.readArray(detailsKey);
+        let custInfo = null;
+        for (let i = customerDetails.length - 1; i >= 0; i--) {
+            if (customerDetails[i].name && App.sameName(customerDetails[i].name, currentCustomer)) {
+                custInfo = customerDetails[i];
+                break;
+            }
+        }
+        let currentAccountNo = (custInfo && custInfo.accountNo) ? custInfo.accountNo : '';
+
+        if (isEn) {
+            document.body.classList.add('lang-en');
+            document.documentElement.lang = 'en';
+            document.title = `Customer Ledger - ${currentCustomer}`;
+
+            document.getElementById('btnLedgerPrint').innerText = 'Print 🖨️';
+            document.getElementById('btnLedgerBack').innerText = 'Back 🔙';
+            document.getElementById('ledgerSearchInput').placeholder = '🔍 Search entry / item / amount...';
+            document.getElementById('lblDateFrom').innerText = 'From'; document.getElementById('lblDateTo').innerText = 'To'; document.getElementById('btnDateClear').title = 'Clear dates';
+
+            let penToolbarLabel = document.getElementById('lblPenToolbar');
+            if (penToolbarLabel) penToolbarLabel.innerText = 'Highlighter Pen:';
+            document.getElementById('penBtnYellow').innerText = '🖊 Yellow';
+            document.getElementById('penBtnBlue').innerText = '🖊️ Blue';
+            document.getElementById('penBtnRed').innerText = '🖊️ Red';
+            document.getElementById('penBtnEraser').innerText = '❌ Clear';
+            document.getElementById('penToggleLabel').innerText = '🖊 Colour';
+
+            document.getElementById('thDate').innerText = 'Date';
+            document.getElementById('thDetails').innerText = 'Description';
+            document.getElementById('thExtra').innerText = extraColName;
+            document.getElementById('thPcs').innerText = pcsCustomName;
+            document.getElementById('thWeight').innerText = weightCustomName;
+            document.getElementById('thRate').innerText = rateCustomName;
+            document.getElementById('thBnam').innerText = amountCustomName ? `${amountCustomName} (Dr)` : 'Debit Amount';
+            document.getElementById('thJama').innerText = amountCustomName ? `${amountCustomName} (Cr)` : 'Credit Amount';
+            document.getElementById('thBalance').innerText = 'Total Balance';
+            if (document.getElementById('actionHeaderCol')) document.getElementById('actionHeaderCol').innerText = 'Edit';
+
+            const enOnly = function(n, fb) { return (!n || /[\u0600-\u06FF]/.test(n)) ? fb : n; };
+            const fPcs = enOnly(pcsCustomName, 'Pcs'), fWeight = enOnly(weightCustomName, 'Weight'), fAmount = enOnly(amountCustomName, '');
+            document.getElementById('lblH3Pcs').innerText = `${fPcs}`;
+            document.getElementById('lblSumBnamPcs').innerText = 'Total Dr:';
+            document.getElementById('lblSumJamaPcs').innerText = 'Total Cr:';
+
+            document.getElementById('lblH3Weight').innerText = `${fWeight}`;
+            document.getElementById('lblSumBnamW').innerText = 'Total Dr:';
+            document.getElementById('lblSumJamaW').innerText = 'Total Cr:';
+
+            document.getElementById('lblH3Cash').innerText = fAmount ? `${fAmount}` : 'Amount';
+            document.getElementById('lblSumBnamCash').innerText = 'Total Dr:';
+            document.getElementById('lblSumJamaCash').innerText = 'Total Cr:';
+        } else {
+            document.body.classList.remove('lang-en');
+            document.documentElement.lang = 'ur';
+            document.title = `لیجر کھاتہ - ${currentCustomer}`;
+
+            document.getElementById('ledgerSearchInput').placeholder = '🔍 انٹری / تفصیل / آئٹم تلاش کریں...';
+            document.getElementById('lblDateFrom').innerText = 'از'; document.getElementById('lblDateTo').innerText = 'تا';
+
+            document.getElementById('thExtra').innerText = extraColName;
+            document.getElementById('thPcs').innerText = pcsCustomName;
+            document.getElementById('thWeight').innerText = weightCustomName;
+            document.getElementById('thRate').innerText = rateCustomName;
+
+            if (amountCustomName) {
+                document.getElementById('thBnam').innerText = 'بنام رقم';
+                document.getElementById('thJama').innerText = 'جمع رقم';
+            }
+
+            document.getElementById('lblH3Pcs').innerText = 'پیس';
+            document.getElementById('lblSumBnamPcs').innerText = 'کل بنام:';
+            document.getElementById('lblSumJamaPcs').innerText = 'کل جمع:';
+
+            document.getElementById('lblH3Weight').innerText = 'وزن';
+            document.getElementById('lblSumBnamW').innerText = 'کل بنام:';
+            document.getElementById('lblSumJamaW').innerText = 'کل جمع:';
+
+            if (amountCustomName) {
+                document.getElementById('lblH3Cash').innerText = 'رقم';
+                document.getElementById('lblSumBnamCash').innerText = 'کل بنام:';
+                document.getElementById('lblSumJamaCash').innerText = 'کل جمع:';
+            }
+        }
+
+        let accBadgeHtml = currentAccountNo ? `<span class="acc-no-badge">(${isEn ? 'Account No.' : 'کھاتہ نمبر'} ${App.esc(currentAccountNo)})</span>` : '';
+        let printAccBadgeHtml = currentAccountNo ? `<span class="print-acc-badge">(${isEn ? 'Account No.' : 'کھاتہ نمبر'} ${App.esc(currentAccountNo)})</span>` : '';
+
+        let fullTitleHtml = `${accBadgeHtml} <span id="ageDotSlot"></span>👤 ${App.esc(currentCustomer)} <span class="branch-sub-tag">(${App.esc(activeBranchName)})</span>`;
+        document.getElementById('ledgerCustomerTitle').innerHTML = fullTitleHtml;
+        document.getElementById('mobAccNo').textContent = currentAccountNo ? `(${isEn ? 'Account No.' : 'کھاتہ نمبر'} ${currentAccountNo})` : '';
+        document.getElementById('mobBranchName').textContent = activeBranchName ? `(${activeBranchName})` : '';
+
+        document.getElementById('printHeaderTitleCell').innerHTML = `${printAccBadgeHtml} 👤 ${App.esc(currentCustomer)} <span class="print-branch">(${App.esc(activeBranchName)})</span>`;
+
+        let savedBranchesConfig = App.store.get('rohan_branches_custom_config_v2');
+        if (savedBranchesConfig) {
+            try {
+                let branches = JSON.parse(savedBranchesConfig);
+                let currentBranch = branches.find(b => b.id === activeBranchId);
+                if (currentBranch && currentBranch.color1) {
+                    let primaryColor = currentBranch.color1;
+
+                    let container = document.getElementById('mainLedgerContainer');
+                    container.style.borderColor = primaryColor;
+                    container.style.boxShadow = `0 4px 18px ${primaryColor}35`;
+
+                    let headSec = document.getElementById('ledgerHeaderSection');
+                    if (headSec) headSec.style.borderBottomColor = primaryColor;
+
+                    let printBtn = document.getElementById('btnLedgerPrint');
+                    if (printBtn) printBtn.style.backgroundColor = primaryColor;
+
+                    let searchInp = document.getElementById('ledgerSearchInput');
+                    if (searchInp) {
+                        searchInp.addEventListener('focus', function() { this.style.borderColor = primaryColor; });
+                        searchInp.addEventListener('blur', function() { this.style.borderColor = '#333'; });
+                    }
+
+                    ['ledgerDateFrom','ledgerDateTo'].forEach(function(id) {
+                        let di = document.getElementById(id);
+                        if (di) {
+                            di.addEventListener('focus', function() { this.style.borderColor = primaryColor; });
+                            di.addEventListener('blur', function() { this.style.borderColor = '#333'; });
+                        }
+                    });
+                }
+            } catch(e){}
+        }
+
+        function updateLedgerPrintMeta() {
+            let now = new Date();
+            let d = String(now.getDate()).padStart(2, '0');
+            let m = String(now.getMonth() + 1).padStart(2, '0');
+            let y = now.getFullYear();
+
+            let hours = now.getHours();
+            let minutes = String(now.getMinutes()).padStart(2, '0');
+            let ampm = isEn ? (hours >= 12 ? 'PM' : 'AM') : (hours >= 12 ? 'شام' : 'صبح');
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            let timeStr = `${hours}:${minutes} ${ampm}`;
+
+            let srcBox = document.getElementById('footerSummaryBox'), sumCell = document.getElementById('printSummaryCell');
+            if (srcBox && sumCell) {
+                let cl = srcBox.cloneNode(true); cl.removeAttribute('id');
+                cl.querySelectorAll('[id]').forEach(e => e.removeAttribute('id'));
+                sumCell.innerHTML = ''; sumCell.appendChild(cl);
+            }
+            let ptc = document.getElementById('printHeaderTitleCell');
+            if (ptc) { let tl = (ptc.textContent || '').length; ptc.style.fontSize = tl > 80 ? '11px' : tl > 62 ? '13px' : ''; }
+            try {
+                let lt = document.getElementById('ledgerTable'), sb = document.getElementById('footerSummaryBox');
+                if (lt && sb) {
+                    let eb = document.getElementById('printEndBody');
+                    if (!eb) { eb = document.createElement('tbody'); eb.id = 'printEndBody'; eb.className = 'print-end-body'; eb.innerHTML = '<tr class="print-end-row"><td></td></tr>'; lt.appendChild(eb); }
+                    let hr = lt.querySelector('tr.table-columns-header'), n = 0;
+                    if (hr) Array.prototype.forEach.call(hr.children, function (c) { if (getComputedStyle(c).display !== 'none') n++; });
+                    let td = eb.querySelector('td'); td.setAttribute('colspan', Math.max(n, 1));
+                    let cl = sb.cloneNode(true); cl.removeAttribute('id'); cl.querySelectorAll('[id]').forEach(function (e) { e.removeAttribute('id'); });
+                    td.innerHTML = ''; td.appendChild(cl); document.body.classList.add('has-print-end');
+                }
+            } catch (e) {}
+            let dtBox = document.getElementById('printLedgerDateTime');
+            if (dtBox) {
+                dtBox.innerHTML = isEn ? `<span class="pm-l">Date: ${d}/${m}/${y}</span><span class="pm-l">Time: ${timeStr}</span>` : `<span class="pm-l">تاریخ: ${d}/${m}/${y}</span><span class="pm-l">وقت: ${timeStr}</span>`;
+            }
+        }
+
+        function triggerLedgerPrint() {
+            updateLedgerPrintMeta();
+            App.printNow({ hide: '.header-section, .btn-print, .btn-back, button, .danger-zone, .controls-wrapper, .pen-toolbar, .edit-th, .action-cell, #filterNote', table: '#ledgerTable', rowsPerPage: 24 });
+        }
+
+        window.onbeforeprint = updateLedgerPrintMeta;
+
+        let allRenderedRecords = [];
+        let activeHighlighterColor = null;
+
+        window.setHighlighterPen = function(color) {
+            if (!App.ownerCan('penTool')) return;
+
+            if (activeHighlighterColor === color) {
+                activeHighlighterColor = null;
+            } else {
+                activeHighlighterColor = color;
+            }
+            updatePenButtonsUI();
+        };
+
+        function updatePenButtonsUI() {
+            document.querySelectorAll('.pen-btn').forEach(btn => btn.classList.remove('active-pen'));
+            if (activeHighlighterColor === 'yellow') {
+                document.getElementById('penBtnYellow').classList.add('active-pen');
+            } else if (activeHighlighterColor === 'blue') {
+                document.getElementById('penBtnBlue').classList.add('active-pen');
+            } else if (activeHighlighterColor === 'red') {
+                document.getElementById('penBtnRed').classList.add('active-pen');
+            } else if (activeHighlighterColor === '') {
+                document.getElementById('penBtnEraser').classList.add('active-pen');
+            }
+            let tl = document.getElementById('penToggleLabel');
+            if (tl) {
+                let m = { yellow: ['🟡', isEn ? 'Yellow' : 'پیلا'], blue: ['🔵', isEn ? 'Blue' : 'نیلا'], red: ['🔴', isEn ? 'Red' : 'سرخ'] };
+                if (m[activeHighlighterColor]) tl.innerText = m[activeHighlighterColor][0] + ' ' + m[activeHighlighterColor][1];
+                else if (activeHighlighterColor === '') tl.innerText = '❌ ' + (isEn ? 'Clear' : 'ختم');
+                else tl.innerText = isEn ? '🖊 Colour' : '🖊 رنگ';
+            }
+        }
+
+        (function() {
+            const tgl = document.getElementById('penToggleBtn');
+            const menu = document.getElementById('penMenu');
+            if (!tgl || !menu) return;
+            function closeMenu() { menu.classList.remove('open'); tgl.setAttribute('aria-expanded', 'false'); }
+            tgl.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (menu.classList.contains('open')) { closeMenu(); return; }
+                menu.classList.add('open');
+                tgl.setAttribute('aria-expanded', 'true');
+                let r = tgl.getBoundingClientRect(), mw = menu.offsetWidth;
+                let left = Math.min(Math.max(4, r.left), window.innerWidth - mw - 4);
+                menu.style.left = left + 'px';
+                menu.style.top = (r.bottom + 4) + 'px';
+            });
+            menu.addEventListener('click', function() { setTimeout(closeMenu, 0); });
+            document.addEventListener('click', function(e) { if (!menu.contains(e.target)) closeMenu(); });
+            window.addEventListener('resize', closeMenu);
+        })();
+
+        window.handleRowHighlightClick = function(rowElement, localIdx) {
+            if (activeHighlighterColor === null) return;
+            if (!App.ownerCan('penTool')) return;
+
+            let bnamRecords = App.readArray(bnamRecordsKey);
+            let item = allRenderedRecords[localIdx];
+            if (!item || !item.recordId) return;
+            let target = bnamRecords.find(r => r && r.id === item.recordId);
+            if (!target) return;
+
+            rowElement.classList.remove('hl-yellow', 'hl-blue', 'hl-red');
+            if (activeHighlighterColor) {
+                rowElement.classList.add(`hl-${activeHighlighterColor}`);
+            }
+
+            target.highlightColor = activeHighlighterColor;
+            App.store.set(bnamRecordsKey, JSON.stringify(bnamRecords));
+        };
+
+        function goBackSmartly() {
+            let backTarget = sessionStorage.getItem('ledger_back_target') || './summary.html';
+            sessionStorage.removeItem('ledger_back_target');
+            window.location.href = backTarget;
+        }
+
+        function isAlreadyInDeletedRecords() {
+            let deletedCustomers = App.readArray(deletedKey);
+            return deletedCustomers.some(d => App.sameName(typeof d === 'object' ? d.name : d, currentCustomer));
+        }
+
+        function setupDeleteButtonUI() {
+            let delBtn = document.getElementById('btnMainDeleteAccount');
+            let restoreBtn = document.getElementById('btnRestoreAccount');
+            if (!delBtn) return;
+
+            if (isAlreadyInDeletedRecords()) {
+                delBtn.innerText = isEn ? "⚠️ Permanently Delete Account" : "⚠️ کھاتہ مکمل ختم کریں (Permanent Delete)";
+                delBtn.style.backgroundColor = "#7f1d1d";
+                if (restoreBtn) {
+                    restoreBtn.style.display = "inline-block";
+                    restoreBtn.innerText = isEn ? "Restore Account 🔄" : "کھاتہ بحال کریں 🔄 (Restore)";
+                }
+            } else {
+                delBtn.innerText = isEn ? "Delete Full Account (Data Preserved) 🚨" : "پورا کھاتہ ڈیلیٹ کریں (ریکارڈ محفوظ ہوگا) 🚨";
+                delBtn.style.backgroundColor = "#bd2130";
+                if (restoreBtn) restoreBtn.style.display = "none";
+            }
+        }
+
+        window.handleAccountRestore = function() {
+            if (!App.ownerCan('deleteAccount')) {
+                alert(isEn ? "⚠️ You are not authorized to restore an account!" : "⚠️ آپ کے پاس کھاتہ بحال کرنے کی اجازت نہیں ہے!");
+                return;
+            }
+
+            let confirmText = isEn
+                ? `🔄 Are you sure you want to restore "${currentCustomer}" back to the active ledger and summary?`
+                : `🔄 کیا آپ واقعی "${currentCustomer}" کا کھاتہ دوبارہ بحال کر کے مین سسٹم اور سمری میں واپس لانا چاہتے ہیں؟`;
+
+            if (confirm(confirmText)) {
+                let customers = App.readArray(customerKey);
+                let deletedCustomers = App.readArray(deletedKey);
+                let allDetails = App.readArray(detailsKey);
+
+                if (customers.some(c => App.sameName(c, currentCustomer))) {
+                    alert(isEn ? "⚠️ An active account with this name already exists. Cannot restore." : "⚠️ اس نام کا فعال کھاتہ پہلے سے موجود ہے، بحالی ممکن نہیں۔");
+                    return;
+                }
+                let myDetails = allDetails.find(c => c && c.name && App.sameName(c.name, currentCustomer));
+                let myAcc = myDetails ? App.norm(myDetails.accountNo) : '';
+                if (myAcc) {
+                    let activeSet = {};
+                    customers.forEach(c => { activeSet[App.norm(c)] = true; });
+                    let clash = allDetails.find(c => c && c.name && activeSet[App.norm(c.name)] && App.norm(c.accountNo) === myAcc);
+                    if (clash) {
+                        alert(isEn ? `⚠️ Account No. (${myDetails.accountNo}) is already used by "${clash.name}". Change one of them first.` : `⚠️ کھاتہ نمبر (${myDetails.accountNo}) پہلے سے "${clash.name}" کے پاس ہے۔ بحال کرنے سے پہلے ایک کا نمبر تبدیل کریں۔`);
+                        return;
+                    }
+                }
+
+                deletedCustomers = deletedCustomers.filter(d => !App.sameName(typeof d === 'object' ? d.name : d, currentCustomer));
+                App.store.set(deletedKey, JSON.stringify(deletedCustomers));
+                customers.push(currentCustomer);
+                App.store.set(customerKey, JSON.stringify(customers));
+
+                alert(isEn ? `✅ Account "${currentCustomer}" restored successfully!` : `✅ گاہک "${currentCustomer}" کا کھاتہ کامیابی سے بحال ہو گیا ہے!`);
+                window.location.replace('./summary.html');
+            }
+        };
+
+        function getVisibleColumnCount() {
+            let count = 5;
+            count += extraList.length;
+            if (showPcs) count++;
+            if (showWeight) count++;
+            if (showRate) count++;
+            if (App.ownerCan('editEntries')) count++;
+            return count;
+        }
+
+        function loadLedgerData() {
+            let bnamRecords = App.readArray(bnamRecordsKey);
+
+            let customerRecordsWithIndices = [];
+            let _ci = App.customerInfo(activeBranchId, currentCustomer, '');
+            let _cid = (_ci && _ci.id) ? _ci.id : '';
+            bnamRecords.forEach((record, originalIndex) => {
+                if (record && (App.sameName(record.customerName, currentCustomer) || (_cid && record.customerId === _cid))) {
+                    customerRecordsWithIndices.push({
+                        record: record,
+                        originalIndex: originalIndex
+                    });
+                }
+            });
+
+            customerRecordsWithIndices.sort((a, b) => {
+                let dateA = a.record.date || "";
+                let dateB = b.record.date || "";
+                if (dateA < dateB) return -1;
+                if (dateA > dateB) return 1;
+                return a.originalIndex - b.originalIndex;
+            });
+
+            const tbody = document.getElementById('ledgerTbody');
+            tbody.innerHTML = '';
+            allRenderedRecords = [];
+
+            let runningBalance = 0;
+            let totalCols = getVisibleColumnCount();
+            let centerTh = document.getElementById('printCenterTh');
+            if (centerTh) {
+                let centerColspan = totalCols - 4;
+                centerTh.setAttribute('colspan', centerColspan > 1 ? centerColspan : 1);
+                let sc = document.getElementById('printSummaryCell'); if (sc) sc.setAttribute('colspan', totalCols);
+                let hw = document.getElementById('printHeadWrap'); if (hw) hw.setAttribute('colspan', totalCols);
+            }
+
+            if (customerRecordsWithIndices.length === 0) {
+                let noDataMsg = isEn ? "No entry exists in this account yet!" : "اس کھاتے میں ابھی کوئی انٹری موجود نہیں ہے!";
+                tbody.innerHTML = `<tr><td colspan="${totalCols}" style="color: #999; padding: 18px;">${noDataMsg}</td></tr>`;
+                recalculateTotals();
+                applyRolePermissions();
+                setupDeleteButtonUI();
+                return;
+            }
+
+            customerRecordsWithIndices.forEach((item, localIndex) => {
+                let record = item.record;
+                let originalIndex = item.originalIndex;
+
+                let amt = parseFloat(record.totalAmount) || 0;
+                let w = parseFloat(record.weight) || 0;
+                let p = parseFloat(record.pcs) || 0;
+
+                let isBnam = (record.type !== 'JAMA');
+
+                let cashBnamRow = "-", cashJamaRow = "-";
+
+                if (isBnam) {
+                    cashBnamRow = amt;
+                    runningBalance -= amt;
+                } else {
+                    cashJamaRow = amt;
+                    runningBalance += amt;
+                }
+
+                allRenderedRecords.push({
+                    pcs: p,
+                    weight: w,
+                    amount: amt,
+                    isBnam: isBnam,
+                    runningBalanceAtRow: runningBalance,
+                    globalIndex: originalIndex,
+                    recordId: record.id || '',
+                    rawDate: record.date || ""
+                });
+
+                let displayDate = record.date;
+                if (record.date) {
+                    let parts = record.date.includes('-') ? record.date.split('-') : record.date.split('/');
+                    if (parts.length === 3) {
+                        let y, m, d;
+                        if (parts[0].length === 4) {
+                            y = parts[0]; m = parts[1]; d = parts[2];
+                        } else {
+                            d = parts[0]; m = parts[1]; y = parts[2];
+                        }
+                        let shortYear = y.length >= 2 ? y.slice(-2) : y;
+                        let shortMonth = parseInt(m, 10);
+                        let shortDay = parseInt(d, 10);
+                        displayDate = `${shortDay}/${shortMonth}/${shortYear}`;
+                    }
+                }
+
+                let hlClass = record.highlightColor ? `hl-${String(record.highlightColor).replace(/[^\w-]/g, '')}` : '';
+
+                let tr = document.createElement('tr');
+                tr.className = `ledger-data-row ${hlClass}`;
+                tr.setAttribute('data-index', localIndex);
+                tr.setAttribute('data-raw-date', (record.date || '').toLowerCase());
+                tr.setAttribute('data-display-date', (displayDate || '').toLowerCase());
+
+                tr.onclick = function(e) {
+                    if (e.target.closest('.action-cell')) return;
+                    handleRowHighlightClick(this, localIndex);
+                };
+
+                let balSuffix = isEn ? (runningBalance >= 0 ? ' Cr' : ' Dr') : (runningBalance >= 0 ? ' ج' : ' ب');
+
+                tr.innerHTML = `
+                    <td class="col-date">${App.esc(displayDate)}</td>
+                    <td class="col-details">${App.esc(record.details || "-")}</td>
+                    ${extraList.map(function (e) { return `<td class="col-extra">${App.esc(App.extraVal(record, e.id) || '-')}</td>`; }).join('')}
+                    ${showPcs ? `<td class="col-pcs ${isBnam ? 'col-bnam' : 'col-jama'}">${p || "0"}</td>` : ''}
+                    ${showWeight ? `<td class="col-weight ${isBnam ? 'col-bnam' : 'col-jama'}">${w ? w.toFixed(2) : "0"}</td>` : ''}
+                    ${showRate ? `<td class="col-rate">${App.esc(record.rate || "-")}</td>` : ''}
+                    <td class="col-amount col-bnam">${cashBnamRow !== "-" ? cashBnamRow.toLocaleString('en-US') : "-"}</td>
+                    <td class="col-amount col-jama">${cashJamaRow !== "-" ? cashJamaRow.toLocaleString('en-US') : "-"}</td>
+                    <td class="col-amount dynamic-balance ${runningBalance >= 0 ? 'col-jama' : 'col-bnam'}">
+                        ${Math.abs(runningBalance).toLocaleString('en-US')} ${balSuffix}
+                    </td>
+                    <td class="action-cell">
+                        <span class="btn-pen-edit" onclick="editSingleRecord(event, ${localIndex})" title="${isEn ? 'Edit or Delete' : 'ترمیم یا ڈیلیٹ کریں'}">✏️</span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            recalculateTotals();
+            applyRolePermissions();
+            setupDeleteButtonUI();
+        }
+
+        function applyRolePermissions() {
+            if (!App.ownerCan('editEntries')) {
+                const actionHeader = document.getElementById('actionHeaderCol');
+                if (actionHeader) actionHeader.style.display = 'none';
+
+                document.querySelectorAll('.action-cell').forEach(td => td.style.display = 'none');
+            }
+            if (!App.ownerCan('deleteAccount')) {
+                const dangerZone = document.getElementById('dangerZoneContainer');
+                if (dangerZone) dangerZone.style.display = 'none';
+            }
+            if (!App.ownerCan('penTool')) {
+                const penToolbar = document.getElementById('penToolbarBox');
+                if (penToolbar) penToolbar.style.display = 'none';
+            }
+        }
+
+        function recalculateTotals() {
+            let bPcs = 0, jPcs = 0, bW = 0, jW = 0, bCash = 0, jCash = 0, finalBalance = 0;
+            let visibleRows = document.querySelectorAll('#ledgerTable tbody tr.ledger-data-row');
+
+            visibleRows.forEach(row => {
+                if (row.style.display !== "none") {
+                    let idx = parseInt(row.getAttribute('data-index'));
+                    let data = allRenderedRecords[idx];
+
+                    if (data) {
+                        if (data.isBnam) {
+                            bPcs += data.pcs;
+                            bW += data.weight;
+                            bCash += data.amount;
+                        } else {
+                            jPcs += data.pcs;
+                            jW += data.weight;
+                            jCash += data.amount;
+                        }
+                    }
+                }
+            });
+
+            finalBalance = jCash - bCash;
+
+            document.getElementById('fBnamPcs').innerText = (bPcs % 1 === 0) ? bPcs : bPcs.toFixed(2);
+            document.getElementById('fJamaPcs').innerText = (jPcs % 1 === 0) ? jPcs : jPcs.toFixed(2);
+            let netP = jPcs - bPcs;
+            let lblPcsEl = document.getElementById('lbl-cartons-total');
+            let finalPcsEl = document.getElementById('final-cartons-total');
+
+            let pPrefix = isEn ? (netP >= 0 ? "Net Cr:" : "Net Dr:") : (netP >= 0 ? "کل جمع:" : "کل بنام:");
+            lblPcsEl.innerText = pPrefix;
+            finalPcsEl.innerText = ((Math.abs(netP) % 1 === 0) ? Math.abs(netP) : Math.abs(netP).toFixed(2));
+            finalPcsEl.className = netP >= 0 ? "col-jama" : "col-bnam";
+
+            document.getElementById('fBnamW').innerText = bW.toFixed(2);
+            document.getElementById('fJamaW').innerText = jW.toFixed(2);
+            let netW = jW - bW;
+            let lblWeightEl = document.getElementById('lbl-weight-total');
+            let finalWeightEl = document.getElementById('final-weight-total');
+
+            let wPrefix = isEn ? (netW >= 0 ? "Net Cr:" : "Net Dr:") : (netW >= 0 ? "کل جمع:" : "کل بنام:");
+            lblWeightEl.innerText = wPrefix;
+            finalWeightEl.innerText = Math.abs(netW).toFixed(2);
+            finalWeightEl.className = netW >= 0 ? "col-jama" : "col-bnam";
+
+            document.getElementById('fBnamCash').innerText = Math.round(bCash).toLocaleString('en-US');
+            document.getElementById('fJamaCash').innerText = Math.round(jCash).toLocaleString('en-US');
+            let lblMoneyEl = document.getElementById('lbl-money-total');
+            let finalMoneyEl = document.getElementById('final-money-total');
+
+            let mPrefix = isEn ? (finalBalance >= 0 ? "Net Cr:" : "Net Dr:") : (finalBalance >= 0 ? "کل جمع:" : "کل بنام:");
+            lblMoneyEl.innerText = mPrefix;
+            finalMoneyEl.innerText = Math.round(Math.abs(finalBalance)).toLocaleString('en-US');
+            finalMoneyEl.className = finalBalance >= 0 ? "col-jama" : "col-bnam";
+        }
+
+        window.editSingleRecord = function(event, localIdx) {
+            if (event) event.stopPropagation();
+            if (!App.ownerCan('editEntries')) {
+                alert(isEn ? "⚠️ You are not authorized to edit or delete entries!" : "⚠️ آپ کے پاس انٹری ایڈٹ یا ڈیلیٹ کرنے کی اجازت نہیں ہے!");
+                return;
+            }
+
+            let item = allRenderedRecords[localIdx];
+            if (item && item.recordId) {
+                sessionStorage.setItem('edit_record_id', item.recordId || ''); sessionStorage.setItem('edit_record_index', item.globalIndex);
+                window.location.href = './edit_entry.html';
+            } else {
+                alert(isEn ? "Entry not found!" : "انٹری نہیں ملی!");
+            }
+        };
+
+        window.handleAccountDeletion = function() {
+            if (!App.ownerCan('deleteAccount')) {
+                alert(isEn ? "⚠️ You are not authorized to delete accounts!" : "⚠️ آپ کے پاس کھاتہ ڈیلیٹ کرنے کی اجازت نہیں ہے!");
+                return;
+            }
+
+            if (isAlreadyInDeletedRecords()) {
+                let permConfirm = isEn
+                    ? `🚨 Are you sure you want to permanently delete "${currentCustomer}" and all associated entries?\nThis data cannot be recovered!`
+                    : `🚨 کیا آپ واقعی "${currentCustomer}" کا کھاتہ اور اس کی تمام سابقہ انٹریز سسٹم سے ہمیشہ کے لیے ختم کرنا چاہتے ہیں؟\nیہ ریکارڈ دوبارہ کبھی واپس نہیں آ سکے گا!`;
+
+                if (confirm(permConfirm)) {
+                    App.archiveAccount(activeBranchId, currentCustomer);
+                    let deletedCustomers = App.readArray(deletedKey);
+                    deletedCustomers = deletedCustomers.filter(d => !App.sameName(typeof d === 'object' ? d.name : d, currentCustomer));
+                    App.store.set(deletedKey, JSON.stringify(deletedCustomers));
+
+                    let bnamRecords = App.readArray(bnamRecordsKey);
+                    bnamRecords = bnamRecords.filter(r => !(r && App.sameName(r.customerName, currentCustomer)));
+                    App.store.set(bnamRecordsKey, JSON.stringify(bnamRecords));
+
+                    let customerDetails = App.readArray(detailsKey);
+                    customerDetails = customerDetails.filter(c => !(c && App.sameName(c.name, currentCustomer)));
+                    App.store.set(detailsKey, JSON.stringify(customerDetails));
+
+                    sessionStorage.removeItem('active_ledger_customer');
+                    alert(isEn ? `✅ Account "${currentCustomer}" permanently deleted!` : `✅ گاہک "${currentCustomer}" کا پورا کھاتہ اور ریکارڈ مستقل طور پر ختم کر دیا گیا ہے!`);
+                    window.location.replace('./deleted_records.html');
+                }
+            } else {
+                let delConfirm = isEn
+                    ? "🚨 Are you sure you want to delete this account and move it to 'Deleted Records'?"
+                    : "🚨 کیا آپ واقعی یہ کھاتہ ڈیلیٹ کر کے «ڈیلیٹ شدہ کھاتوں کا ریکارڈ» پینل میں منتقل کرنا چاہتے ہیں؟";
+
+                if (confirm(delConfirm)) {
+                    let customers = App.readArray(customerKey);
+                    let deletedCustomers = App.readArray(deletedKey);
+
+                    let today = new Date();
+                    let day = String(today.getDate()).padStart(2, '0');
+                    let month = String(today.getMonth() + 1).padStart(2, '0');
+                    let year = today.getFullYear();
+                    let deleteDate = `${year}-${month}-${day}`;
+
+                    customers = customers.filter(c => !App.sameName(c, currentCustomer));
+                    App.store.set(customerKey, JSON.stringify(customers));
+
+                    let alreadyExists = deletedCustomers.some(d => App.sameName(typeof d === 'object' ? d.name : d, currentCustomer));
+                    if (!alreadyExists) {
+                        deletedCustomers.push({ name: currentCustomer, date: deleteDate });
+                        App.store.set(deletedKey, JSON.stringify(deletedCustomers));
+                    }
+
+                    App.audit(activeBranchId, 'ACCOUNT_DELETE', { customer: currentCustomer, summary: 'کھاتہ ڈیلیٹ / Account deleted: ' + currentCustomer });
+                    alert(isEn ? "✅ Account successfully moved to 'Deleted Records'!" : "✅ کھاتہ کامیابی سے حذف ہو کر «ڈیلیٹ شدہ کھاتوں کا ریکارڈ» پینل میں منتقل کر دیا گیا ہے!");
+                    window.location.replace('./summary.html');
+                }
+            }
+        };
+
+        function applyCombinedLedgerSearch() {
+            let textFilter = document.getElementById('ledgerSearchInput').value.toLowerCase().replace(/,/g, '').trim();
+            let dFrom = document.getElementById('ledgerDateFrom').value;
+            let dTo = document.getElementById('ledgerDateTo').value;
+            if (dFrom && dTo && dFrom > dTo) { let tmp = dFrom; dFrom = dTo; dTo = tmp; }
+            let dateFilter = (dFrom || dTo) ? '1' : '';
+
+            document.querySelectorAll('#ledgerTable tbody tr.ledger-data-row').forEach(row => {
+                let rowText = row.innerText.toLowerCase().replace(/,/g, '');
+                let rawDate = (row.getAttribute('data-raw-date') || '').toLowerCase();
+                let displayDate = (row.getAttribute('data-display-date') || '').toLowerCase();
+
+                let matchesText = (textFilter === "") || rowText.includes(textFilter);
+                let rowIso = App.toISODate(rawDate);
+                let matchesDate = (dateFilter === "") || (rowIso !== '' && (!dFrom || rowIso >= dFrom) && (!dTo || rowIso <= dTo));
+
+                if (matchesText && matchesDate) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+            let filtered = (textFilter !== "" || dateFilter !== "");
+            let note = document.getElementById('filterNote');
+            if (note) note.style.display = filtered ? 'block' : 'none';
+            recalculateTotals();
+        }
+
+        document.getElementById('ledgerSearchInput').addEventListener('input', applyCombinedLedgerSearch);
+        ['ledgerDateFrom','ledgerDateTo'].forEach(function(id){ var e = document.getElementById(id); e.addEventListener('change', applyCombinedLedgerSearch); e.addEventListener('input', applyCombinedLedgerSearch); });
+
+        document.getElementById('btnDateClear').addEventListener('click', function() {
+            document.getElementById('ledgerDateFrom').value = '';
+            document.getElementById('ledgerDateTo').value = '';
+            applyCombinedLedgerSearch();
+        });
+
+        (function(){ var t = (window.APP_CONFIG && APP_CONFIG.PRINT_FOOTER_TEXT) || ''; if (!t) return; var st = document.createElement('style'); st.textContent = '@media print { @page { @bottom-left { content: "' + t.replace(/["\\\n\r]/g, ' ') + '"; font-size: 8.5px; font-weight: bold; color: #333333; } } }'; document.head.appendChild(st); })();
+
+        loadLedgerData();
+
+        (function () {
+            const period = App.loadSettings(activeBranchId).ledgerPeriod, now = new Date(), p2 = n => ('0' + n).slice(-2);
+            const iso = d => d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+            const from = { month: new Date(now.getFullYear(), now.getMonth(), 1), last30: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30), year: new Date(now.getFullYear(), 0, 1) }[period];
+            if (!from) return;
+            document.getElementById('ledgerDateFrom').value = iso(from);
+            applyCombinedLedgerSearch();
+        })();
+
+        (function(){
+            try {
+                if (!currentCustomer || App.loadSettings(activeBranchId).ageBanner === false) return;
+                let dd = App.dueDays(activeBranchId);
+                let ag = App.aging(App.recordsByCustomer(activeBranchId)[App.norm(currentCustomer)] || []);
+                if (!ag) return;
+                let over = dd > 0 && ag.days > dd;
+                let box = document.createElement('div');
+                box.className = 'app-banner ' + (over ? 'app-banner-bad' : 'app-banner-warn');
+                let side = ag.side === 'JAMA' ? (isEn ? 'credit' : 'جمع') : (isEn ? 'debit' : 'بنام');
+                box.textContent = (over ? '🔴 ' : '⏰ ') + (isEn
+                    ? ('Oldest unsettled ' + side + ' balance is ' + ag.days + ' days old (since ' + App.fmtDMY(ag.oldestDate) + ')' + (over ? ' — over the ' + dd + '-day limit!' : ''))
+                    : ('سب سے پرانا ' + side + ' بقایا ' + ag.days + ' دن پرانا ہے (' + App.fmtDMY(ag.oldestDate) + ' سے)' + (over ? ' — ' + dd + ' دن کی حد سے زیادہ!' : '')));
+                box.style.display = 'none';
+                let cont = document.getElementById('ledgerTablesContainer');
+                cont.parentNode.insertBefore(box, cont);
+                let slot = document.getElementById('ageDotSlot');
+                if (slot) {
+                    let btn = document.createElement('button');
+                    btn.type = 'button'; btn.className = 'age-dot-btn';
+                    btn.title = isEn ? 'Oldest balance' : 'سب سے پرانا بقایا';
+                    btn.setAttribute('aria-label', btn.title);
+                    btn.onclick = function () { box.style.display = (box.style.display === 'none') ? '' : 'none'; };
+                    slot.appendChild(btn);
+                }
+            } catch (e) { console.warn('aging banner', e); }
+        })();
+
+    </script>
+<script>
+(function(){
+  var ids=['ledgerDateFrom','ledgerDateTo'];
+  function sync(){ids.forEach(function(id){var e=document.getElementById(id);if(e)e.classList.toggle('has-val',!!e.value);});}
+  ids.forEach(function(id){var e=document.getElementById(id);if(!e)return;
+    e.addEventListener('change',sync);e.addEventListener('input',sync);
+    e.addEventListener('click',function(){try{if(e.showPicker)e.showPicker();}catch(x){}});});
+  var c=document.getElementById('btnDateClear');if(c)c.addEventListener('click',sync);
+  sync();setTimeout(sync,300);
+})();
+</script>
+</body>
+</html>

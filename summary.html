@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Unit Business Group">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#080808">
+
+    <title>روکڑ سمری - UNIT BUSINESS GROUP</title>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans Arabic', Arial, sans-serif;
+            margin: 0;
+            padding: 15px 25px;
+            direction: rtl;
+            text-align: right;
+            background-color: #0d0d0d;
+            color: white;
+            min-height: 100vh;
+            width: 100%;
+            max-width: 100%;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        body.lang-en {
+            direction: ltr !important;
+            text-align: left !important;
+        }
+
+        .container {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #28a745;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(40,167,69,0.15);
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #28a745;
+            gap: 10px;
+            width: 100%;
+            position: relative;
+        }
+        .main-title {
+            font-size: clamp(20px, 2.5vw, 30px);
+            font-weight: 800;
+            color: #ffc107;
+            text-align: center;
+            margin: 0;
+            flex: 1;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .print-logo-top-right {
+            display: none;
+        }
+
+        .branch-mini-name {
+            font-size: 11px !important;
+            font-weight: normal !important;
+            color: #ffd54f !important;
+            background: rgba(255, 213, 79, 0.12);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 213, 79, 0.3);
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+        body.lang-en .branch-mini-name {
+            margin-right: 0;
+            margin-left: 4px;
+        }
+
+        .btn-header {
+            width: 105px;
+            height: 38px;
+            font-size: clamp(13px, 1.4vw, 16px);
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            box-sizing: border-box;
+            flex: 0 0 105px;
+            line-height: normal;
+        }
+        .btn-print { background-color: #28a745; color: white; }
+        .btn-print:hover { opacity: 0.9; }
+        .btn-back { background-color: #007bff; color: white; }
+        .btn-back:hover { background-color: #0056b3; }
+
+        .filter-panel { display: flex; gap: 15px; margin-bottom: 14px; width: 100%; flex-wrap: wrap; }
+        .search-wrapper { flex: 2 1 300px; min-width: 200px; }
+        .date-wrapper { flex: 1 1 180px; min-width: 150px; }
+
+        .search-input, .date-input {
+            width: 100%;
+            padding: 10px 14px;
+            background-color: #151515;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            direction: rtl;
+            text-align: right;
+            height: 42px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        body.lang-en .search-input, body.lang-en .date-input {
+            direction: ltr !important;
+            text-align: left !important;
+        }
+
+        .search-input:focus, .date-input:focus { border-color: #28a745; outline: none; box-shadow: 0 0 8px rgba(40,167,69,0.3); }
+        .date-label { display: block; font-size: 13.5px; font-weight: 800; margin-bottom: 4px; color: #ffc107; }
+
+        .tables-container { display: flex; flex-flow: row wrap; gap: 18px; justify-content: space-between; margin-bottom: 12px; }
+        .table-wrapper { flex: 1 1 480px; min-width: 320px; width: 100%; }
+
+        .table-title {
+            font-size: clamp(17px, 2.1vw, 23px);
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-align: center;
+            display: block;
+            width: 100%;
+            letter-spacing: 0.3px;
+        }
+
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; background: #151515; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: all 0.25s ease; }
+
+        th, td {
+            padding: 6px 4px !important;
+            text-align: center;
+            border: 1px solid #2e2e2e;
+            word-wrap: break-word;
+            line-height: 1.35 !important;
+        }
+
+        th {
+            background-color: #222;
+            color: #ffc107;
+            font-weight: 800;
+            font-size: clamp(14.5px, 1.5vw, 17px);
+            letter-spacing: 0.2px;
+            padding: 8px 4px !important;
+        }
+        tr:nth-child(even) { background-color: #1a1a1a; }
+        tr:hover { background-color: #252525; }
+
+        tr.clickable-row {
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+        tr.clickable-row:active {
+            background-color: #2e2e2e !important;
+        }
+
+        .text-right { text-align: right; padding-right: 8px !important; }
+        body.lang-en .text-right { text-align: left; padding-left: 8px !important; padding-right: 4px !important; }
+
+        .customer-inline-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            width: 100%;
+        }
+
+        .customer-name-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .customer-main-name {
+            font-size: clamp(15.5px, 1.8vw, 18px);
+            font-weight: 900 !important;
+            color: #ffffff;
+        }
+
+        .khata-inline-badge {
+            font-size: 6.5px;
+            color: #b0b3b8;
+            background: #202020;
+            padding: 0px 3px;
+            border-radius: 2px;
+            border: 0.5px solid #333333;
+            font-weight: 600;
+            letter-spacing: 0px;
+            white-space: nowrap;
+            line-height: 1.1;
+        }
+
+        .customer-stats-subrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: #888888;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .stat-badge strong {
+            font-weight: bold;
+        }
+
+        .main-amount-text {
+            font-size: clamp(16px, 1.8vw, 19px) !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.6px;
+        }
+
+        th.col-action-th {
+            font-size: 10px !important;
+            font-weight: 600 !important;
+            padding: 5px 1px !important;
+            color: #aaa !important;
+            letter-spacing: -0.2px;
+            white-space: nowrap;
+        }
+        td.col-action {
+            padding: 4px 1px !important;
+            text-align: center;
+        }
+
+        .btn-pen-tiny {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 8px;
+            width: 17px;
+            height: 17px;
+            border-radius: 3px;
+            background: #252525;
+            border: 1px solid #ffc107;
+            color: #ffc107;
+            transition: all 0.2s ease;
+            margin: 0 auto;
+        }
+        .btn-pen-tiny:hover {
+            background: #ffc107;
+            color: #000;
+            transform: scale(1.15);
+        }
+
+        .btn-wa-tiny {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: transparent;
+            transition: transform 0.2s ease, filter 0.2s ease;
+            margin: 0 auto;
+            text-decoration: none;
+            padding: 0;
+            line-height: 1;
+        }
+        .btn-wa-tiny svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+        }
+        .btn-wa-tiny:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 4px rgba(37,211,102,0.8));
+        }
+
+        .summary-box {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+            background-color: #1f1f1f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 14px 12px;
+            text-align: center;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            gap: 12px;
+            transition: all 0.25s ease;
+        }
+        .summary-item {
+            font-size: clamp(16px, 2vw, 21px);
+            font-weight: 900 !important;
+            color: #ffffff;
+            flex: 1 1 33%;
+            border-right: 4px solid #ffb74d;
+            padding-right: 12px;
+            text-align: right;
+        }
+        body.lang-en .summary-item {
+            border-right: none;
+            border-left: 4px solid #ffb74d;
+            padding-right: 0;
+            padding-left: 12px;
+            text-align: left;
+        }
+
+        .summary-item.jama-side { border-right-color: #28a745; }
+        body.lang-en .summary-item.jama-side { border-left-color: #28a745; }
+        .summary-item.bnam-side { border-right-color: #dc3545; }
+        body.lang-en .summary-item.bnam-side { border-left-color: #dc3545; }
+        .summary-item.cash-side { border-right-color: #17a2b8; }
+        body.lang-en .summary-item.cash-side { border-left-color: #17a2b8; }
+
+        .summary-item div {
+            font-size: clamp(24px, 3.4vw, 38px) !important;
+            margin-top: 6px;
+            font-weight: 900 !important;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
+        }
+
+        .color-jama, .text-amount-jama { color: #28a745 !important; font-weight: 900 !important; }
+        .color-bnam, .text-amount-bnam { color: #dc3545 !important; font-weight: 900 !important; }
+        .color-cash { color: #17a2b8 !important; font-weight: 900 !important; }
+
+        .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+        body.lang-en .dot { margin-left: 0; margin-right: 6px; }
+        .dot-green { background-color: #28a745; }
+        .dot-orange { background-color: #dc3545; }
+        .dot-bag { background-color: #17a2b8; }
+
+        @media (min-width: 601px) {
+            .table-title { font-size: 25px !important; margin-bottom: 12px; }
+            th { font-size: 19px !important; padding: 10px 6px !important; }
+            td { padding: 9px 6px !important; }
+            .customer-main-name { font-size: 20.5px !important; font-weight: 900 !important; }
+            .khata-inline-badge { font-size: 9px !important; padding: 1px 5px !important; }
+            .customer-stats-subrow { font-size: 14px !important; gap: 12px !important; margin-top: 4px; }
+            .main-amount-text { font-size: 21.5px !important; font-weight: 900 !important; letter-spacing: 0.8px; }
+            th.col-action-th { font-size: 13.5px !important; }
+            .btn-pen-tiny { width: 23px !important; height: 23px !important; font-size: 11.5px !important; }
+            .btn-wa-tiny { width: 24px !important; height: 24px !important; }
+            .summary-item { font-size: 21.5px !important; font-weight: 900 !important; padding-right: 16px; }
+            body.lang-en .summary-item { padding-right: 0; padding-left: 16px; }
+            .summary-item div { font-size: 38px !important; font-weight: 900 !important; margin-top: 8px; }
+            .search-input, .date-input { font-size: 16.5px !important; height: 45px !important; }
+            .date-label { font-size: 15px !important; }
+        }
+
+        body.light-theme {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+        body.light-theme .container {
+            background: #ffffff;
+            border-color: #28a745;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        body.light-theme .main-title { color: #b45309; }
+        body.light-theme .branch-mini-name {
+            background: #fef3c7 !important;
+            color: #b45309 !important;
+            border-color: #fde68a !important;
+        }
+        body.light-theme .date-label { color: #b45309; }
+        body.light-theme .search-input,
+        body.light-theme .date-input {
+            background-color: #f9fafb;
+            color: #111827;
+            border-color: #d1d5db;
+        }
+        body.light-theme table { background: #ffffff; }
+        body.light-theme th {
+            background-color: #f3f4f6;
+            color: #111827;
+            border-color: #e5e7eb;
+        }
+        body.light-theme th.col-action-th { color: #6b7280 !important; }
+        body.light-theme td { border-color: #e5e7eb; color: #111827; }
+        body.light-theme tr:nth-child(even) { background-color: #f9fafb; }
+        body.light-theme tr:hover { background-color: #f3f4f6; }
+        body.light-theme tr.clickable-row:active { background-color: #e5e7eb !important; }
+        body.light-theme .customer-main-name { color: #111827; }
+        body.light-theme .khata-inline-badge {
+            background: #f3f4f6;
+            color: #4b5563;
+            border-color: #d1d5db;
+        }
+        body.light-theme .customer-stats-subrow { color: #6b7280; }
+        body.light-theme .btn-pen-tiny {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #b45309;
+        }
+        body.light-theme .btn-pen-tiny:hover {
+            background: #f59e0b;
+            color: #ffffff;
+        }
+
+        body.light-theme .color-jama,
+        body.light-theme .text-amount-jama { color: #15803d !important; }
+        body.light-theme .color-bnam,
+        body.light-theme .text-amount-bnam { color: #b91c1c !important; }
+        body.light-theme .color-cash { color: #0369a1 !important; }
+
+        body.light-theme .summary-box {
+            background-color: #ffffff;
+            border-color: #e5e7eb;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+        body.light-theme .summary-item { color: #111827; }
+
+        @media (max-width: 600px) {
+            body { padding: 3px; padding-bottom: 16px; }
+            .container { padding: 6px 4px; border: none; box-shadow: none; background: #121212; border-radius: 8px; }
+            body.light-theme .container { background: #ffffff; }
+
+            .top-header { margin-bottom: 6px; padding-bottom: 4px; gap: 6px !important; }
+            .main-title { font-size: 15px !important; font-weight: 800 !important; white-space: nowrap; }
+            .branch-mini-name { font-size: 9.5px !important; padding: 1px 5px; }
+
+            .btn-header {
+                padding: 7px 12px !important;
+                font-size: 13px !important;
+                font-weight: 800 !important;
+                border-radius: 6px !important;
+                width: auto !important;
+                height: auto !important;
+                flex: none !important;
+                box-sizing: border-box !important;
+                line-height: normal !important;
+            }
+
+            .filter-panel { gap: 5px; margin-bottom: 6px; }
+            .search-wrapper { flex: 2 1 300px; min-width: 200px; }
+            .date-wrapper { flex: 1 1 180px; min-width: 150px; }
+            .search-input, .date-input { height: 34px; font-size: 11.5px; padding: 4px 6px; }
+
+            .tables-container {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+                gap: 8px !important;
+                margin-bottom: 8px !important;
+            }
+            .table-wrapper {
+                width: 100% !important;
+                min-width: 0 !important;
+                flex: none !important;
+                margin-bottom: 0 !important;
+            }
+            .table-title { font-size: 15px !important; font-weight: 800 !important; margin-bottom: 4px; }
+
+            table { width: 100% !important; min-width: 0 !important; }
+
+            th, td { padding: 5px 2px !important; line-height: 1.3 !important; }
+            th { font-size: 13px !important; font-weight: 800 !important; padding: 6px 2px !important; }
+
+            th:nth-child(1), td:nth-child(1) { width: 12% !important; }
+            th:nth-child(2), td:nth-child(2) { width: 40% !important; }
+            th:nth-child(3), td:nth-child(3) { width: 40% !important; }
+            th:nth-child(4), td:nth-child(4) { width: 8% !important; }
+
+            th.col-action-th { font-size: 8.5px !important; padding: 3px 0 !important; }
+            td.col-action { padding: 4px 0 !important; }
+
+            .customer-main-name { font-size: 14.5px !important; font-weight: 900 !important; }
+            .khata-inline-badge { font-size: 5.5px !important; padding: 0 2px !important; }
+
+            .customer-stats-subrow { font-size: 9.5px; gap: 4px; margin-top: 1px; }
+            .main-amount-text { font-size: 14.5px !important; font-weight: 900 !important; }
+            .btn-pen-tiny { width: 15px; height: 15px; font-size: 7.5px; }
+            .btn-wa-tiny { width: 17px; height: 17px; }
+
+            .summary-box {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                margin-top: 8px !important;
+                padding: 8px 4px !important;
+                gap: 4px !important;
+            }
+            .summary-item {
+                flex: 1 1 33% !important;
+                border-right-width: 2.5px !important;
+                padding-right: 4px !important;
+                font-size: 12px !important;
+                font-weight: 900 !important;
+            }
+            body.lang-en .summary-item {
+                border-right-width: 0 !important;
+                border-left-width: 2.5px !important;
+                padding-right: 0 !important;
+                padding-left: 4px !important;
+            }
+            .summary-item div {
+                font-size: 18px !important;
+                font-weight: 900 !important;
+                margin-top: 3px !important;
+            }
+            .dot { width: 5px; height: 5px; margin-left: 2px; }
+            body.lang-en .dot { margin-left: 0; margin-right: 2px; }
+        }
+
+        .print-meta-info {
+            display: none;
+        }
+
+        @media print {
+            @page {
+                size: auto;
+                margin-top: 8mm !important;
+                margin-bottom: 4mm !important;
+                margin-left: 8mm !important;
+                margin-right: 8mm !important;
+                @top-left { content: none !important; }
+                @top-center { content: none !important; }
+                @top-right { content: none !important; }
+                @bottom-left {
+                    content: "";
+                    font-size: 8.5px;
+                    font-weight: bold;
+                    color: #333333;
+                }
+                @bottom-right {
+                    content: "Page " counter(page);
+                    font-size: 8.5px;
+                    font-weight: bold;
+                    color: #333333;
+                }
+            }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .btn-header, .filter-panel, .col-action-th, td.col-action, .btn-pen-tiny, .btn-wa-tiny {
+                display: none !important;
+            }
+
+            html, body, .container, table, tr, td, th, .table-wrapper {
+                font-family: 'Noto Sans Arabic', Arial, sans-serif !important;
+                background-color: white !important;
+                background: white !important;
+                color: black !important;
+            }
+            body {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            .container {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                position: relative !important;
+            }
+
+            .print-meta-info {
+                display: block !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                text-align: left !important;
+                direction: ltr !important;
+                font-size: 8.5px !important;
+                font-weight: bold !important;
+                color: #333333 !important;
+                line-height: 1.35 !important;
+                white-space: nowrap !important;
+            }
+
+            .top-header {
+                border-bottom: 2px solid #000 !important;
+                margin-bottom: 10px !important;
+                padding-bottom: 6px !important;
+                position: relative !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+            .print-logo-top-right {
+                display: block !important;
+                position: absolute !important;
+                top: 0 !important;
+                right: 0 !important;
+                height: 40px !important;
+                width: auto !important;
+                object-fit: contain !important;
+                border-radius: 0 !important;
+            }
+
+            .main-title { color: black !important; text-shadow: none !important; font-size: 20px !important; font-weight: 900 !important; }
+            .branch-mini-name {
+                border-color: #000 !important;
+                color: #000 !important;
+                background: #f0f0f0 !important;
+                font-size: 11px !important;
+            }
+
+            .tables-container {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                gap: 2% !important;
+                width: 100% !important;
+                justify-content: space-between !important;
+                margin-bottom: 10px !important;
+            }
+            .table-wrapper { width: 49% !important; flex: 0 0 49% !important; }
+            .table-title { font-size: 15px !important; margin-bottom: 5px !important; font-weight: 900 !important; color: black !important; }
+
+            table { width: 100% !important; border-collapse: collapse !important; }
+
+            th:nth-child(1), td:nth-child(1) { width: 14% !important; }
+            th:nth-child(2), td:nth-child(2) { width: 43% !important; }
+            th:nth-child(3), td:nth-child(3) { width: 43% !important; }
+
+            th, td {
+                border: 1px solid #000 !important;
+                padding: 4px 4px !important;
+                font-size: 12px !important;
+                line-height: 1.3 !important;
+            }
+            th { background-color: #f0f0f0 !important; color: black !important; font-weight: 900 !important; }
+
+            .customer-main-name {
+                font-size: 13px !important;
+                color: #000000 !important;
+                font-weight: 900 !important;
+            }
+            .main-amount-text {
+                font-size: 13.5px !important;
+                font-weight: 900 !important;
+                color: #000000 !important;
+            }
+            .khata-inline-badge {
+                font-size: 6.5px !important;
+                color: #222222 !important;
+                border: 0.5px solid #888888 !important;
+                background: #f5f5f5 !important;
+                font-weight: 600 !important;
+            }
+            .customer-stats-subrow { font-size: 9px !important; color: #333333 !important; margin-top: 1px !important; font-weight: bold !important; }
+
+            .summary-box {
+                background-color: white !important;
+                background: white !important;
+                border: 2px solid #000 !important;
+                box-shadow: none !important;
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                padding: 10px !important;
+                margin-top: 12px !important;
+                page-break-inside: avoid !important;
+            }
+            .summary-item {
+                background-color: white !important;
+                color: black !important;
+                border: none !important;
+                border-right: 2px solid #000 !important;
+                padding: 0 10px !important;
+                text-align: right !important;
+                flex: 1 !important;
+                font-size: 14px !important;
+                font-weight: 900 !important;
+            }
+            .summary-item:first-child {
+                border-right: none !important;
+            }
+            .summary-item div {
+                font-size: 20px !important;
+                color: black !important;
+                font-weight: 900 !important;
+                margin-top: 4px !important;
+            }
+            .color-jama, .summary-item.jama-side div { color: #1e7e34 !important; }
+            .color-bnam, .summary-item.bnam-side div { color: #bd2130 !important; }
+            .color-cash, .summary-item.cash-side div { color: #0056b3 !important; }
+            .dot { display: none !important; }
+        }
+    </style>
+<style id="printFlowFix">
+@media print {
+    html, body { width: 100% !important; max-width: 100% !important; min-width: 0 !important; height: auto !important; overflow: visible !important; }
+    .container, .ledger-container, .shared-scroll-wrapper, .shared-inner-content, .tables-container, .table-wrapper,
+    .summary-box, .summary-item, .footer-summary, .summary-column, .top-header, .customer-inline-info, .customer-name-row {
+        min-width: 0 !important; max-width: 100% !important; overflow: visible !important; box-sizing: border-box !important;
+    }
+    .container, .ledger-container, .shared-scroll-wrapper, .shared-inner-content { width: 100% !important; }
+    table { width: 100% !important; min-width: 0 !important; max-width: 100% !important; }
+    th, td {
+        white-space: normal !important; word-break: normal !important; overflow-wrap: anywhere !important;
+        text-overflow: clip !important; overflow: visible !important; max-width: none !important;
+    }
+    .customer-main-name, .khata-inline-badge, .customer-stats-subrow, .stat-badge, .main-amount-text, .main-title,
+    .branch-mini-name, .print-meta-left, .print-title-center, .print-acc-badge, .print-branch, .summary-item, .summary-item div,
+    .summary-item span, .summary-column h3, .col-details, .col-date, .col-amount {
+        white-space: normal !important; overflow-wrap: anywhere !important; text-overflow: clip !important;
+    }
+    .customer-stats-subrow, .customer-name-row { flex-wrap: wrap !important; }
+    .summary-box, .footer-summary { flex-wrap: wrap !important; }
+    .summary-item, .summary-column { flex: 1 1 28% !important; }
+    tr { page-break-inside: avoid !important; break-inside: avoid !important; }
+    thead { display: table-header-group !important; }
+}
+</style>
+<style id="summaryScale">
+@media screen and (min-width: 601px) {
+html body th { font-size: 15px !important; }
+html body .customer-main-name { font-size: 17px !important; }
+html body .main-amount-text { font-size: 17px !important; }
+html body .customer-stats-subrow { font-size: 12.5px !important; }
+}
+@media screen and (max-width: 600px) {
+html body th { font-size: 10.5px !important; }
+html body .customer-main-name { font-size: 11.5px !important; }
+html body .main-amount-text { font-size: 11.5px !important; }
+html body .customer-stats-subrow { font-size: 8.5px !important; }
+html body .summary-item div { font-size: 19px !important; }
+}
+</style>
+<style id="summaryAccCol">
+.acc-no-cell { font-weight: 800; color: #2196f3 !important; text-align: center; word-break: break-all; }
+body.light-theme .acc-no-cell { color: #1565c0 !important; }
+@media screen and (min-width: 601px) { html body .acc-no-cell { font-size: 16px !important; } }
+@media screen and (max-width: 600px) { html body .acc-no-cell { font-size: 10.5px !important; padding: 2px 1px !important; } html body th[id^="thAcc"] { font-size: 9.5px !important; } }
+@media print { .acc-no-cell { color: #000 !important; } }
+@media print { html body .top-header { min-height: 50px !important; padding-bottom: 6px !important; box-sizing: border-box !important; } html body .top-header .print-logo-top-right { top: 0 !important; bottom: auto !important; height: 40px !important; width: auto !important; } }
+</style>
+<style id="summaryFilterOneLine">
+@media screen and (max-width: 600px) {
+html body .filter-panel { flex-wrap: nowrap !important; gap: 5px !important; }
+html body .filter-panel .search-wrapper { flex: 1 1 0 !important; min-width: 0 !important; }
+html body .filter-panel .date-wrapper { flex: 0 0 132px !important; min-width: 0 !important; }
+html body .filter-panel .date-label { font-size: 11px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px !important; }
+html body .filter-panel .search-input, html body .filter-panel .date-input { padding: 4px 5px !important; font-size: 11px !important; }
+}
+</style>
+<style id="summaryTotalsFit">
+@media screen and (min-width: 601px) {
+html body .summary-item div { font-size: clamp(22px, 3.4vw, 38px) !important; }
+}
+@media screen and (max-width: 600px) {
+html body .summary-item { min-width: 0 !important; }
+html body .summary-item div { font-size: max(12.5px, 3.7vw) !important; letter-spacing: 0 !important; }
+}
+@media screen and (max-width: 600px) {
+  html body td.acc-no-cell, html body td:nth-child(2) { white-space: normal !important; word-break: break-word !important; overflow-wrap: anywhere !important; overflow: visible !important; text-overflow: clip !important; vertical-align: middle !important; line-height: 1.35 !important; }
+  html body td.acc-no-cell { font-size: 12px !important; padding: 4px 2px !important; }
+  html body th[id^="thAcc"] { font-size: 11px !important; white-space: normal !important; }
+}
+</style>
+<style id="summaryTotalsScale">
+@media screen and (min-width: 601px) {
+html body[data-page][data-page][data-page][data-page] .summary-box .summary-item div { font-size: 18px !important; }
+}
+</style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+<style id="summary-mobile-minus1">
+/* mobile only: table headers and customer names are 1px smaller */
+@media screen and (max-width: 600px) {
+html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page] table th, html body[data-page][data-page][data-page][data-page][data-page][data-page][data-page] .customer-main-name { font-size: calc(var(--t-num) - 1px) !important; }
+}
+</style>
+<style id="print-uniform-sizes">
+/* print only: table headers and customer names use the same size as the amount numbers */
+@media print{
+html body[data-page][data-page][data-page][data-page] table th, html body[data-page][data-page][data-page][data-page] table .customer-main-name{font-size:13.5px !important}
+}
+</style>
+</head>
+<body>
+
+    <div class="container" id="mainSummaryContainer">
+        <div class="print-meta-info" id="printMetaStamp"></div>
+
+        <div class="top-header" id="summaryTopHeader">
+            <img src="logo_print.png" alt="Logo" class="print-logo-top-right" onerror="this.style.display='none'">
+
+            <button onclick="triggerPrintWithMeta()" class="btn-header btn-print" id="btnPrintSummary">🖨️ پرنٹ</button>
+            <div class="main-title" id="summaryHeaderWrapper">
+                <span id="summaryMainTitle">روکڑ سمری</span>
+                <span id="headerBranchName" class="branch-mini-name">لوڈنگ...</span>
+            </div>
+            <a href="./home.html" class="btn-back btn-header" id="btnBackHome">🔙 واپس</a>
+        </div>
+
+        <div class="filter-panel" id="summaryFilterPanel">
+            <div class="search-wrapper">
+                <label class="date-label" id="lblSearch">🔎 گاہک تلاش</label>
+                <input type="text" id="summarySearchInput" class="search-input" placeholder="🔍 نام / نمبر / رقم">
+            </div>
+            <div class="date-wrapper">
+                <label class="date-label" id="lblDateFilter">📅 تاریخ تلاش</label>
+                <input type="date" id="summaryDateFilter" class="date-input" onchange="loadSummaryData()">
+            </div>
+        </div>
+
+        <div class="tables-container" id="summaryTablesContainer">
+            <div class="table-wrapper">
+                <div class="table-title color-jama" id="titleTableJama">🟢 جمع کھاتے (Creditors)</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 14%;" id="thAccJama">کھاتہ نمبر</th>
+                            <th style="width: 51%;" class="text-right" id="thCustJama">گاہک نام</th>
+                            <th style="width: 29%;" id="thAmtJama">جمع رقم</th>
+                            <th style="width: 6%;" class="col-action-th" id="thActionJama">ایکشن</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jama_tbody"></tbody>
+                </table>
+            </div>
+
+            <div class="table-wrapper">
+                <div class="table-title color-bnam" id="titleTableBnam">🟠 بنام کھاتے (Debitors)</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 14%;" id="thAccBnam">کھاتہ نمبر</th>
+                            <th style="width: 51%;" class="text-right" id="thCustBnam">گاہک نام</th>
+                            <th style="width: 29%;" id="thAmtBnam">بنام رقم</th>
+                            <th style="width: 6%;" class="col-action-th" id="thActionBnam">ایکشن</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bnam_tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="summary-box" id="mainSummaryTotalsBox">
+            <div class="summary-item jama-side">
+                <span class="dot dot-green"></span> <span id="lblTotalJama">ٹوٹل جمع</span>
+                <div class="color-jama" id="total_jama_box">0</div>
+            </div>
+            <div class="summary-item cash-side">
+                <span class="dot dot-bag"></span> <span id="lblNetCash">خالص کیش</span>
+                <div class="color-cash" id="net_cash">0</div>
+            </div>
+            <div class="summary-item bnam-side">
+                <span class="dot dot-orange"></span> <span id="lblTotalBnam">ٹوٹل بنام</span>
+                <div class="color-bnam" id="total_bnam_box">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        App.guardOwner('lblBtnSummary', './home.html');
+        function applySavedTheme() {
+            let savedTheme = App.store.get('rohan_theme_mode') || 'dark';
+            let themeMeta = document.querySelector('meta[name="theme-color"]');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#f3f4f6');
+            } else {
+                document.body.classList.remove('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#080808');
+            }
+        }
+        applySavedTheme();
+
+        let activeBranchId = sessionStorage.getItem('active_branch_id') || 'branch_1';
+        let activeBranchName = (sessionStorage.getItem('active_branch_name') || 'ڈرائی فروٹ ہاؤس').trim();
+
+        let branchOverrides = App.readObject('rohan_branch_lang_overrides');
+        let globalLang = App.store.get('rohan_global_lang') || 'ur';
+        let activeBranchLang = sessionStorage.getItem('active_branch_lang') || branchOverrides[activeBranchId] || globalLang;
+        let isEn = (activeBranchLang === 'en');
+
+        document.getElementById('headerBranchName').innerText = activeBranchName;
+
+        let masterSettings = App.loadSettings(activeBranchId);
+
+        (function(){ var t = (window.APP_CONFIG && APP_CONFIG.PRINT_FOOTER_TEXT) || ''; if (!t) return; var st = document.createElement('style'); st.textContent = '@media print { @page { @bottom-left { content: "' + t.replace(/["\\\n\r]/g, ' ') + '"; font-size: 8.5px; font-weight: bold; color: #333333; } } }'; document.head.appendChild(st); })();
+
+        let showPcs = !masterSettings.cols || masterSettings.cols.pcs.visible !== false;
+        let pcsCustomName = (masterSettings.cols && masterSettings.cols.pcs && masterSettings.cols.pcs.name) ? masterSettings.cols.pcs.name : (isEn ? 'Carton' : 'کارٹن');
+        let showWeight = !masterSettings.cols || masterSettings.cols.weight.visible !== false;
+        let weightCustomName = (masterSettings.cols && masterSettings.cols.weight && masterSettings.cols.weight.name) ? masterSettings.cols.weight.name : (isEn ? 'Weight' : 'وزن');
+        let amountCustomName = (masterSettings.cols && masterSettings.cols.amount && masterSettings.cols.amount.name) ? masterSettings.cols.amount.name : '';
+
+        function applyBoxPlacement() {
+            let totalsBox = document.getElementById('mainSummaryTotalsBox');
+            let tablesContainer = document.getElementById('summaryTablesContainer');
+            let filterPanel = document.getElementById('summaryFilterPanel');
+
+            if (masterSettings.summaryBoxPos === 'top' || masterSettings.summaryBoxPos === 'under_tables') {
+                if (filterPanel && totalsBox) {
+                    filterPanel.insertAdjacentElement('afterend', totalsBox);
+                }
+            } else {
+                let container = document.getElementById('mainSummaryContainer');
+                if (container && totalsBox) {
+                    container.appendChild(totalsBox);
+                }
+            }
+        }
+        applyBoxPlacement();
+
+        if (isEn) {
+            document.body.classList.add('lang-en');
+            document.documentElement.lang = 'en';
+            document.title = `Cash Summary - ${activeBranchName}`;
+
+            document.getElementById('summaryMainTitle').innerText = 'Cash Summary';
+            document.getElementById('btnPrintSummary').innerText = '🖨 Print';
+            document.getElementById('btnBackHome').innerText = '🔙 Back';
+
+            document.getElementById('lblSearch').innerText = '🔎 Search Customer';
+            document.getElementById('summarySearchInput').placeholder = '🔍 Name / Acc # / Amount';
+            document.getElementById('lblDateFilter').innerText = '📅 Search Date';
+
+            document.getElementById('titleTableJama').innerText = '🟢 Credit Accounts (Jama)';
+            document.getElementById('titleTableBnam').innerText = '🟠 Debit Accounts (Bnam)';
+
+            document.getElementById('thCustJama').innerText = 'Customer Name';
+            document.getElementById('thAccJama').innerText = 'Acc No.';
+            document.getElementById('thAccBnam').innerText = 'Acc No.';
+            document.getElementById('thAmtJama').innerText = amountCustomName || 'Credit Amount';
+
+            document.getElementById('thCustBnam').innerText = 'Customer Name';
+            document.getElementById('thAmtBnam').innerText = amountCustomName || 'Debit Amount';
+
+            let actionText = App.ownerCan('editCustomer') ? 'Edit' : 'Contact';
+            document.getElementById('thActionJama').innerText = actionText;
+            document.getElementById('thActionBnam').innerText = actionText;
+
+            document.getElementById('lblTotalJama').innerText = 'Total Credit';
+            document.getElementById('lblNetCash').innerText = 'Net Cash';
+            document.getElementById('lblTotalBnam').innerText = 'Total Debit';
+        } else {
+            document.body.classList.remove('lang-en');
+            document.documentElement.lang = 'ur';
+            document.title = `روکڑ سمری - ${activeBranchName}`;
+
+            document.getElementById('summaryMainTitle').innerText = 'روکڑ سمری';
+
+            if (amountCustomName) {
+                document.getElementById('thAmtJama').innerText = `${amountCustomName} (جمع)`;
+                document.getElementById('thAmtBnam').innerText = `${amountCustomName} (بنام)`;
+            }
+
+            let actionText = App.ownerCan('editCustomer') ? 'ترمیم' : 'رابطہ';
+            document.getElementById('thActionJama').innerText = actionText;
+            document.getElementById('thActionBnam').innerText = actionText;
+        }
+
+        let savedBranchesConfig = App.store.get('rohan_branches_custom_config_v2');
+        if (savedBranchesConfig) {
+            try {
+                let branches = JSON.parse(savedBranchesConfig);
+                let currentBranch = branches.find(b => b.id === activeBranchId);
+                if (currentBranch && currentBranch.color1) {
+                    let primaryColor = currentBranch.color1;
+                    let container = document.getElementById('mainSummaryContainer');
+                    container.style.borderColor = primaryColor;
+                    container.style.boxShadow = `0 4px 18px ${primaryColor}35`;
+
+                    let topH = document.getElementById('summaryTopHeader');
+                    if (topH) topH.style.borderBottomColor = primaryColor;
+
+                    let prBtn = document.getElementById('btnPrintSummary');
+                    if (prBtn) prBtn.style.backgroundColor = primaryColor;
+
+                    let searchInp = document.getElementById('summarySearchInput');
+                    if (searchInp) {
+                        searchInp.addEventListener('focus', function() { this.style.borderColor = primaryColor; });
+                        searchInp.addEventListener('blur', function() { this.style.borderColor = '#333'; });
+                    }
+                }
+            } catch(e){}
+        }
+
+        let savedDocTitle = document.title;
+
+        function updatePrintMetaStamp() {
+            let now = new Date();
+            let d = String(now.getDate()).padStart(2, '0');
+            let m = String(now.getMonth() + 1).padStart(2, '0');
+            let y = now.getFullYear();
+
+            let hours = now.getHours();
+            let minutes = String(now.getMinutes()).padStart(2, '0');
+            let ampm = isEn ? (hours >= 12 ? 'PM' : 'AM') : (hours >= 12 ? 'شام' : 'صبح');
+            hours = hours % 12 || 12;
+            let timeStr = `${hours}:${minutes} ${ampm}`;
+
+            let stampEl = document.getElementById('printMetaStamp');
+            if (stampEl) {
+                stampEl.innerHTML = isEn ? `Date: ${d}/${m}/${y}<br>Time: ${timeStr}` : `تاریخ: ${d}/${m}/${y}<br>وقت: ${timeStr}`;
+            }
+        }
+
+        function triggerPrintWithMeta() {
+            updatePrintMetaStamp();
+            savedDocTitle = document.title;
+            document.title = "";
+            (window.App&&App.printNow?App.printNow({hide:'.btn,.btn-header,.btn-print,.btn-back,.bar,.noprint,.search-wrapper,.date-wrap,.date-wrapper,.top-actions'}):window.print());
+            setTimeout(() => { document.title = savedDocTitle; }, 1000);
+        }
+
+        window.onbeforeprint = function() {
+            updatePrintMetaStamp();
+            savedDocTitle = document.title;
+            document.title = "";
+        };
+
+        window.onafterprint = function() {
+            document.title = savedDocTitle;
+        };
+
+        window.openCustomerWhatsApp = function(event, customerName) {
+            event.stopPropagation();
+            customerName = decodeURIComponent(customerName);
+            let detailsKey = activeBranchId + '_customer_details';
+            let customerDetails = App.readArray(detailsKey);
+
+            let custInfo = null;
+            for (let i = customerDetails.length - 1; i >= 0; i--) {
+                if (customerDetails[i].name && customerDetails[i].name.toLowerCase() === customerName.toLowerCase()) {
+                    custInfo = customerDetails[i];
+                    break;
+                }
+            }
+
+            let rawPhone = custInfo && custInfo.phone ? custInfo.phone.trim() : '';
+
+            if (!rawPhone || rawPhone === '-' || rawPhone === '0') {
+                alert(isEn ? `⚠️ Mobile number not saved for "${customerName}"!` : `⚠️ گاہک "${customerName}" کا موبائل نمبر محفوظ نہیں ہے!`);
+                return;
+            }
+
+            let cleanPhone = App.normalizePhone(rawPhone);
+
+            let sendKhataConfirm = isEn
+                ? `Do you want to share balance of "${customerName}" to WhatsApp?\n\n[OK] = Share Balance\n[Cancel] = Open WhatsApp Chat Only`
+                : `کیا آپ "${customerName}" کا بیلنس واٹس ایپ پر شیئر کرنا چاہتے ہیں؟\n\n[OK] = بیلنس شیئر کریں\n[Cancel] = صرف واٹس ایپ کھولیں`;
+
+            let shouldIncludeKhata = confirm(sendKhataConfirm);
+
+            let message = "";
+            if (shouldIncludeKhata) {
+                let bnamRecordsKey = activeBranchId + '_bnam_records';
+                let bnamRecords = App.readArray(bnamRecordsKey);
+                let custRecords = bnamRecords.filter(r => r.customerName && r.customerName.toLowerCase() === customerName.toLowerCase());
+
+                let totalJamaAmt = 0;
+                let totalBnamAmt = 0;
+
+                custRecords.forEach(r => {
+                    let amt = parseFloat(r.totalAmount) || 0;
+                    if (r.type === 'JAMA') {
+                        totalJamaAmt += amt;
+                    } else {
+                        totalBnamAmt += amt;
+                    }
+                });
+
+                let netBal = totalJamaAmt - totalBnamAmt;
+                let balLine = "";
+
+                if (netBal >= 0) {
+                    balLine = `ٹوٹل جمع = ${Math.abs(netBal).toLocaleString('en-US')}`;
+                } else {
+                    balLine = `ٹوٹل بنام = ${Math.abs(netBal).toLocaleString('en-US')}`;
+                }
+
+                if (isEn) {
+                    balLine = netBal >= 0 ? `Total Credit = ${Math.abs(netBal).toLocaleString('en-US')}` : `Total Debit = ${Math.abs(netBal).toLocaleString('en-US')}`;
+                    message = `Dear ${customerName}, kindly check your account 🥀\n` +
+                              `${activeBranchName}\n` +
+                              `${balLine}`;
+                } else {
+                    message = `محترم ${customerName} صاحب برائے مہربانی اپنا کھاتہ چیک کرو 🥀\n` +
+                              `${activeBranchName}\n` +
+                              `${balLine}`;
+                }
+            }
+
+            let waUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}`;
+            if (message) {
+                waUrl += `&text=${encodeURIComponent(message)}`;
+            }
+
+            App.openExternal(waUrl);
+        };
+
+        function loadSummaryData() {
+            let customerKey = activeBranchId + '_customer_list';
+            let detailsKey = activeBranchId + '_customer_details';
+            let bnamRecordsKey = activeBranchId + '_bnam_records';
+
+            let customers = App.readArray(customerKey).slice();
+            let customerDetails = App.readArray(detailsKey);
+            let bnamRecords = App.readArray(bnamRecordsKey);
+
+            let selectedDate = document.getElementById('summaryDateFilter').value;
+
+            let deletedShown = {};
+            if (selectedDate) {
+                App.readArray(activeBranchId + '_deleted_customers').forEach(d => {
+                    let nm = (d && typeof d === 'object') ? d.name : d;
+                    let iso = (d && typeof d === 'object') ? App.toISODate(d.date) : '';
+                    if (nm && iso && selectedDate <= iso && !customers.some(c => App.sameName(c, nm))) {
+                        customers.push(nm);
+                        deletedShown[App.norm(nm)] = true;
+                    }
+                });
+            }
+
+            let _sets = App.loadSettings(activeBranchId);
+            if (_sets.summarySort === 'name') customers.sort((a, b) => String(a).localeCompare(String(b)));
+            else if (_sets.summarySort === 'added_desc') customers.reverse();
+
+            let recsByName = {};
+            let _idMap = {};
+            App.readArray(activeBranchId + '_customer_details').forEach(c => { if (c && c.id && c.name) _idMap[c.id] = c.name; });
+            bnamRecords.forEach(r => {
+                if (!r) return;
+                let n = App.norm((r.customerId && _idMap[r.customerId]) ? _idMap[r.customerId] : r.customerName);
+                (recsByName[n] = recsByName[n] || []).push(r);
+            });
+
+            const jamaTbody = document.getElementById('jama_tbody');
+            const bnamTbody = document.getElementById('bnam_tbody');
+
+            jamaTbody.innerHTML = '';
+            bnamTbody.innerHTML = '';
+
+            let totalJamaAmount = 0, totalBnamAmount = 0;
+            let jamaRowsCount = 0, bnamRowsCount = 0;
+
+            if(customers.length === 0) {
+                let noAccMsgJama = isEn ? 'No credit accounts exist!' : 'کوئی جمع کھاتہ موجود نہیں!';
+                let noAccMsgBnam = isEn ? 'No debit accounts exist!' : 'کوئی بنام کھاتہ موجود نہیں!';
+                jamaTbody.innerHTML = `<tr><td colspan="4" style="color:#999; padding: 15px;">${noAccMsgJama}</td></tr>`;
+                bnamTbody.innerHTML = `<tr><td colspan="4" style="color:#999; padding: 15px;">${noAccMsgBnam}</td></tr>`;
+                return;
+            }
+
+            customers.forEach(customerName => {
+                let customerRecords = (recsByName[App.norm(customerName)] || []).slice();
+
+                if (selectedDate) {
+                    customerRecords = customerRecords.filter(record => record.date && record.date <= selectedDate);
+                }
+
+                let runningBalance = 0;
+                let totalJamaPcs = 0, totalBnamPcs = 0;
+                let totalJamaWeight = 0, totalBnamWeight = 0;
+
+                customerRecords.forEach(record => {
+                    let amt = parseFloat(record.totalAmount) || 0;
+                    let pcs = parseFloat(record.pcs) || 0;
+                    let wt = parseFloat(record.weight) || 0;
+
+                    if (record.type === 'JAMA') {
+                        runningBalance += amt;
+                        totalJamaPcs += pcs;
+                        totalJamaWeight += wt;
+                    } else {
+                        runningBalance -= amt;
+                        totalBnamPcs += pcs;
+                        totalBnamWeight += wt;
+                    }
+                });
+
+                let netCartons = totalJamaPcs - totalBnamPcs;
+                let netWeight = totalJamaWeight - totalBnamWeight;
+
+                if ((selectedDate || _sets.hideZero) && runningBalance === 0 && netCartons === 0 && Math.abs(netWeight) < 0.001) {
+                    return;
+                }
+
+                let custInfo = null;
+                for (let i = customerDetails.length - 1; i >= 0; i--) {
+                    if (customerDetails[i].name && customerDetails[i].name.toLowerCase() === customerName.toLowerCase()) {
+                        custInfo = customerDetails[i];
+                        break;
+                    }
+                }
+
+                let accountNoText = custInfo && custInfo.accountNo ? custInfo.accountNo : '';
+
+                let statsHtml = '';
+                let hasCartons = (showPcs && netCartons !== 0);
+                let hasWeight = (showWeight && Math.abs(netWeight) >= 0.001);
+
+                if (hasCartons || hasWeight) {
+                    let cartonPart = '';
+                    if (hasCartons) {
+                        let cColor = netCartons >= 0 ? 'color-jama' : 'color-bnam';
+                        cartonPart = `<span class="stat-badge">${App.esc(pcsCustomName)}: <strong class="${cColor}">${Math.abs(netCartons)}</strong></span>`;
+                    }
+
+                    let weightPart = '';
+                    if (hasWeight) {
+                        let wColor = netWeight >= 0 ? 'color-jama' : 'color-bnam';
+                        weightPart = `<span class="stat-badge">${App.esc(weightCustomName)}: <strong class="${wColor}">${Math.abs(netWeight).toFixed(2)}</strong></span>`;
+                    }
+
+                    statsHtml = `
+                        <div class="customer-stats-subrow">
+                            ${cartonPart}
+                            ${weightPart}
+                        </div>
+                    `;
+                }
+
+                let tr = document.createElement('tr');
+                tr.className = 'summary-row clickable-row';
+                tr.setAttribute('data-customer-name', customerName.toLowerCase());
+                tr.setAttribute('data-account-no', accountNoText.toString().toLowerCase());
+
+                tr.addEventListener('click', function(e) {
+                    if (e.target.closest('.btn-pen-tiny') || e.target.closest('.btn-wa-tiny')) return;
+                    openLedger(customerName);
+                });
+
+                const officialWaIcon = `
+                    <svg viewBox="0 0 48 48">
+                        <rect width="48" height="48" rx="11" fill="#25D366"/>
+                        <path fill="#FFFFFF" d="M24 10C16.3 10 10 16.3 10 24c0 2.7.8 5.2 2.2 7.4L10.5 38l6.8-1.7C19.4 37.4 21.6 38 24 38c7.7 0 14-6.3 14-14S31.7 10 24 10zm0 25.5c-2.1 0-4.1-.6-5.8-1.6l-.4-.2-4.3 1.1 1.2-4.2-.3-.5c-1.1-1.8-1.7-3.9-1.7-6.1 0-6.4 5.2-11.5 11.5-11.5s11.5 5.2 11.5 11.5-5.2 11.5-11.5 11.5zm6.3-8.6c-.3-.2-2-.9-2.3-1-.3-.1-.6-.2-.8.2-.2.3-.9 1.1-1.1 1.3-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.7-1.7-1-1-1.7-2-1.9-2.3-.2-.3 0-.5.2-.7.1-.1.3-.4.5-.6.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.2-.8-1.9-1.1-2.6-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.1 0 1.8 1.3 3.6 1.5 3.8.2.3 2.6 4 6.3 5.6.9.4 1.6.6 2.1.8.9.3 1.7.2 2.3.1.7-.1 2-.8 2.3-1.6.3-.8.3-1.5.2-1.6-.1-.1-.3-.2-.6-.4z"/>
+                    </svg>
+                `;
+
+                let isDeletedRow = !!deletedShown[App.norm(customerName)];
+                let actionBtnHtml = isDeletedRow ? '' : !App.ownerCan('editCustomer')
+                    ? `<span class="btn-wa-tiny" onclick="openCustomerWhatsApp(event, '${encodeURIComponent(customerName).replace(/'/g, '%27')}')" title="${isEn ? 'Contact on WhatsApp' : 'واٹس ایپ پر رابطہ کریں'}">${officialWaIcon}</span>`
+                    : `<span class="btn-pen-tiny" onclick="editCustomerName(event, '${encodeURIComponent(customerName).replace(/'/g, '%27')}')" title="${isEn ? 'Edit Info' : 'معلومات تبدیل کریں'}">✏️</span>`;
+
+                let khataPrefix = isEn ? 'Account No.' : 'کھاتہ نمبر';
+                let khataBadgeHtml = '';
+                let accCellHtml = `<td class="acc-no-cell">${accountNoText ? App.esc(accountNoText) : '-'}</td>`;
+                if (isDeletedRow) khataBadgeHtml += `<span class="khata-inline-badge">(${isEn ? 'Deleted' : 'ڈیلیٹ شدہ'})</span>`;
+
+                try {
+                    let _lim = App.creditLimitOf(activeBranchId, customerName, '');
+                    if (_lim && runningBalance < 0 && -runningBalance > _lim) khataBadgeHtml += `<span class="limit-badge">💳 ${isEn ? 'Over limit' : 'حد سے زیادہ'}</span>`;
+                } catch (e) {}
+
+                if (runningBalance > 0) {
+                    totalJamaAmount += runningBalance;
+                    jamaRowsCount++;
+
+                    tr.innerHTML = `
+                        ${accCellHtml}
+                        <td class="text-right">
+                            <div class="customer-inline-info">
+                                <div class="customer-name-row">
+                                    <strong class="customer-main-name">${App.esc(customerName)}</strong>
+                                    ${khataBadgeHtml}
+                                </div>
+                                ${statsHtml}
+                            </div>
+                        </td>
+                        <td class="color-jama text-amount-jama main-amount-text">${runningBalance.toLocaleString('en-US')}</td>
+                        <td class="col-action">${actionBtnHtml}</td>
+                    `;
+                    jamaTbody.appendChild(tr);
+                }
+                else if (runningBalance < 0) {
+                    let finalAmount = Math.abs(runningBalance);
+                    totalBnamAmount += finalAmount;
+                    bnamRowsCount++;
+
+                    tr.innerHTML = `
+                        ${accCellHtml}
+                        <td class="text-right">
+                            <div class="customer-inline-info">
+                                <div class="customer-name-row">
+                                    <strong class="customer-main-name">${App.esc(customerName)}</strong>
+                                    ${khataBadgeHtml}
+                                </div>
+                                ${statsHtml}
+                            </div>
+                        </td>
+                        <td class="color-bnam text-amount-bnam main-amount-text">${finalAmount.toLocaleString('en-US')}</td>
+                        <td class="col-action">${actionBtnHtml}</td>
+                    `;
+                    bnamTbody.appendChild(tr);
+                }
+                else {
+                    if (netCartons < 0 || netWeight < 0) {
+                        bnamRowsCount++;
+                        tr.innerHTML = `
+                            ${accCellHtml}
+                            <td class="text-right">
+                                <div class="customer-inline-info">
+                                    <div class="customer-name-row">
+                                        <strong class="customer-main-name">${App.esc(customerName)}</strong>
+                                        ${khataBadgeHtml}
+                                    </div>
+                                    ${statsHtml}
+                                </div>
+                            </td>
+                            <td class="color-bnam text-amount-bnam main-amount-text">0</td>
+                            <td class="col-action">${actionBtnHtml}</td>
+                        `;
+                        bnamTbody.appendChild(tr);
+                    } else {
+                        jamaRowsCount++;
+                        tr.innerHTML = `
+                            ${accCellHtml}
+                            <td class="text-right">
+                                <div class="customer-inline-info">
+                                    <div class="customer-name-row">
+                                        <strong class="customer-main-name">${App.esc(customerName)}</strong>
+                                        ${khataBadgeHtml}
+                                    </div>
+                                    ${statsHtml}
+                                </div>
+                            </td>
+                            <td class="color-jama text-amount-jama main-amount-text">0</td>
+                            <td class="col-action">${actionBtnHtml}</td>
+                        `;
+                        jamaTbody.appendChild(tr);
+                    }
+                }
+            });
+
+            let noRecordMsg = isEn ? 'No records found!' : 'کوئی ریکارڈ نہیں ملا!';
+            if(jamaRowsCount === 0) jamaTbody.innerHTML = `<tr class="no-data-row"><td colspan="4" style="color:#999; padding: 15px;">${noRecordMsg}</td></tr>`;
+            if(bnamRowsCount === 0) bnamTbody.innerHTML = `<tr class="no-data-row"><td colspan="4" style="color:#999; padding: 15px;">${noRecordMsg}</td></tr>`;
+
+            let netCash = totalJamaAmount - totalBnamAmount;
+
+            document.getElementById('total_jama_box').innerText = totalJamaAmount.toLocaleString('en-US');
+            document.getElementById('total_bnam_box').innerText = totalBnamAmount.toLocaleString('en-US');
+
+            let netCashEl = document.getElementById('net_cash');
+            let formattedAbsNet = Math.abs(netCash).toLocaleString('en-US');
+
+            if (netCash > 0) {
+                netCashEl.className = 'color-jama';
+                netCashEl.innerText = formattedAbsNet;
+            } else if (netCash < 0) {
+                netCashEl.className = 'color-bnam';
+                netCashEl.innerText = formattedAbsNet;
+            } else {
+                netCashEl.className = 'color-cash';
+                netCashEl.innerText = formattedAbsNet;
+            }
+        }
+
+        window.openLedger = function(customerName) {
+            sessionStorage.setItem('active_ledger_customer', customerName);
+            sessionStorage.setItem('ledger_back_target', './summary.html');
+            window.location.href = './customer_ledger.html';
+        };
+
+        window.editCustomerName = function(event, customerName) {
+            event.stopPropagation();
+            customerName = decodeURIComponent(customerName);
+            if (!App.ownerCan('editCustomer')) {
+                alert(isEn ? "⚠️ You are not authorized to edit customer details!" : "⚠️ آپ کے پاس گاہک کا نام تبدیل کرنے کی اجازت نہیں ہے!");
+                return;
+            }
+            sessionStorage.setItem('active_ledger_customer', customerName);
+            window.location.href = './edit_customer.html';
+        };
+
+        document.getElementById('summarySearchInput').addEventListener('input', function() {
+            const filterValue = this.value.toLowerCase().trim();
+            const summaryRows = document.querySelectorAll('#jama_tbody tr, #bnam_tbody tr');
+
+            summaryRows.forEach(row => {
+                if(row.classList.contains('no-data-row')) return;
+
+                let nameMatch = row.getAttribute('data-customer-name')?.includes(filterValue);
+                let accountMatch = row.getAttribute('data-account-no')?.includes(filterValue);
+                let textMatch = row.innerText.toLowerCase().replace(/,/g, '').includes(filterValue);
+
+                if (nameMatch || accountMatch || textMatch) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const st = App.loadSettings(activeBranchId);
+            if (st.summaryToday) document.getElementById('summaryDateFilter').value = App.localDate();
+            if (st.summarySubInfo === false) { const hide = document.createElement('style'); hide.textContent = '.customer-stats-subrow{display:none!important}'; document.head.appendChild(hide); }
+            loadSummaryData();
+        });
+    </script>
+<script>
+/* mobile only: short account-number header so it stays on one line */
+(function(){function f(){try{if(!window.matchMedia('(max-width:600px)').matches)return;var en=(sessionStorage.getItem('active_branch_lang')==='en');['thAccJama','thAccBnam'].forEach(function(i){var e=document.getElementById(i);if(e)e.textContent=en?'No.':'نمبر';});}catch(e){}}
+f();window.addEventListener('load',f);})();
+</script>
+</body>
+</html>

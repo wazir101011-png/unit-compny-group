@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Unit Business Group">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#080808">
+    <title>ڈیلیٹ شدہ کھاتوں کا ریکارڈ - UNIT BUSINESS GROUP</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 16px 20px;
+            direction: rtl;
+            text-align: right;
+            background-color: #0d0d0d;
+            color: white;
+            min-height: 100vh;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        body.lang-en {
+            direction: ltr !important;
+            text-align: left !important;
+        }
+
+        .archive-container {
+            width: 100%;
+            max-width: 100%;
+            background: #1a1a1a;
+            padding: 24px;
+            border-radius: 14px;
+            border: 2px solid #dc3545;
+            box-shadow: 0 4px 20px rgba(220,53,69,0.25);
+            transition: all 0.25s ease;
+        }
+
+        .archive-header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #333;
+            gap: 10px;
+            width: 100%;
+            transition: border-color 0.25s ease;
+        }
+        .archive-title {
+            font-size: clamp(18px, 2.4vw, 26px);
+            font-weight: bold;
+            color: #ff5722;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-back {
+            padding: 7px 16px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .btn-back:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .search-wrapper { margin-bottom: 15px; width: 100%; }
+        .search-input {
+            width: 100%;
+            padding: 11px 16px;
+            background-color: #151515;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            direction: rtl;
+            text-align: right;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        body.lang-en .search-input {
+            direction: ltr !important;
+            text-align: left !important;
+        }
+        .search-input:focus { border-color: #dc3545; outline: none; box-shadow: 0 0 8px rgba(220,53,69,0.3); }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 14px;
+            background-color: #151515;
+            table-layout: fixed;
+            transition: all 0.25s ease;
+        }
+        th, td {
+            padding: 10px 4px;
+            border: 1px solid #333;
+            font-weight: bold;
+            word-wrap: break-word;
+            text-overflow: ellipsis;
+        }
+        th { background-color: #222; color: #ffc107; font-size: 14.5px; }
+        tr:hover { background-color: #1d1d1d; }
+
+        th:nth-child(1), td:nth-child(1) { width: 25%; font-size: 12.5px; }
+        th:nth-child(2), td:nth-child(2) { width: 38%; text-align: right; padding-right: 8px; white-space: normal; }
+        body.lang-en th:nth-child(2), body.lang-en td:nth-child(2) { text-align: left; padding-left: 8px; padding-right: 4px; }
+        th:nth-child(3), td:nth-child(3) { width: 17%; }
+        th:nth-child(4), td:nth-child(4) { width: 20%; }
+
+        .delete-date { color: #17a2b8; direction: ltr; display: inline-block; font-size: 12px; }
+
+        .btn-view {
+            padding: 6px 8px;
+            background-color: #0284c7;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            display: block;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            white-space: nowrap;
+            transition: background 0.2s ease;
+        }
+        .btn-view:hover { background-color: #0369a1; }
+
+        .account-badge {
+            color: #ffc107;
+            font-size: 12.5px;
+            font-weight: bold;
+        }
+
+        .no-records { padding: 20px; color: #ff5722; font-size: 15px; font-weight: bold; text-align: center; }
+
+        body.light-theme {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+        body.light-theme .archive-container {
+            background: #ffffff;
+            border-color: #dc3545;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        body.light-theme .archive-header {
+            border-bottom-color: #e5e7eb;
+        }
+        body.light-theme .btn-back {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        body.light-theme .btn-back:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+        body.light-theme .search-input {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+        body.light-theme .search-input:focus {
+            background-color: #ffffff;
+            border-color: #dc3545;
+        }
+        body.light-theme .table-responsive {
+            border-color: #e5e7eb;
+        }
+        body.light-theme table {
+            background-color: #ffffff;
+        }
+        body.light-theme th {
+            background-color: #f3f4f6;
+            color: #b45309;
+            border-color: #e5e7eb;
+        }
+        body.light-theme td {
+            border-color: #e5e7eb;
+            color: #111827;
+        }
+        body.light-theme tr:hover {
+            background-color: #f9fafb;
+        }
+        body.light-theme .delete-date {
+            color: #0369a1;
+        }
+        body.light-theme .account-badge {
+            color: #b45309;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 5px; }
+            .archive-container { padding: 10px 8px; border-radius: 8px; border-width: 1.5px; }
+            .archive-header { margin-bottom: 10px; padding-bottom: 8px; }
+            .archive-title { font-size: 14px; }
+            .btn-back { padding: 4px 10px; font-size: 11px; }
+            .search-wrapper { margin-bottom: 8px; }
+            .search-input { padding: 6px 10px; font-size: 11.5px; height: 32px; }
+
+            table { font-size: 10.5px !important; }
+            th, td { padding: 6px 2px !important; }
+            th { font-size: 10.5px !important; }
+            .delete-date { font-size: 9.5px; }
+            .account-badge { font-size: 10.5px; }
+            .btn-view { padding: 5px 2px; font-size: 10px; }
+        }
+    </style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+</head>
+<body>
+
+    <div class="archive-container" id="mainArchiveContainer">
+        <div class="archive-header" id="archiveHeaderArea">
+            <h1 class="archive-title" id="archiveMainTitle">🗑️ ڈیلیٹ شدہ کھاتوں کا ریکارڈ</h1>
+            <a href="./home.html" class="btn-back" id="btnBackHome">🔙 واپس</a>
+        </div>
+
+        <div id="orphanBanner" style="display:none; margin-bottom:12px; padding:10px 12px; border:1px dashed #ffc107; border-radius:8px; font-weight:bold; font-size:14px;">
+            <span id="orphanText"></span>
+            <button type="button" id="orphanBtn" onclick="addOrphansToDeleted()" style="margin:6px 8px 0; padding:6px 12px; border:none; border-radius:6px; background:#ffc107; color:#000; font-weight:bold; cursor:pointer;"></button>
+        </div>
+
+        <div class="search-wrapper">
+            <input type="text" id="archiveSearchInput" class="search-input" placeholder="🔍 کھاتہ نمبر، نام یا تاریخ لکھ کر تلاش کریں...">
+        </div>
+
+        <div class="table-responsive">
+            <table id="archiveTable">
+                <thead>
+                    <tr>
+                        <th id="thDelDate">ڈیلیٹ تاریخ</th>
+                        <th id="thCustName">نام گاہک / پارٹی</th>
+                        <th id="thAccNo">کھاتہ #</th>
+                        <th id="thAction">کھاتہ دیکھنا</th>
+                    </tr>
+                </thead>
+                <tbody id="archive_tbody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        App.guardOwner('lblBtnDeleted', './home.html');
+        function applySavedTheme() {
+            let savedTheme = App.store.get('rohan_theme_mode') || 'dark';
+            let themeMeta = document.querySelector('meta[name="theme-color"]');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#f3f4f6');
+            } else {
+                document.body.classList.remove('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#080808');
+            }
+        }
+        applySavedTheme();
+
+        let activeBranchId = sessionStorage.getItem('active_branch_id') || 'branch_1';
+        let branchOverrides = App.readObject('rohan_branch_lang_overrides');
+        let globalLang = App.store.get('rohan_global_lang') || 'ur';
+        let activeBranchLang = sessionStorage.getItem('active_branch_lang') || branchOverrides[activeBranchId] || globalLang;
+        let isEn = (activeBranchLang === 'en');
+
+        if (isEn) {
+            document.body.classList.add('lang-en');
+            document.documentElement.lang = 'en';
+            document.title = 'Deleted Accounts Records - UNIT BUSINESS GROUP';
+
+            document.getElementById('archiveMainTitle').innerText = '🗑️ Deleted Accounts Records';
+            document.getElementById('btnBackHome').innerText = '🔙 Back';
+            document.getElementById('archiveSearchInput').placeholder = '🔍 Search by account #, name or date...';
+
+            document.getElementById('thDelDate').innerText = 'Deleted Date';
+            document.getElementById('thCustName').innerText = 'Customer / Party Name';
+            document.getElementById('thAccNo').innerText = 'Account #';
+            document.getElementById('thAction').innerText = 'View Ledger';
+        } else {
+            document.body.classList.remove('lang-en');
+            document.documentElement.lang = 'ur';
+            document.title = 'ڈیلیٹ شدہ کھاتوں کا ریکارڈ - یونٹ بزنس گروپ';
+        }
+
+        let savedBranchesConfig = App.store.get('rohan_branches_custom_config_v2');
+        if (savedBranchesConfig) {
+            try {
+                let branches = JSON.parse(savedBranchesConfig);
+                let currentBranch = branches.find(b => b.id === activeBranchId);
+                if (currentBranch && currentBranch.color1) {
+                    let primaryColor = currentBranch.color1;
+                    let container = document.getElementById('mainArchiveContainer');
+                    container.style.borderColor = primaryColor;
+                    container.style.boxShadow = `0 4px 20px ${primaryColor}35`;
+
+                    let searchInput = document.getElementById('archiveSearchInput');
+                    if (searchInput) {
+                        searchInput.addEventListener('focus', function() {
+                            this.style.borderColor = primaryColor;
+                            this.style.boxShadow = `0 0 8px ${primaryColor}40`;
+                        });
+                        searchInput.addEventListener('blur', function() {
+                            this.style.borderColor = '#333';
+                            this.style.boxShadow = 'none';
+                        });
+                    }
+                }
+            } catch(e){}
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const tbody = document.getElementById('archive_tbody');
+            const esc = App.esc;
+            const K = App.keysFor(activeBranchId);
+            const isAdmin = (App.getRole() === 'admin');
+
+            let deletedCustomers = App.readArray(K.deleted);
+            let customerDetails = App.readArray(K.details);
+
+            function findOrphans() {
+                let activeSet = App.activeNameSet(activeBranchId);
+                let delSet = {};
+                deletedCustomers.forEach(d => { delSet[App.norm(typeof d === 'object' ? d.name : d)] = true; });
+                return customerDetails.filter(c => c && c.name && !activeSet[App.norm(c.name)] && !delSet[App.norm(c.name)]);
+            }
+            function renderOrphanBanner() {
+                let box = document.getElementById('orphanBanner');
+                let orphans = findOrphans();
+                if (!orphans.length || !isAdmin) { box.style.display = 'none'; return; }
+                box.style.display = 'block';
+                document.getElementById('orphanText').innerText = isEn
+                    ? `⚠️ ${orphans.length} account(s) are neither active nor in deleted records.`
+                    : `⚠️ ${orphans.length} کھاتے نہ فعال فہرست میں ہیں نہ ڈیلیٹ شدہ میں۔`;
+                document.getElementById('orphanBtn').innerText = isEn ? 'Add to deleted records' : 'ڈیلیٹ شدہ ریکارڈ میں شامل کریں';
+            }
+            window.addOrphansToDeleted = function() {
+                if (!isAdmin) return;
+                let orphans = findOrphans();
+                if (!orphans.length) return;
+                if (!confirm(isEn ? `Add ${orphans.length} account(s) to deleted records?` : `کیا ${orphans.length} کھاتے ڈیلیٹ شدہ ریکارڈ میں شامل کریں؟`)) return;
+                orphans.forEach(c => deletedCustomers.push({ name: c.name, date: '-' }));
+                App.store.set(K.deleted, JSON.stringify(deletedCustomers));
+                renderOrphanBanner();
+                loadDeletedRecords();
+            };
+
+            function loadDeletedRecords() {
+                tbody.innerHTML = '';
+
+                if (deletedCustomers.length === 0) {
+                    let noRecMsg = isEn ? '❌ No deleted accounts found in records!' : '❌ ابھی کوئی ڈیلیٹ شدہ کھاتہ ریکارڈ میں موجود نہیں ہے!';
+                    tbody.innerHTML = `
+                        <tr id="noArchiveMessage">
+                            <td colspan="4" class="no-records">${esc(noRecMsg)}</td>
+                        </tr>`;
+                    return;
+                }
+
+                deletedCustomers.forEach((item) => {
+                    let name = typeof item === 'object' ? item.name : item;
+                    if (!name) return;
+                    let rawDate = (typeof item === 'object' && item.date) ? item.date : '-';
+                    let date = App.toISODate(rawDate) ? App.fmtDMY(rawDate) : rawDate;
+
+                    let custObj = customerDetails.find(c => c && App.sameName(c.name, name));
+                    let accNo = (custObj && custObj.accountNo) ? custObj.accountNo : '-';
+
+                    let btnText = isEn ? 'Open' : 'کھولیں';
+
+                    let tr = document.createElement('tr');
+                    tr.className = 'archive-row';
+                    tr.innerHTML = `
+                        <td><span class="delete-date">${esc(date)}</span></td>
+                        <td><strong>${esc(name)}</strong></td>
+                        <td><span class="account-badge">${esc(accNo)}</span></td>
+                        <td><button type="button" class="btn-view">${esc(btnText)}</button></td>
+                    `;
+                    tr.querySelector('.btn-view').addEventListener('click', function() { viewDeletedLedger(name); });
+                    tbody.appendChild(tr);
+                });
+            }
+
+            window.viewDeletedLedger = function(customerName) {
+                sessionStorage.setItem('active_ledger_customer', customerName);
+                sessionStorage.setItem('ledger_back_target', './deleted_records.html');
+                window.location.href = './customer_ledger.html';
+            };
+
+            const searchInput = document.getElementById('archiveSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const filterValue = searchInput.value.toLowerCase().trim();
+                    const tableRows = document.querySelectorAll('.archive-row');
+                    let visibleRows = 0;
+
+                    tableRows.forEach(row => {
+                        const rowText = row.innerText.toLowerCase();
+                        if (rowText.includes(filterValue)) {
+                            row.style.display = "";
+                            visibleRows++;
+                        } else {
+                            row.style.display = "none";
+                        }
+                    });
+
+                    let noMsg = document.getElementById('noArchiveMessage');
+                    if (!noMsg && visibleRows === 0) {
+                        let notFoundMsg = isEn ? '❌ No matching record found for this account # or name!' : '❌ مطلوبہ کھاتہ نمبر یا نام کا کوئی ریکارڈ موجود نہیں!';
+                        let tr = document.createElement('tr');
+                        tr.id = 'noArchiveMessage';
+                        tr.innerHTML = `<td colspan="4" class="no-records">${esc(notFoundMsg)}</td>`;
+                        tbody.appendChild(tr);
+                    } else if (noMsg && visibleRows > 0) {
+                        noMsg.remove();
+                    }
+                });
+            }
+
+            renderOrphanBanner();
+            loadDeletedRecords();
+        });
+    </script>
+</body>
+</html>

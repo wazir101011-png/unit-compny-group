@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<meta name="theme-color" content="#080808">
+<title>آڈٹ لاگ - UNIT BUSINESS GROUP</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:Tahoma,Arial,sans-serif;margin:0;padding:14px;background:#0d0d0d;color:#fff;direction:rtl;text-align:right;min-height:100vh}
+body.lang-en{direction:ltr;text-align:left}
+.wrap{max-width:1200px;margin:0 auto;background:#1a1a1a;border:2px solid #ffc107;border-radius:14px;padding:16px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #333;flex-wrap:wrap}
+.hd h1{font-size:clamp(15px,4.2vw,22px);margin:0;flex:1;text-align:center}
+.btn{display:inline-block;border:none;border-radius:8px;padding:9px 14px;font-weight:bold;font-size:13px;color:#fff;background:#444;cursor:pointer;text-decoration:none}
+#btnBack{background:#007bff}#btnBack:hover{background:#0056b3}
+.btn-g{background:#28a745}.btn-r{background:#c62828}.btn-b{background:#1565c0}
+input,select{padding:9px;border-radius:8px;border:1px solid #555;background:#111;color:#fff;font-size:14px;max-width:100%}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.scroll{overflow-x:auto;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:#111}
+th,td{border:1px solid #444;padding:7px 6px;text-align:center;vertical-align:middle}
+th{background:#262626;position:sticky;top:0}
+td.l{text-align:start}
+tr.over td{background:rgba(220,53,69,.18)}
+.jama{color:#4cd964;font-weight:bold}.bnam{color:#ff6b6b;font-weight:bold}
+.muted{opacity:.7;font-size:12px}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:bold;background:#555}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}@media(min-width:700px){.cards{grid-template-columns:repeat(4,1fr)}}
+.card{border:1px solid #444;border-radius:10px;padding:10px 6px;text-align:center;background:#111}.card small{display:block;font-size:12px;opacity:.8}.card b{font-size:clamp(16px,4.4vw,22px)}
+.empty{padding:26px;text-align:center;opacity:.7}
+body.light-theme{background:#f3f4f6;color:#111827}body.light-theme .wrap{background:#fff}body.light-theme .hd{border-color:#d1d5db}
+body.light-theme input,body.light-theme select{background:#fff;color:#111827;border-color:#9ca3af}
+body.light-theme table,body.light-theme .card{background:#fff}body.light-theme th{background:#e5e7eb}body.light-theme th,body.light-theme td{border-color:#9ca3af}
+body.light-theme .jama{color:#15803d}body.light-theme .bnam{color:#b91c1c}
+@media print{body{background:#fff!important;color:#000!important}.wrap{border:none!important;background:#fff!important}.btn,.bar,.noprint{display:none!important}th,td{border-color:#000!important;color:#000!important;background:#fff!important}}
+.ev{border:1px solid #444;border-radius:10px;padding:10px;margin-bottom:8px;background:#111}.ev.new{border-color:#ffc107}.ev .t{font-size:12px;opacity:.75}.ev .ch{margin:6px 0 0;font-size:13px;white-space:pre-wrap}.tag{display:inline-block;padding:1px 9px;border-radius:10px;font-size:11px;font-weight:bold;color:#fff;margin-inline-end:6px}.t-EDIT{background:#1565c0}.t-DELETE,.t-ACCOUNT_DELETE,.t-ACCOUNT_PERM_DELETE{background:#c62828}.t-RESTORE{background:#28a745}.t-ADD{background:#555}body.light-theme .ev{background:#fff;border-color:#9ca3af}
+.rb{margin-top:8px;border:1px solid #555;border-radius:8px;padding:6px 8px}.rb.old{border-color:#c62828}.rb.new{border-color:#28a745}.rt{font-size:12px;font-weight:bold;margin-bottom:4px}.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:4px 8px}.rc small{display:block;font-size:11px;opacity:.7}.rc b{font-size:13px;word-break:break-word}
+</style>
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+</head>
+<body>
+<div class="wrap">
+ <div class="hd"><a href="./home.html" class="btn" id="btnBack">🔙</a><h1 id="pgTitle"></h1><span id="hdExtra"></span></div>
+
+ <div class="bar"><select id="fa"></select><label class="muted"><input type="checkbox" id="showAdd"> <span id="lblAdd"></span></label><span class="muted" id="cnt"></span></div>
+ <div id="list"></div>
+
+</div>
+<script>
+App.guardOwner('btnAudit', './home.html');
+(function(){
+ try{if((App.store.get('rohan_theme_mode')||'dark')==='light')document.body.classList.add('light-theme');}catch(e){}
+})();
+const bid = sessionStorage.getItem('active_branch_id') || 'branch_1';
+const isEn = (sessionStorage.getItem('active_branch_lang') || (App.readObject('rohan_branch_lang_overrides')[bid]) || App.store.get('rohan_global_lang') || 'ur') === 'en';
+if (isEn) document.body.classList.add('lang-en');
+const branchName = (sessionStorage.getItem('active_branch_name') || '').trim();
+const TT = (u, e) => isEn ? e : u;
+const fmt = n => Number(n || 0).toLocaleString('en-US');
+document.getElementById('pgTitle').textContent = TT('📜 آڈٹ لاگ (تبدیلیوں کا ریکارڈ)', '📜 Audit Log (Change History)') + (branchName ? ' - ' + branchName : '');
+document.getElementById('btnBack').textContent = TT('🔙 واپس', '🔙 Back');
+
+const NAMES = { EDIT: TT('ایڈٹ','Edit'), DELETE: TT('ڈیلیٹ','Delete'), RESTORE: TT('بحال','Restore'), ADD: TT('نئی انٹری','New entry'), ACCOUNT_DELETE: TT('کھاتہ ڈیلیٹ','Account deleted'), ACCOUNT_PERM_DELETE: TT('کھاتہ مستقل ختم','Account purged') };
+document.getElementById('lblAdd').textContent = TT('نئی انٹریاں بھی دکھائیں','Show new entries too');
+const seenAt = App.store.get(bid + '_audit_seen') || '';
+const fa = document.getElementById('fa');
+fa.innerHTML = `<option value="">${TT('سب اقسام','All types')}</option>` + Object.keys(NAMES).filter(k => k !== 'ADD').map(k => `<option value="${k}">${NAMES[k]}</option>`).join('');
+const SET = App.loadSettings(bid), CN = k => (SET.cols && SET.cols[k] && SET.cols[k].name) || '';
+function recBox(r, title, cls) {
+  if (!r) return '';
+  const rows = [[TT('نمبر','No'), r.no], [TT('تاریخ','Date'), r.date], [TT('نام','Name'), r.customerName], [TT('قسم','Type'), r.type === 'JAMA' ? TT('جمع','JAMA') : TT('بنام','BNAM')],
+    [TT('تفصیل','Details'), r.details], [CN('extra') || TT('اضافی','Extra'), r.extra], [CN('pcs') || TT('پیس / نگ','Pcs'), r.pcs], [CN('weight') || TT('وزن','Weight'), r.weight],
+    [CN('rate') || TT('ریٹ','Rate'), r.rate], [TT('کل رقم','Amount'), r.totalAmount !== undefined && r.totalAmount !== '' ? fmt(r.totalAmount) : '']];
+  const cells = rows.filter(x => x[1] !== undefined && x[1] !== null && x[1] !== '' && x[1] !== '-').map(x => `<div class="rc"><small>${App.esc(x[0])}</small><b>${App.esc(String(x[1]))}</b></div>`).join('');
+  return `<div class="rb ${cls || ''}"><div class="rt">${title}</div><div class="rg">${cells}</div></div>`;
+}
+function snapFor(e) {
+  if (e.rec) return e.rec;
+  if ((e.action === 'DELETE' || e.action === 'RESTORE') && e.recordId) { const it = App.readArray(bid + '_deleted_entries').find(x => x && x.rec && x.rec.id === e.recordId); if (it) return it.rec; }
+  if (e.action === 'ADD' || e.action === 'RESTORE') { const r = App.readArray(App.keysFor(bid).records).find(x => x && x.id === e.recordId); if (r) return r; }
+  return null;
+}
+function detailHtml(e) {
+  if (e.action === 'EDIT') return recBox(e.before, TT('🔴 پرانی انٹری (ایڈٹ سے پہلے)','🔴 Old entry (before edit)'), 'old') + recBox(e.after, TT('🟢 نئی انٹری (ایڈٹ کے بعد)','🟢 New entry (after edit)'), 'new');
+  const r = snapFor(e); if (!r) return '';
+  return recBox(r, e.action === 'DELETE' ? TT('🗑️ ڈیلیٹ ہونے والی انٹری','🗑️ Deleted entry') : e.action === 'RESTORE' ? TT('♻️ بحال ہونے والی انٹری','♻️ Restored entry') : TT('انٹری','Entry'), e.action === 'DELETE' ? 'old' : 'new');
+}
+function draw() {
+  const f = fa.value, showAdd = document.getElementById('showAdd').checked;
+  const all = App.readArray(bid + '_audit_log').filter(e => e && e.action && !isNaN(new Date(e.ts))).slice().reverse();
+  const rows = all.filter(e => (f ? e.action === f : (showAdd || e.action !== 'ADD')));
+  document.getElementById('cnt').textContent = rows.length + ' / ' + all.length;
+  if (!rows.length) { document.getElementById('list').innerHTML = `<div class="empty">${TT('کوئی ریکارڈ نہیں','No records')}</div>`; return; }
+  document.getElementById('list').innerHTML = rows.slice(0, 500).map(e => {
+    const d = new Date(e.ts), p2 = n => String(n).padStart(2,'0'), when = isNaN(d) ? '-' : p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes());
+    const chl = (e.before && e.after) ? App.diffRecord(e.before, e.after, isEn) : (e.changes || []), ch = chl.length ? '\n' + chl.map(x => App.i18n.text(x)).join('\n') : '';
+    return `<div class="ev ${e.ts > seenAt && !e.minor ? 'new' : ''}"><div><span class="tag t-${App.esc(e.action)}">${App.esc(NAMES[e.action]||e.action)}</span><b>${e.no ? '#' + e.no + ' ' : ''}${App.esc(e.customer||'')}</b> ${e.amount ? '· ' + fmt(e.amount) : ''} ${e.wasOld ? '<span class="chip" style="background:#c62828">⏰ ' + TT('پرانی انٹری','old entry') + '</span>' : ''}</div><div class="t">${when} · ${App.esc(e.by||'')}</div>${ch ? '<div class="ch">' + App.esc(ch.trim()) + '</div>' : ''}${detailHtml(e)}</div>`;
+  }).join('');
+}
+fa.addEventListener('change', draw); document.getElementById('showAdd').addEventListener('change', draw);
+draw();
+App.auditMarkSeen(bid);
+
+</script>
+</body>
+</html>

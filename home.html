@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script src="./seed_dryfruit_lahore.js"></script>
+<script src="./seed_branches_import.js"></script>
+<script src="./seed_account_283.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Unit Business Group">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#080808">
+
+    <title>Unit Business Group - Home</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: center;
+            background-color: #080808;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        body.lang-en {
+            direction: ltr !important;
+            text-align: center !important;
+        }
+
+        .dashboard-container { display: flex; flex-flow: row-reverse wrap; gap: 25px; width: 100%; max-width: 1050px; justify-content: center; align-items: flex-start; }
+        body.lang-en .dashboard-container { flex-flow: row wrap; }
+
+        .chart-box {
+            flex: 1 1 450px;
+            min-width: 300px;
+            background: #111111;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .chart-header-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            gap: 8px;
+        }
+
+        .dash-branch {  font-size: clamp(12px, 1.5vw, 15px); font-weight: bold; color: #ffffff; opacity: .85; white-space: nowrap; }
+        body.light-theme .dash-branch { color: #111827; }
+        .btn-dash-print { background: transparent; border: 1px solid #555; color: inherit; border-radius: 8px; padding: 5px 10px; font-size: 12px; font-weight: bold; cursor: pointer; font-family: inherit; }
+        .dash-print-head { display: none; }
+        .chart-header-row { flex-wrap: nowrap; padding-bottom: 6px; margin-bottom: 8px; min-height: 0; }
+        .chart-header-row .chart-title { order: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(12px, 1.6vw, 16px); }
+        .chart-header-row .dash-branch { order: 2; flex: 0 1 auto; min-width: 0; max-width: 40%; overflow: hidden; text-overflow: ellipsis; font-size: clamp(11px, 1.4vw, 14px); }
+        .chart-header-row { direction: ltr !important; }
+        .chart-header-row .chart-title { flex: 1 1 0; direction: rtl; text-align: center; }
+        body.lang-en .chart-header-row .chart-title { direction: ltr; }
+        .chart-header-row .btn-dash-print { margin-left: auto; }
+        .chart-header-row .btn-dash-print { order: 3; flex: 0 0 auto; padding: 3px 8px; font-size: 11px; line-height: 1.3; border-radius: 6px; white-space: nowrap; }
+        @media print {
+            @page { size: A4 landscape; margin: 8mm; }
+            body { background: #fff !important; }
+            body > *:not(.dashboard-container), .dashboard-container > *:not(#mainChartBox) { display: none !important; }
+            .dashboard-container { display: block !important; padding: 0 !important; margin: 0 !important; }
+            #mainChartBox { display: block !important; width: 100% !important; max-width: none !important; margin: 0 !important; box-shadow: none !important; border: none !important; background: #fff !important; }
+            .btn-dash-print, .dash-branch { display: none !important; }
+            .chart-header-row { border-bottom: 2px solid #000 !important; justify-content: center !important; }
+            .chart-title { color: #000 !important; }
+            .dash-print-head { display: block !important; text-align: center; font-size: 18px; font-weight: bold; color: #000; margin: 4px 0 8px; }
+            #mainChartBox, #mainChartBox * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+        .chart-title {
+            font-size: clamp(14px, 1.8vw, 17px);
+            font-weight: bold;
+            color: #ffffff;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+            transition: color 0.25s ease;
+            order: 2;
+        }
+
+        .btn-chart-settings {
+            background-color: #1a365d !important;
+            color: #90cdf4 !important;
+            border: 1px solid #2b6cb0 !important;
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            order: 1;
+        }
+        .btn-chart-settings:hover {
+            background-color: #2b6cb0 !important;
+            color: #ffffff !important;
+            transform: scale(1.04);
+        }
+
+        .btn-top-back {
+            padding: 5px 12px;
+            background-color: #007bff !important;
+            color: #ffffff !important;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,123,255,0.3);
+            order: 3;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-top-back:hover { background-color: #0056b3 !important; }
+
+        .dashboard { flex: 1 1 400px; min-width: 300px; padding: 20px; background: #111111; border: 1px solid #222; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.6); transition: all 0.25s ease; }
+
+        .menu-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 18px; }
+        .menu-head .company-title { margin-bottom: 0; flex: 1; min-width: 0; order: 2; }
+        .company-title {
+            color: #ffffff;
+            font-size: clamp(22px, 3.8vw, 30px);
+            font-weight: bold;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+            transition: color 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .owner-sub-badge {
+            font-size: clamp(11.5px, 1.5vw, 14px);
+            font-weight: bold;
+            color: #ffd54f;
+            background: rgba(0,0,0,0.45);
+            padding: 3px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,213,79,0.3);
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .menu-btn { display: block; width: 100%; padding: clamp(10px, 2vw, 15px) 10px; margin-bottom: 12px; font-size: clamp(14px, 2.2vw, 17px); font-weight: bold; color: white; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.2s ease; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
+        .menu-btn:active { transform: scale(0.98); }
+        .btn-jama { background-color: #1b5e20 !important; color: #e8f5e9 !important; border-color: #2e7d32 !important; }
+        .btn-jama:hover { background-color: #2e7d32 !important; opacity: 0.9; }
+        .btn-bnam { background-color: #7f1d1d !important; color: #fca5a5 !important; border-color: #991b1b !important; }
+        .btn-bnam:hover { background-color: #991b1b !important; opacity: 0.9; }
+        .btn-dark { transition: all 0.3s ease; }
+
+        .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+        body.lang-en .dot { margin-left: 0; margin-right: 6px; }
+        .dot-green { background-color: #4caf50; }
+        .dot-orange { background-color: #ff9800; }
+
+        body.light-theme { background-color: #f3f4f6; color: #111827; }
+        body.light-theme .chart-box, body.light-theme .dashboard { background: #ffffff; border-color: #e5e7eb; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        body.light-theme .chart-header-row { border-bottom-color: #e5e7eb; }
+        body.light-theme .chart-title { color: #111827; }
+        body.light-theme .company-title { color: #111827; }
+        body.light-theme .owner-sub-badge { background: #fff8e1; color: #b45309; border-color: #fde68a; }
+        body.light-theme .btn-chart-settings { background-color: #ebf8ff !important; color: #2b6cb0 !important; border-color: #bee3f8 !important; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+            padding: 15px;
+        }
+        .modal-box {
+            background: #ffffff !important;
+            width: 100%;
+            max-width: 940px;
+            height: min(680px, 92vh);
+            border-radius: 18px;
+            color: #1f2937 !important;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+            text-align: right;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        body.lang-en .modal-box { text-align: left; }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 22px;
+            background: linear-gradient(135deg, #7d2ae8, #00c4cc);
+        }
+        .modal-title { font-size: 18px; font-weight: 900; color: #ffffff !important; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .btn-modal-close { background: rgba(255,255,255,0.2); border: none; color: #ffffff; width: 32px; height: 32px; border-radius: 50%; font-size: 17px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .btn-modal-close:hover { background: rgba(255,255,255,0.35); }
+        .modal-main { display: flex; flex: 1; min-height: 0; }
+        .settings-tabs { flex: 0 0 200px; display: flex; flex-direction: column; gap: 4px; padding: 14px 10px; background: #f5f3ff; overflow-y: auto; }
+        .settings-tab { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: none; border-radius: 10px; background: transparent; color: #4b5563; font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; text-align: inherit; }
+        .settings-tab:hover { background: #ebe5ff; }
+        .settings-tab.active { background: #7d2ae8; color: #ffffff; box-shadow: 0 4px 12px rgba(125,42,232,0.35); }
+        .settings-tab .tab-ico { font-size: 18px; }
+        .modal-body-scroll { padding: 18px 22px; overflow-y: auto; flex: 1; background: #ffffff; color: #1f2937 !important; }
+        .settings-card-group { display: none; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; box-sizing: border-box; box-shadow: 0 2px 8px rgba(17,24,39,0.06); }
+        .settings-card-group.tab-on { display: block; }
+        .group-header-title { font-size: 15px; font-weight: 900; color: #111827 !important; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .settings-grid-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 10px; }
+        .field-item { display: flex; flex-direction: column; gap: 6px; }
+        .field-item label { font-size: 13px; font-weight: 800; color: #374151 !important; }
+        .field-input, .field-select { width: 100%; padding: 10px 12px; background: #f9fafb; color: #111827 !important; border: 1.5px solid #e5e7eb; border-radius: 10px; font-size: 13.5px; font-weight: bold; outline: none; box-sizing: border-box; }
+        .field-input:focus, .field-select:focus { border-color: #7d2ae8; background: #ffffff; box-shadow: 0 0 0 3px rgba(125,42,232,0.15); }
+        .col-add-btn { margin-top: 12px; padding: 10px 16px; border: 2px dashed #7d2ae8; border-radius: 10px; background: #f5f3ff; color: #5b21b6; font: inherit; font-size: 14px; font-weight: 900; cursor: pointer; width: 100%; }
+        .col-add-btn:hover { background: #ebe5ff; }
+        .col-hint { font-size: 12px; color: #6b7280 !important; font-weight: bold; line-height: 1.8; margin: 8px 2px 0; }
+        .col-mv { border: 1px solid #d1d5db; background: #fff; color: #4b5563; border-radius: 6px; width: 28px; height: 26px; cursor: pointer; font-size: 12px; font-weight: 900; }
+        .col-mv:hover { background: #ebe5ff; }
+        .col-mv:disabled { opacity: .35; cursor: default; }
+        .col-del { border: none; background: #fee2e2; color: #b91c1c; border-radius: 6px; width: 28px; height: 28px; cursor: pointer; font-weight: 900; }
+        .col-xbadge { display: inline-block; background: #7d2ae8; color: #fff !important; border-radius: 6px; padding: 0 6px; font-size: 11px; margin-inline-start: 4px; }
+        .control-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; margin-top: 6px; }
+        .control-table th, .control-table td { padding: 9px 10px; border-bottom: 1px solid #eef0f3; text-align: right; vertical-align: middle; color: #1f2937 !important; font-weight: bold; }
+        body.lang-en .control-table th, body.lang-en .control-table td { text-align: left; }
+        .control-table th { background: #f5f3ff; font-weight: 900; }
+        .checkbox-container { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 800; color: #374151 !important; font-size: 13px; }
+        .checkbox-container input[type="checkbox"] { appearance: none; -webkit-appearance: none; flex: 0 0 38px; width: 38px; height: 22px; margin: 0; border-radius: 22px; background: #d1d5db; position: relative; cursor: pointer; transition: background 0.2s; }
+        .checkbox-container input[type="checkbox"]::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .checkbox-container input[type="checkbox"]:checked { background: #7d2ae8; }
+        .checkbox-container input[type="checkbox"]:checked::after { transform: translateX(16px); }
+        .modal-footer { padding: 12px 22px; border-top: 1px solid #e5e7eb; background: #ffffff; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .btn-modal-save { background: linear-gradient(135deg, #7d2ae8, #5b21b6); color: #ffffff; border: none; padding: 11px 30px; border-radius: 10px; font-weight: 900; font-size: 15px; cursor: pointer; }
+        .btn-modal-save:hover { filter: brightness(1.1); }
+        .btn-modal-reset { background: #f3f4f6; color: #4b5563; border: none; padding: 11px 18px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; }
+        .btn-modal-reset:hover { background: #e5e7eb; }
+
+        .terrain-stage { position: relative; width: 100%; height: auto; margin-top: 12px; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #1f9d63 0%, #0e6b73 38%, #0b3d6b 72%, #0a2a5c 100%); box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35); color: #12303a; container-type: inline-size; text-align: start; display: flex; flex-direction: column; gap: 12px; padding: 12px; font-family: Tahoma, Arial, sans-serif; }
+        body.light-theme .terrain-stage { background: linear-gradient(135deg, #8fe3b3 0%, #7fd0d6 40%, #8fb8ee 100%); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12); }
+        .terrain-stage * { box-sizing: border-box; }
+        .terrain-stage i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-inline: 4px; }
+        .db-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: #fff; font-weight: 800; font-size: 14px; }
+        .db-sel select { padding: 4px 10px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.92); color: #12303a; font-weight: 800; font-size: 14px; }
+        .db-months { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+        .db-months button { border: 1px solid rgba(255, 255, 255, 0.35); background: rgba(6, 40, 60, 0.45); color: #fff; border-radius: 9px; padding: 6px 2px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+        .db-months button.on { background: #38e8c6; color: #06323a; border-color: #38e8c6; box-shadow: 0 0 10px rgba(56, 232, 198, 0.7); }
+        .db-kpis { display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: 10px; }
+        .db-kpi { position: relative; border-radius: 16px; padding: 10px 12px 34px; color: #fff; overflow: hidden; min-height: 118px; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+        .db-kpi.c1 { background: linear-gradient(135deg, #12b886, #087f5b); }
+        .db-kpi.c2 { background: linear-gradient(135deg, #ff922b, #d9480f); }
+        .db-kpi.c3 { background: linear-gradient(135deg, #4dabf7, #3b5bdb); }
+        .db-kpi.c4 { background: linear-gradient(135deg, #22d3ee, #1971c2); }
+        .db-kpi.c5 { background: linear-gradient(135deg, #be4bdb, #7048e8); }
+        .db-kpi .kt { font-size: 12px; font-weight: 800; opacity: 0.95; }
+        .db-kpi .kv { font-size: 22px; font-weight: 900; margin: 4px 0 2px; text-align: start; letter-spacing: 0.3px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); }
+        .db-kpi .kv.sm { font-size: 17px; }
+        .db-kpi .ks { font-size: 11px; opacity: 0.9; }
+        .db-kpi canvas { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 30px; }
+        .cb { border-top: 5px solid #868e96; }
+        .cb h4 { margin: 0 0 8px; font-size: 14px; color: #12303a; display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+        .cb h4 small { font-size: 11px; font-weight: 700; color: #5f7d86; }
+        .cb .cr { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 5px 0; border-bottom: 1px dashed rgba(95,125,134,0.35); font-size: 13px; color: #12303a; }
+        .cb .cr b { font-size: 15px; direction: ltr; unicode-bidi: plaintext; }
+        .cb .cr.big { border-bottom: 0; padding-top: 9px; font-size: 14px; font-weight: 800; }
+        .cb .cr.big b { font-size: 22px; }
+        .cb .jm { color: #0ca678; } .cb .bn { color: #e03131; }
+        .cb .tg { font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 9px; color: #fff; margin-inline-start: 6px; }
+        .cb .tg.jm { background: #0ca678; color: #fff; } .cb .tg.bn { background: #e03131; color: #fff; }
+        .cb .wt { margin-top: 6px; padding-top: 6px; border-top: 2px solid rgba(95,125,134,0.35); }
+
+
+
+
+        /* فائنل ریٹ بکس */
+        .grt { background: radial-gradient(circle at 50% 0%, #e6fcf5, #ffffff 70%) !important; border: 0 !important; border-top: 0 !important; border-radius: 30px; box-shadow: 0 0 0 2px #12b886, 0 10px 0 -3px #96f2d7; text-align: center; min-width: 0; align-self: start; overflow: hidden; }
+        .grt .gr-top { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 6px; } .grt .gr-badge { background: #087f5b; color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 3px 14px; border-radius: 999px; } .grt .gr-nm { font-weight: 800; font-size: 14px; color: #12303a; overflow-wrap: anywhere; }
+        .grt .gr-ring { width: 150px; max-width: 80%; aspect-ratio: 1; margin: 6px auto; border-radius: 50%; background: conic-gradient(#12b886, #66d9e8, #748ffc, #12b886); padding: 7px; box-sizing: border-box; display: flex; } .grt .gr-in { flex: 1; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0 6px; } .grt .gr-in b { font-size: 21px; color: #087f5b; direction: ltr; white-space: nowrap; max-width: 100%; } .grt .gr-in b.no { color: #868e96; }
+        .grt .gr-no { font-size: 11px; color: #c92a2a; margin-bottom: 4px; }
+        .grt .gr-eq { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; padding-top: 8px; border-top: 2px dotted #96f2d7; } .grt .gr-eq > div { flex: 1; min-width: 0; } .grt .gr-eq small { display: block; font-size: 11px; color: #5f7d86; } .grt .gr-eq b { font-size: 14px; color: #12303a; overflow-wrap: anywhere; } .grt .gr-eq span { font-size: 20px; font-weight: 900; color: #12b886; }
+        /* کھاتہ بکس (چھوٹے باکس) */
+        .tls { background: #fffaf0 !important; border: 0 !important; border-top: 0 !important; border-radius: 4px 24px 4px 24px; box-shadow: 0 0 0 2px #e8590c, 6px 6px 0 #ffd8a8; min-width: 0; align-self: start; }
+        .tls .tl-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: #e8590c; color: #fff; margin: -2px -2px 8px; padding: 6px 12px; border-radius: 2px 22px 0 0; font-weight: 800; font-size: 14px; } .tls .tl-h small { font-size: 11px; opacity: .9; }
+        .tls .tl-g { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+        .tls .tl-c { background: #fff; border: 2px dotted #f08c00; border-radius: 14px 4px 14px 4px; padding: 6px 8px; min-width: 0; } .tls .tl-n { font-weight: 800; font-size: 13px; color: #d9480f; border-bottom: 2px solid #ffe8cc; margin-bottom: 3px; }
+        .tls .tl-r { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 3px 6px; font-size: 12px; color: #12303a; padding: 2px 0; } .tls .tl-v { display: inline-flex; align-items: baseline; gap: 3px; white-space: nowrap; } .tls .tl-v b { font-size: 14px; }
+        .tls .jm { color: #0ca678; } .tls .bn { color: #e03131; }
+        .tl-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; } .tl-chip { padding: 8px 14px; border-radius: 10px; border: 2px solid #e8590c; background: #fff4e6; color: #d9480f; font-weight: 700; cursor: pointer; } .tl-chip.on { background: #e8590c; color: #fff; } .tl-chip.add { border-style: dashed; }
+        .tl-form { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; } .tl-form input { flex: 1 1 140px; min-width: 0; } .tl-form button { padding: 0 12px; }
+        /* ریٹ بکس */
+        .frt { background: linear-gradient(160deg, #1b1f3b, #2b2f5e) !important; border: 0 !important; border-top: 0 !important; border-radius: 6px 22px 6px 22px; color: #f1f3ff; box-shadow: inset 0 0 0 2px #f5c542; min-width: 0; align-self: start; }
+        .frt .fr-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-weight: 800; font-size: 14px; color: #f5c542; margin-bottom: 8px; } .frt .fr-h small { color: #c5c9ee; font-size: 11px; }
+        .frt .fr-g { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .frt .fr-c { background: rgba(255,255,255,.07); border-radius: 10px; padding: 7px 8px; min-width: 0; }
+        .frt .fr-t { font-size: 11px; font-weight: 800; color: #f5c542; margin-bottom: 3px; } .frt .fr-l { display: flex; justify-content: space-between; gap: 6px; font-size: 12px; padding: 2px 0; color: #e4e7ff; } .frt .fr-l b { font-size: 13px; color: #fff; } .frt .fr-l b.bn { color: #ff9c9c; }
+        .frt .fr-s { border-top: 1px dashed rgba(245,197,66,.6); margin-top: 3px; padding-top: 2px; } .frt .fr-s b { color: #63e6be; }
+        .frt .fr-r { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 9px; padding: 8px 12px; border-radius: 12px; background: linear-gradient(90deg, #f5c542, #ffa94d); color: #1b1f3b; font-weight: 800; flex-wrap: wrap; } .frt .fr-r b { font-size: 24px; color: #1b1f3b; } .frt .fr-r.no { background: rgba(255,255,255,.12); color: #ffd8a8; font-size: 12px; }
+        .frt .wn { color: #ffc9c9; }
+        /* ملاپ بکس */
+        .cmb .cn { overflow-wrap: anywhere; } .cmb .cv { display: inline-flex; align-items: baseline; gap: 4px; flex: none; }
+        .cmb.jm { border-top: 6px solid #0ca678; background: linear-gradient(180deg, rgba(12,166,120,.16), rgba(255,255,255,0) 60%), #f4fbf8; }
+        .cmb.bn { border-top: 6px solid #e03131; background: linear-gradient(180deg, rgba(224,49,49,.14), rgba(255,255,255,0) 60%), #fff6f6; }
+        .cmb .cr.res b { font-size: 30px; }
+        @media (min-width: 1000px) {
+            .cmb { min-width: 0; overflow: hidden; align-self: start; }
+            .cmb .cr { flex-wrap: wrap; row-gap: 2px; }
+            .cmb .cr.res b { font-size: 21px; }
+            .cmb .cr b { font-size: 14px; }
+            .cmb .cv { max-width: 100%; min-width: 0; flex-wrap: nowrap; white-space: nowrap; }
+        }
+        .cb .wn { font-size: 11px; color: #c92a2a; margin-top: 4px; }
+        .bx-ed { border: 1px solid #d1d5db; border-radius: 12px; padding: 12px; margin-bottom: 12px; background: #f9fafb; }
+        .bx-ed .bx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+        .bx-ed label { display: block; font-size: 12px; color: #4b5563; margin-bottom: 3px; font-weight: 700; }
+        .bx-ed input, .bx-ed select { width: 100%; box-sizing: border-box; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; font-size: 14px; background: #fff; color: #111827; }
+        .bx-ed .bx-del { margin-top: 10px; background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; border-radius: 8px; padding: 7px 12px; font: inherit; cursor: pointer; }
+        .lay-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 6px; background: #fff; color: #111827; font-size: 14px; }
+        .lay-row label { flex: 1; display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; }
+        .lay-row input[type=checkbox] { width: 18px; height: 18px; flex: 0 0 auto; }
+        .lay-row select { padding: 5px 6px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; font-size: 13px; background: #fff; color: #111827; }
+        .lay-h { cursor: grab; color: #9ca3af; font-size: 18px; user-select: none; }
+        .lay-row.drag-over { outline: 2px dashed #7d2ae8; background: #f5f3ff; }
+        .lay-row button { border: 1px solid #cbd5e1; background: #f3f4f6; border-radius: 8px; width: 34px; height: 34px; cursor: pointer; font-size: 14px; }
+        .lay-kpis { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+        .lay-kpis label { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; color: #111827; font-size: 13px; cursor: pointer; }
+        .ed { cursor: text; border-bottom: 1px dashed rgba(125, 42, 232, 0.55); border-radius: 2px; }
+        .ed:hover { background: rgba(125, 42, 232, 0.12); }
+        .ed:empty::before { content: '—'; opacity: .5; }
+        .ed-in { font: inherit; font-size: inherit; padding: 2px 6px; border: 2px solid #7d2ae8; border-radius: 6px; background: #fff; color: #111827; box-sizing: border-box; max-width: 100%; }
+        .ex-r { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) 26px; gap: 6px; align-items: center; padding: 5px 0; border-bottom: 1px dashed rgba(95, 125, 134, 0.35); font-size: 13px; color: #12303a; }
+        .ex-r b { direction: ltr; unicode-bidi: plaintext; text-align: end; } .ex-h { font-weight: 800; font-size: 12px; color: #5f7d86; }
+        .ex-x { border: 0; background: #fee2e2; color: #b91c1c; border-radius: 6px; width: 24px; height: 24px; cursor: pointer; font-size: 15px; line-height: 1; padding: 0; }
+        .ex-bar { display: flex; gap: 8px; margin-top: 10px; }
+        .ex-add { flex: 1; background: #7d2ae8; color: #fff; border: 0; border-radius: 8px; padding: 8px 10px; font: inherit; font-weight: 700; cursor: pointer; }
+        .ex-clr { background: #f3f4f6; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+        .bx-mv { border: 1px solid #cbd5e1; background: #f3f4f6; border-radius: 8px; width: 38px; height: 34px; cursor: pointer; margin-top: 10px; color: #111827; }
+        .bx-mv:disabled { opacity: .35; cursor: default; }
+        .bx-add { background: #7d2ae8; color: #fff; border: 0; border-radius: 10px; padding: 10px 16px; font: inherit; font-weight: 700; cursor: pointer; margin-inline-end: 8px; }
+        .bx-hint { font-size: 12px; color: #6b7280; margin: 0 0 10px; line-height: 1.7; }
+        .db-body { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+        .db-body > * { grid-column: span 6; min-width: 0; }
+        .db-body > .sec-off { display: none; }
+        .db-card { background: linear-gradient(160deg, #ffffff, #e3f1f1); border-radius: 16px; padding: 12px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28), inset 0 1px 0 #fff; min-width: 0; }
+        .db-card h3 { margin: 0 0 8px; font-size: 14px; color: #0b3c49; }
+        .r { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(var(--cols, 2), minmax(0, 1fr)); gap: 6px; align-items: center; padding: 4px 0; font-size: 12.5px; border-bottom: 1px solid rgba(11, 60, 73, 0.1); }
+        .r.h { font-weight: 800; color: #0b3c49; border-bottom: 2px solid rgba(11, 60, 73, 0.25); font-size: 12px; }
+        .r b { text-align: end; font-weight: 800; font-variant-numeric: tabular-nums; }
+        .r b.neg { color: #c92a2a; } .r b.pos { color: #087f5b; }
+        #dbBr .r { --cols: 3; }
+        #dbTop .r { grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.8fr)); }
+        .db-tbl .r span { display: flex; align-items: center; }
+        .br .bar { display: flex; flex-direction: column; gap: 2px; margin: 2px 0 4px; }
+        .br .bar u { display: block; height: 4px; border-radius: 3px; min-width: 2px; }
+        .empty { padding: 16px; text-align: center; color: #5f7d86; font-size: 13px; }
+        .db-leg { font-size: 12px; font-weight: 700; margin: 8px 0 2px; color: #0b3c49; }
+        .db-cv { position: relative; width: 100%; }
+        .db-cv canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+        .db-cv-main, .db-cv-day { height: 190px; }
+        .db-cv-don { height: 170px; }
+        .db-dleg { font-size: 12px; font-weight: 700; display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+        .db-dleg b { margin-inline-start: 6px; }
+        .db-tip { display: none; position: absolute; z-index: 5; pointer-events: none; background: rgba(8, 32, 44, 0.94); color: #fff; padding: 6px 10px; border-radius: 10px; font-size: 12px; line-height: 1.6; white-space: nowrap; }
+        .db-tip b { display: block; color: #ffd43b; }
+        .db-tip small { opacity: 0.7; }
+        @container (max-width: 520px) {
+            .db-kpis { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+            .db-kpis > .db-kpi { grid-column: span 2; padding: 7px 7px 24px; min-height: 84px; border-radius: 12px; }
+            .db-kpis[style*="--n: 5"] > .db-kpi:nth-child(n+4), .db-kpis[style*="--n:5"] > .db-kpi:nth-child(n+4) { grid-column: span 3; min-height: 70px; }
+            .db-kpis[style*="--n: 2"] > .db-kpi, .db-kpis[style*="--n:2"] > .db-kpi, .db-kpis[style*="--n: 4"] > .db-kpi, .db-kpis[style*="--n:4"] > .db-kpi { grid-column: span 3; }
+            .db-kpis[style*="--n: 1"] > .db-kpi, .db-kpis[style*="--n:1"] > .db-kpi { grid-column: span 6; }
+            .db-kpi .kt { font-size: 10.5px; line-height: 1.3; }
+            .db-kpi .kv { font-size: 15px; margin: 2px 0 1px; letter-spacing: 0; word-break: break-all; }
+            .db-kpi .kv.sm { font-size: 14px; }
+            .db-kpi .ks { font-size: 9.5px; line-height: 1.25; }
+            .db-kpi canvas { height: 20px; }
+            .db-body > * { grid-column: span 6 !important; }
+            .db-months { grid-template-columns: repeat(4, 1fr); }
+        }
+        #mainDashboardMenu .menu-btn { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.5; }
+        #btnAudit .age-badge { margin-inline-start: 8px; }
+        @media (min-width: 1000px) {
+            body { padding: 24px 32px; }
+            .dashboard-container, body.lang-en .dashboard-container { max-width: 1700px; height: max(560px, calc(100vh - 48px)); flex-wrap: nowrap; align-items: stretch; gap: 28px; }
+            body.lang-en .dashboard-container { flex-direction: row; }
+            .chart-box { flex: 1 1 55%; min-width: 0; display: flex; flex-direction: column; }
+            .terrain-stage { flex: 1 1 0; height: auto; min-height: 0; overflow: hidden auto; }
+            .dashboard { flex: 1 1 45%; min-width: 0; overflow-y: auto; display: grid; grid-template-columns: 1fr; gap: 14px; grid-template-rows: auto; grid-auto-rows: minmax(56px, 96px); align-content: start; }
+            .dashboard .menu-btn { margin: 0; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+        }
+        @media (min-width: 821px) {
+            #masterSettingsModal { padding: 0; }
+            #masterSettingsModal .modal-box { max-width: none; width: 100%; height: 100%; border-radius: 0; }
+            #masterSettingsModal .settings-tabs { flex-basis: 240px; }
+        }
+        @media (max-width: 820px) {
+            .dashboard-container, body.lang-en .dashboard-container { flex-direction: column; flex-wrap: nowrap; align-items: stretch; }
+            .chart-box, .dashboard { flex: 0 0 auto; width: 100%; min-width: 0; }
+            .dashboard { order: -1; }
+        }
+        @media (max-width: 580px) {
+            body { padding: 8px; }
+            .dashboard-container { gap: 12px; }
+            .chart-box, .dashboard { padding: 12px; border-radius: 8px; }
+            .menu-btn { margin-bottom: 8px; padding: 10px; }
+            .company-title { font-size: 20px; margin-bottom: 12px; }
+            .menu-head { margin-bottom: 12px; }
+            .owner-sub-badge { font-size: 10px; padding: 2px 7px; }
+            .btn-top-back { font-size: 11.5px; padding: 4px 8px; }
+            .btn-chart-settings { font-size: 11px; padding: 4px 8px; }
+            .settings-grid-row { grid-template-columns: 1fr; }
+            .modal-overlay { padding: 8px; }
+            .modal-box { height: 94vh; border-radius: 14px; }
+            .modal-main { flex-direction: column; }
+            .settings-tabs { flex: 0 0 auto; flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 8px; scrollbar-width: none; }
+            .settings-tab { flex: 0 0 auto; white-space: nowrap; padding: 8px 12px; }
+            .modal-body-scroll { padding: 12px; }
+        }
+        @media screen { #mainDashboardMenu .menu-btn { padding: 15px 10px; font-size: clamp(16px, 4.6vw, 20px); min-height: 56px; } }
+        @media screen and (min-width: 821px) { #mainDashboardMenu .menu-btn { padding: 14px 10px; font-size: 18px; } }
+    </style>
+
+<link rel="stylesheet" href="./neu_ui.css">
+<link rel="stylesheet" href="./print_fix.css">
+<script src="./print_footer.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="chart-box" id="mainChartBox">
+            <div class="chart-header-row">
+                <div class="chart-title" id="graph_title">📊 کھاتوں کا ڈیش بورڈ</div>
+                <span class="dash-branch" id="dashBranchName"></span>
+                <button type="button" class="btn-dash-print" id="btnDashPrint" onclick="printDashboard()">🖨️ پرنٹ</button>
+            </div>
+            <div class="dash-print-head" id="dashPrintHead"></div>
+
+            <div class="terrain-stage" id="terrainStage"></div>
+        </div>
+
+        <div class="dashboard" id="mainDashboardMenu">
+            <div class="menu-head">
+                <button type="button" id="btnSettingsMenu" class="btn-chart-settings" onclick="openMasterSettingsModal()">
+                    ⚙ سیٹنگز
+                </button>
+                <div class="company-title" id="main_branch_title_container">
+                    <span id="main_branch_title">برانچ نام</span>
+                    <span id="main_branch_owner" class="owner-sub-badge" style="display:none;"></span>
+                </div>
+                <a href="./branches.html" id="backToBranchesBtn" class="btn-top-back">
+                    🔙 واپس
+                </a>
+            </div>
+
+            <a href="./jama_entry.html" class="menu-btn btn-jama" id="btnJamaEntry"> <span class="dot dot-green"></span> <span id="lblBtnJama">(JAMA) جمع کی شیٹ</span></a>
+            <a href="./bnam_entry.html" class="menu-btn btn-bnam" id="btnBnamEntry"> <span class="dot dot-orange"></span> <span id="lblBtnBnam">(BNAM) بنام کی شیٹ</span></a>
+            <a href="./daily_journal.html" class="menu-btn btn-dark dynamic-branch-bg" id="lblBtnJournal">📖 روزانہ کا روزنامچہ دیکھیں</a>
+            <a href="./summary.html" class="menu-btn btn-dark dynamic-branch-bg" id="lblBtnSummary">💰 (Summary) روکڑ سلیش سمری</a>
+            <a href="./add_customer.html" class="menu-btn btn-dark dynamic-branch-bg" id="btnAddCustomer">➕ نیا گاہک شامل کریں</a>
+            <a href="./deleted_records.html" class="menu-btn btn-dark dynamic-branch-bg" id="lblBtnDeleted">🗑️ ڈیلیٹ شدہ کھاتوں کا ریکارڈ</a>
+            <a href="./aging_report.html" class="menu-btn btn-dark dynamic-branch-bg" id="btnAging">⏰ ایجنگ رپورٹ (پرانا بقایا)</a>
+            <a href="./deleted_entries.html" class="menu-btn btn-dark dynamic-branch-bg" id="btnDelEntries">♻️ ڈیلیٹ شدہ انٹریاں (ری سائیکل بن)</a>
+            <a href="./audit_log.html" class="menu-btn btn-dark dynamic-branch-bg" id="btnAudit">📜 آڈٹ لاگ (تبدیلیوں کا ریکارڈ) <span id="auditBadge" class="age-badge" style="display:none"></span></a>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="masterSettingsModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title" id="mHeaderTitle">⚙️ برانچ کنفیگریشن و جدید سیٹنگز</h3>
+                <button type="button" class="btn-modal-close" onclick="closeMasterSettingsModal()">✕</button>
+            </div>
+
+            <div class="modal-main">
+            <nav class="settings-tabs" id="settingsTabs">
+                <button type="button" class="settings-tab active" data-tab="formula"><span class="tab-ico">📐</span><span id="tabFormula">حساب کتاب</span></button>
+                <button type="button" class="settings-tab" data-tab="columns"><span class="tab-ico">📊</span><span id="tabColumns">کالمز</span></button>
+                <button type="button" class="settings-tab" data-tab="layout"><span class="tab-ico">📦</span><span id="tabLayout">لے آؤٹ</span></button>
+                <button type="button" class="settings-tab" data-tab="boxes"><span class="tab-ico">🧮</span><span id="tabBoxes">ڈیش بورڈ</span></button>
+            </nav>
+            <div class="modal-body-scroll">
+
+                <div class="settings-card-group tab-on" data-tab="formula">
+                    <div class="group-header-title">
+                        <span>📐</span> <span id="lblSecFormula">۱. حساب کتاب و پرسنٹیج فارمولا سیٹنگز:</span>
+                    </div>
+
+                    <div class="settings-grid-row">
+                        <div class="field-item">
+                            <label id="lblMaundUnit">من کا پیمانہ (Maund Unit):</label>
+                            <select id="settingMaundUnit" class="field-select">
+                                <option value="37.324">37.324 کلو (کچا من / میٹل)</option>
+                                <option value="40">40 کلو (پکا من / غلہ و جنرل)</option>
+                            </select>
+                        </div>
+                        <div class="field-item">
+                            <label id="lblRateThreshold">کم از کم من ریٹ کی حد (Rate Limit):</label>
+                            <input type="number" id="settingRateThreshold" class="field-input" placeholder="مثلاً: 25000" min="0" step="100">
+                        </div>
+                    </div>
+
+                    <div class="settings-grid-row" style="margin-top: 8px;">
+                        <div class="field-item">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="settingEnablePercent"> <span id="lblEnablePercent">پرسنٹیج (%) فارمولا لاگو کریں</span>
+                            </label>
+                            <input type="number" id="settingPercentVal" class="field-input" placeholder="فیصد شرح (مثلاً: 2 یا 5)" step="0.01" style="margin-top: 4px;">
+                        </div>
+                        <div class="field-item">
+                            <label id="lblPercentType">پرسنٹیج کی قسم:</label>
+                            <select id="settingPercentMode" class="field-select">
+                                <option value="deduct">کٹوتی / چھانٹ (Minus from Amount)</option>
+                                <option value="add">اضافہ / کمیشن / ٹیکس (Add to Amount)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card-group" data-tab="columns">
+                    <div class="group-header-title">
+                        <span>📊</span> <span id="lblSecColumns">۲. کالمز کم/زیادہ، نام اور اضافی کالم کنٹرول:</span>
+                    </div>
+
+                    <div style="overflow-x:auto;">
+                        <table class="control-table" id="colTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 11%;">ترتیب</th>
+                                    <th style="width: 19%;">کالم کی فیلڈ</th>
+                                    <th style="width: 13%;">فعال (آن / آف)</th>
+                                    <th style="width: 27%;">کالم کا نیا نام</th>
+                                    <th style="width: 27%;">فارمولا (اختیاری)</th>
+                                    <th style="width: 3%;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="colTbody"></tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="col-add-btn" onclick="colAddExtra()">➕ نیا اضافی کالم / رو شامل کریں</button>
+                    <p class="col-hint">▲ ▼ سے کسی بھی کالم کو اوپر نیچے کریں (انٹری فارم میں یہی ترتیب آئے گی)۔ فارمولے میں یہ نام لکھیں: <b dir="ltr">pcs</b> (پیس)، <b dir="ltr">weight</b> (وزن)، <b dir="ltr">rate</b> (ریٹ)، <b dir="ltr">amount</b> (کل رقم)، اور اضافی کالمز کے لیے <b dir="ltr">x1</b>، <b dir="ltr">x2</b> … مثال: <b dir="ltr">pcs * 2</b> یا <b dir="ltr">weight / 40</b>۔ فارمولا خالی ہو تو کالم ہاتھ سے بھرا جائے گا؛ فارمولے والا خانہ خود بھرتا ہے مگر آپ ہاتھ سے بدل بھی سکتے ہیں۔ (کل رقم کا حساب «حساب کتاب» ٹیب میں ہے۔)</p>
+                </div>
+
+                <div class="settings-card-group" data-tab="layout">
+                    <div class="group-header-title">
+                        <span>📦</span> <span id="lblSecPlacement">۳. سمری اور کسٹمر لیجر میں ۳ ٹوٹل باکسز کی جگہ:</span>
+                    </div>
+
+                    <div class="settings-grid-row">
+                        <div class="field-item">
+                            <label id="lblSummaryBoxesPos">روکڑ سمری شیٹ میں باکسز کی پوزیشن:</label>
+                            <select id="settingSummaryBoxPos" class="field-select">
+                                <option value="bottom">سب سے نیچے باٹم پر (Default Bottom)</option>
+                                <option value="top">اوپر ہیڈر (سرچ / تاریخ) کے نیچے، ٹیبلز سے پہلے (Top)</option>
+                            </select>
+                        </div>
+                        <div class="field-item">
+                            <label id="lblLedgerBoxesPos">کسٹمر لیجر میں باکسز کی پوزیشن:</label>
+                            <select id="settingLedgerBoxPos" class="field-select">
+                                <option value="bottom">سب سے نیچے باٹم پر (Default Bottom)</option>
+                                <option value="top_search">اوپر سرچ بار / پین بار کے بالکل نیچے (Top)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card-group" data-tab="layout">
+                    <div class="group-header-title"><span>🏠</span> <span>۶. ہوم ڈیش بورڈ (Home Dashboard):</span></div>
+                    <div class="settings-grid-row" style="margin-top: 8px;">
+                        <div class="field-item">
+                            <label class="checkbox-container"><input type="checkbox" id="settingCompactNums"> <span>بڑی رقوم مختصر دکھائیں، جیسے 1.2M (Compact Numbers)</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card-group" data-tab="boxes" id="grpBoxes">
+                    <h4 id="bxLayT" style="margin:0 0 6px;"></h4>
+                    <p class="bx-hint" id="bxLayHint"></p>
+                    <div id="bxLayout"></div>
+                    <h4 id="bxTitle" style="margin:18px 0 6px;">🧮 ڈیش بورڈ کے اپنے بکس</h4>
+                    <p class="bx-hint" id="bxHint"></p>
+                    <div id="bxList"></div>
+                    <button type="button" class="bx-add" onclick="bxAdd('combo')" id="bxAddCombo">➕ ملاپ</button>
+
+                    <button type="button" class="bx-add" onclick="bxAdd('frate')" id="bxAddRate2">➕ ریٹ</button>
+
+                    <button type="button" class="bx-add" onclick="bxAdd('tiles')" id="bxAddTiles">➕ کھاتہ</button>
+
+                    <button type="button" class="bx-add" onclick="bxAdd('grate')" id="bxAddGrate">➕ فائنل ریٹ</button>
+
+                    <div style="margin-top:14px;"><span id="bxStatus" class="bx-hint"></span> <button type="button" class="btn-modal-save" onclick="bxSave()" id="bxSave">بکس محفوظ کریں ✅</button></div>
+                </div>
+
+            </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-reset" id="btnResetMasterSettings" onclick="resetMasterSettings()">↩️ ڈیفالٹ سیٹنگز</button>
+                <button type="button" class="btn-modal-save" id="btnSaveMasterSettings" onclick="saveMasterSettings()">محفوظ کریں (Save All) ✅</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function applySavedTheme() {
+            let savedTheme = App.store.get('rohan_theme_mode') || 'dark';
+            let themeMeta = document.querySelector('meta[name="theme-color"]');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#f3f4f6');
+            } else {
+                document.body.classList.remove('light-theme');
+                if (themeMeta) themeMeta.setAttribute('content', '#080808');
+            }
+        }
+        applySavedTheme();
+
+        let activeBranchId = sessionStorage.getItem('active_branch_id') || 'branch_1';
+
+        const DASH_TXT = {
+            'date.today': ['آج', 'Today'], 'tag.j': ['جمع', 'Jama'], 'tag.b': ['بنام', 'Bnam'], 'year.l': ['سال', 'Year'],
+            'kpi.c1.t': ['آج کا کل جمع', "Today's total Jama"], 'kpi.c2.t': ['آج کا کل بنام', "Today's total Bnam"], 'kpi.c3.t': ['آج کا خالص کیش', "Today's net cash"], 'kpi.c4.t': ['آج وزن آیا', 'Weight in today'], 'kpi.c5.t': ['آج وزن گیا', 'Weight out today'],
+            'kpi.entries': ['انٹریاں', 'entries'], 'kpi.c3.s': ['جمع − بنام', 'Jama − Bnam'], 'kpi.c4.s': ['بنام انٹریوں کا وزن', 'Bnam entries weight'], 'kpi.c5.s': ['جمع انٹریوں کا وزن', 'Jama entries weight'],
+            'main.t': ['ماہانہ اور سالانہ ریکارڈ', 'Monthly & yearly record'], 'main.r1': ['جمع رقم', 'Jama amount'], 'main.r2': ['بنام رقم', 'Bnam amount'], 'main.r3': ['خالص کیش (جمع − بنام)', 'Net cash (Jama − Bnam)'],
+            'main.r4': ['وزن آیا (بنام)', 'Weight in (Bnam)'], 'main.r5': ['وزن گیا (جمع)', 'Weight out (Jama)'], 'main.r6': ['خالص وزن (آیا − گیا)', 'Net weight (in − out)'], 'main.r7': ['کل انٹریاں', 'Entries'],
+            'donut.t': ['جمع بمقابلہ بنام', 'Jama vs Bnam'], 'donut.nodata': ['ڈیٹا نہیں', 'No data'],
+            'br.t': ['برانچ وار وزن (کل)', 'Weight by branch (all time)'], 'br.h0': ['برانچ', 'Branch'], 'br.in': ['آیا', 'In'], 'br.out': ['گیا', 'Out'], 'br.stock': ['موجود', 'Stock'], 'br.nodata': ['کوئی ڈیٹا نہیں', 'No data'],
+            'top.t': ['اس مہینے کے ٹاپ 3 گاہک', 'Top 3 customers this month'],
+            'day.t': ['روزانہ وزن', 'Daily weight'], 'day.in': ['وزن آیا (بنام)', 'Weight in (Bnam)'], 'day.out': ['وزن گیا (جمع)', 'Weight out (Jama)'],
+            'bx.balance.sub': ['کھاتے کا حساب', 'Account balance'], 'bx.balance.bill': ['بل: ', 'Bill: '], 'bx.balance.acct': ['کھاتہ: ', 'Account: '], 'bx.balance.final': ['فائنل', 'Final'], 'bx.balance.wIn': ['بل وزن آیا (بنام)', 'Bill weight in (Bnam)'], 'bx.balance.wOut': ['بل وزن گیا (جمع)', 'Bill weight out (Jama)'], 'bx.balance.tj': ['جمع', 'Jama'], 'bx.balance.tb': ['بنام', 'Bnam'], 'bx.balance.miss': ['کھاتہ نہیں ملا: ', 'Account not found: '],
+            'bx.rate.sub': ['فیکٹری کا حساب', 'Factory account'], 'bx.rate.wIn': ['وزن آیا (بنام)', 'Weight in (Bnam)'], 'bx.rate.wOut': ['وزن گیا (جمع)', 'Weight out (Jama)'], 'bx.rate.aIn': ['رقم آیا (بنام)', 'Amount in (Bnam)'], 'bx.rate.aOut': ['رقم گیا (جمع)', 'Amount out (Jama)'], 'bx.rate.remW': ['باقی وزن', 'Remaining weight'], 'bx.rate.remA': ['باقی رقم', 'Remaining amount'], 'bx.rate.rate': ['ریٹ فی اکائی', 'Rate per unit'], 'bx.rate.norate': ['ریٹ ممکن نہیں: باقی وزن صفر یا منفی ہے', 'No rate: remaining weight is zero or negative'], 'bx.rate.miss': ['کھاتہ نہیں ملا: ', 'Account not found: '],
+            'bx.net.sub': ['خالص حساب (کٹوتی کے بعد)', 'Net after deductions'], 'bx.net.remW': ['باقی وزن', 'Remaining weight'], 'bx.net.remA': ['باقی رقم', 'Remaining amount'], 'bx.net.dedW': ['ضائع وزن (کٹوتی)', 'Waste weight (deducted)'], 'bx.net.dedA': ['کٹوتی رقم (خرچہ)', 'Deducted amount (expenses)'], 'bx.net.expW': ['ضائع وزن (خود ڈالا ہوا)', 'Waste weight (entered by hand)'], 'bx.net.expA': ['خرچہ رقم (کٹوتی)', 'Expenses (deducted)'], 'bx.net.nameH': ['خرچے کا نام', 'Expense name'], 'bx.net.aH': ['رقم', 'Amount'], 'bx.net.add': ['➕ خرچہ شامل کریں', '➕ Add expense'], 'bx.net.empty': ['ابھی کوئی خرچہ نہیں', 'No expenses yet'], 'bx.net.finW': ['خالص وزن', 'Net weight'], 'bx.net.finA': ['خالص رقم', 'Net amount'], 'bx.net.rate': ['ریٹ فی اکائی', 'Rate per unit'], 'bx.net.norate': ['ریٹ ممکن نہیں: خالص وزن صفر یا منفی ہے', 'No rate: net weight is zero or negative'], 'bx.net.miss': ['کھاتہ نہیں ملا: ', 'Account not found: '],
+            'bx.weight.sub': ['وزن کا کھاتہ (صرف وزن)', 'Weight-only account'], 'bx.weight.wJ': ['جمع وزن', 'Jama weight'], 'bx.weight.wB': ['بنام وزن', 'Bnam weight'], 'bx.weight.tot': ['کل ضائع وزن', 'Total waste weight'], 'bx.weight.miss': ['کھاتہ نہیں ملا: ', 'Account not found: '],
+            'bx.expense.sub': ['خرچہ (اپنی مرضی کی رقم)', 'Expenses (typed by hand)'], 'bx.expense.nameH': ['نام', 'Name'], 'bx.expense.wH': ['وزن', 'Weight'], 'bx.expense.aH': ['رقم', 'Amount'], 'bx.expense.add': ['➕ نئی سطر', '➕ Add row'], 'bx.expense.totW': ['کل وزن', 'Total weight'], 'bx.expense.totA': ['کل خرچہ', 'Total expenses'], 'bx.expense.empty': ['ابھی کوئی سطر نہیں', 'No rows yet'], 'bx.expense.miss': ['', '']
+        };
+        const BX_FIELDS = { balance: ['sub', 'bill', 'acct', 'final', 'wIn', 'wOut', 'tj', 'tb', 'miss'], rate: ['sub', 'wIn', 'wOut', 'aIn', 'aOut', 'remW', 'remA', 'rate', 'norate', 'miss'], net: ['sub', 'remW', 'remA', 'dedW', 'expA', 'nameH', 'aH', 'add', 'empty', 'finW', 'finA', 'rate', 'norate', 'miss'], weight: ['sub', 'wJ', 'wB', 'tot', 'miss'], expense: ['sub', 'nameH', 'aH', 'add', 'totA', 'empty'] };
+        const dashBxType = b => 'combo';
+        const cmbNames = b => (Array.isArray(b && b.names) ? b.names : []).map(x => String(x == null ? '' : x));
+        const dashRows = r => (Array.isArray(r) ? r : []).filter(x => x && typeof x === 'object').slice(0, 200).map(x => ({ n: String(x.n == null ? '' : x.n).slice(0, 60), w: isFinite(parseFloat(x.w)) ? parseFloat(x.w) : 0, a: isFinite(parseFloat(x.a)) ? parseFloat(x.a) : 0 }));
+        const dashBoxOk = b => !!b && ((b.type === 'combo' && cmbNames(b).filter(Boolean).length >= 2) || (b.type === 'frate' && !!b.billName) || (b.type === 'tiles' && !!b.billName) || (b.type === 'grate' && !!b.billName));
+        const DASH_BASE = ['months', 'kpis', 'main', 'donut', 'branches', 'top3', 'daily'];
+        const DASH_W = { months: 6, kpis: 6, main: 4, donut: 2, branches: 3, top3: 3, daily: 6 };
+        const DASH_KPI = ['c1', 'c2', 'c3', 'c4', 'c5'];
+        function dashNormOrder(order, boxIds) {
+            const bx = boxIds.map(i => 'box:' + i), valid = DASH_BASE.concat(bx), has = Array.isArray(order) && order.length > 0, src = has ? order : ['months', 'kpis'].concat(bx), out = [];
+            src.forEach(x => {
+                if (x === 'custom') bx.forEach(b => { if (out.indexOf(b) < 0 && src.indexOf(b) < 0) out.push(b); });
+                else if (valid.indexOf(x) >= 0 && out.indexOf(x) < 0) out.push(x);
+            });
+            valid.forEach(x => { if (out.indexOf(x) < 0) out.push(x); });
+            return out;
+        }
+        function dashNormKpi(order) { const o = (Array.isArray(order) ? order : []).filter((x, i, a) => DASH_KPI.indexOf(x) >= 0 && a.indexOf(x) === i); DASH_KPI.forEach(x => { if (o.indexOf(x) < 0) o.push(x); }); return o; }
+        function dashWidth(L, id, legacy) { const w = +((L && L.w) || {})[id]; return [2, 3, 4, 6].indexOf(w) >= 0 ? w : (id.indexOf('box:') === 0 ? ([2, 3, 6].indexOf(+legacy) >= 0 ? +legacy : 2) : DASH_W[id] || 6); }
+
+        let bxState = [], layState = { order: [], hide: [], hideKpi: [], kpiOrder: [], w: {}, labels: {} }, layDrag = null;
+        const LAY_ALL = [['months', '📅 مہینوں کی پٹی', 'Month buttons'], ['kpis', '🔢 آج کے رنگین بکس', "Today's colour cards"], ['main', '📈 ماہانہ اور سالانہ ریکارڈ (ٹیبل + چارٹ)', 'Monthly & yearly record'], ['donut', '🍩 جمع بمقابلہ بنام (گول چارٹ)', 'Jama vs Bnam donut'], ['branches', '🏭 برانچ وار وزن', 'Weight by branch'], ['top3', '🏆 ٹاپ گاہک', 'Top customers'], ['daily', '📊 روزانہ وزن کا چارٹ', 'Daily weight chart']];
+        const LAY_KPI = [['c1', 'آج کا کل جمع', "Today's Jama"], ['c2', 'آج کا کل بنام', "Today's Bnam"], ['c3', 'آج کا خالص کیش', 'Net cash'], ['c4', 'آج وزن آیا', 'Weight in'], ['c5', 'آج وزن گیا', 'Weight out']];
+        const LAY_WS = [[2, 'ایک تہائی', 'Third'], [3, 'آدھا', 'Half'], [4, 'دو تہائی', '2/3'], [6, 'پورا', 'Full']];
+        function layLabel(id) {
+            if (id.indexOf('box:') === 0) { const b = bxState.find(x => 'box:' + x.id === id); return b ? '🧮 ' + (b.title || (b.type === 'grate' ? bxT('فائنل ریٹ', 'Final rate') : b.type === 'tiles' ? bxT('کھاتہ بکس', 'Tiles box') : b.type === 'frate' ? bxT('ریٹ بکس', 'Rate box') : bxT('نیا ملاپ بکس', 'New combo box'))) : id; }
+            const d = LAY_ALL.find(x => x[0] === id); return d ? bxT(d[1], d[2]) : id;
+        }
+        function layRender() {
+            layState.order = dashNormOrder(layState.order, bxState.map(b => b.id)); layState.kpiOrder = dashNormKpi(layState.kpiOrder);
+            const ord = layState.order;
+            document.getElementById('bxLayT').textContent = bxT('🎛️ ڈیش بورڈ کا لے آؤٹ (اس برانچ کے لیے)', '🎛️ Dashboard layout (this branch)');
+            document.getElementById('bxLayHint').textContent = bxT('ٹک = دکھائیں، ٹک ہٹائیں = بند۔ ▲▼ سے اوپر نیچے کریں (کمپیوٹر پر ⠿ پکڑ کر گھسیٹ بھی سکتے ہیں)۔ چوڑائی ہر حصے کی الگ چنیں۔ اپنے بکس بھی اسی فہرست میں ہیں، جہاں چاہیں رکھیں۔ ہر تبدیلی خود بخود محفوظ ہوتی ہے۔', 'Tick = show, untick = off. Use ▲▼ to move (on a computer you can also drag ⠿). Pick a width for each part. Your own boxes are in this list too. Every change saves automatically.');
+            const wsel = id => '<select data-w="' + id + '">' + LAY_WS.map(w => '<option value="' + w[0] + '"' + (dashWidth(layState, id, (bxState.find(b => 'box:' + b.id === id) || {}).w) === w[0] ? ' selected' : '') + '>' + bxT(w[1], w[2]) + '</option>').join('') + '</select>';
+            const kord = layState.kpiOrder;
+            document.getElementById('bxLayout').innerHTML = '<div class="bx-hint" style="margin:0 0 6px;font-weight:800;">' + bxT('🔢 اوپر کے رنگین بکس (ترتیب اور دکھانا/چھپانا):', '🔢 Colour cards (order and show/hide):') + '</div>'
+                + kord.map((c, i) => { const k = LAY_KPI.find(x => x[0] === c); return '<div class="lay-row"><label><input type="checkbox" data-kpi="' + c + '"' + (layState.hideKpi.indexOf(c) < 0 ? ' checked' : '') + '>' + bxT(k[1], k[2]) + '</label><button type="button" data-kmv="' + i + '" data-d="-1"' + (i === 0 ? ' disabled' : '') + '>▲</button><button type="button" data-kmv="' + i + '" data-d="1"' + (i === kord.length - 1 ? ' disabled' : '') + '>▼</button></div>'; }).join('')
+                + '<div class="bx-hint" style="margin:12px 0 6px;font-weight:800;">' + bxT('🧩 ڈیش بورڈ کے حصے اور آپ کے بکس (ترتیب، چوڑائی، دکھانا/چھپانا):', '🧩 Dashboard parts and your boxes (order, width, show/hide):') + '</div>'
+                + ord.map((id, i) => '<div class="lay-row" draggable="true" data-id="' + bxEsc(id) + '"><span class="lay-h" title="' + bxT('گھسیٹیں', 'Drag') + '">⠿</span><label><input type="checkbox" data-sec="' + bxEsc(id) + '"' + (layState.hide.indexOf(id) < 0 ? ' checked' : '') + '>' + bxEsc(layLabel(id)) + '</label>' + wsel(id) + '<button type="button" data-mv="' + i + '" data-d="-1"' + (i === 0 ? ' disabled' : '') + '>▲</button><button type="button" data-mv="' + i + '" data-d="1"' + (i === ord.length - 1 ? ' disabled' : '') + '>▼</button></div>').join('');
+        }
+        function bxPersist(msg) {
+            layRender();
+            const cur = {}; App.readArray(activeBranchId + '_dash_boxes').forEach(x => { if (x && x.id) cur[x.id] = x; });
+            const out = bxState.filter(b => b.type === 'combo' || b.type === 'frate' || b.type === 'tiles' || b.type === 'grate').map(b => b.type === 'grate'
+                ? { id: b.id, type: 'grate', title: String(b.title || '').trim().slice(0, 60), billName: b.billName || '', billId: b.billName ? bxIdOf(b.billName) : '' }
+                : b.type === 'tiles'
+                ? { id: b.id, type: 'tiles', title: String(b.title || '').trim().slice(0, 60), billName: b.billName || '', billId: b.billName ? bxIdOf(b.billName) : '', tiles: (Array.isArray(b.tiles) ? b.tiles : []).slice(0, 30).map(t => ({ n: String((t && t.n) || '').slice(0, 40), bal: isFinite(parseFloat(t && t.bal)) ? parseFloat(t.bal) : 0 })) }
+                : b.type === 'frate'
+                ? { id: b.id, type: 'frate', title: String(b.title || '').trim().slice(0, 60), billName: b.billName || '', billId: b.billName ? bxIdOf(b.billName) : '', wtName: b.wtName || '', wtId: b.wtName ? bxIdOf(b.wtName) : '', exp: isFinite(parseFloat(b.exp)) ? parseFloat(b.exp) : 0 }
+                : { id: b.id, type: 'combo', title: String(b.title || '').trim().slice(0, 60), names: cmbNames(b).slice(0, 2), ids: cmbNames(b).slice(0, 2).map(n => n ? bxIdOf(n) : '') });
+            App.store.set(activeBranchId + '_dash_boxes', JSON.stringify(out));
+            App.store.set(activeBranchId + '_dash_layout', JSON.stringify(layState));
+            if (window.dashRefresh) window.dashRefresh();
+            const st = document.getElementById('bxStatus'); if (st) st.textContent = msg || bxT('✅ خود بخود محفوظ', '✅ Saved automatically');
+        }
+        document.getElementById('bxLayout').addEventListener('change', e => {
+            const k = e.target.dataset.kpi, sc = e.target.dataset.sec, w = e.target.dataset.w;
+            if (k) { layState.hideKpi = layState.hideKpi.filter(x => x !== k); if (!e.target.checked) layState.hideKpi.push(k); }
+            else if (sc) { layState.hide = layState.hide.filter(x => x !== sc); if (!e.target.checked) layState.hide.push(sc); }
+            else if (w) { layState.w = layState.w || {}; layState.w[w] = +e.target.value; }
+            else return;
+            bxPersist();
+        });
+        document.getElementById('bxLayout').addEventListener('click', e => {
+            const m = e.target.closest('[data-mv],[data-kmv]'); if (!m || m.disabled) return;
+            const kp = m.dataset.kmv !== undefined, i = +(kp ? m.dataset.kmv : m.dataset.mv), j = i + +m.dataset.d, o = kp ? layState.kpiOrder : layState.order; if (j < 0 || j >= o.length) return;
+            const t = o[i]; o[i] = o[j]; o[j] = t; layRender(); bxPersist();
+        });
+        (function () {
+            const box = document.getElementById('bxLayout');
+            box.addEventListener('dragstart', e => { const r = e.target.closest && e.target.closest('.lay-row[data-id]'); if (!r) return; layDrag = r.dataset.id; try { e.dataTransfer.setData('text/plain', layDrag); e.dataTransfer.effectAllowed = 'move'; } catch (x) {} });
+            box.addEventListener('dragover', e => { const r = e.target.closest('.lay-row[data-id]'); if (!r || !layDrag) return; e.preventDefault(); box.querySelectorAll('.drag-over').forEach(x => x.classList.remove('drag-over')); r.classList.add('drag-over'); });
+            box.addEventListener('dragend', () => { layDrag = null; box.querySelectorAll('.drag-over').forEach(x => x.classList.remove('drag-over')); });
+            box.addEventListener('drop', e => {
+                const r = e.target.closest('.lay-row[data-id]'); if (!r || !layDrag) return; e.preventDefault();
+                const o = layState.order, from = o.indexOf(layDrag), to = o.indexOf(r.dataset.id); layDrag = null;
+                if (from < 0 || to < 0 || from === to) { layRender(); return; }
+                o.splice(to, 0, o.splice(from, 1)[0]); layRender(); bxPersist();
+            });
+        })();
+        const bxEn = () => (sessionStorage.getItem('active_branch_lang') || (App.readObject('rohan_branch_lang_overrides')[activeBranchId]) || App.store.get('rohan_global_lang') || 'ur') === 'en';
+        const bxT = (u, e) => bxEn() ? e : u;
+        const bxEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        function bxNames() { return App.readArray(activeBranchId + '_customer_list'); }
+        function bxIdOf(name) { const d = App.readArray(App.keysFor(activeBranchId).details).find(x => x && x.name === name); return d && d.id ? d.id : ''; }
+        function bxOpts(sel) {
+            const names = bxNames(); if (sel && names.indexOf(sel) < 0) names.unshift(sel);
+            return '<option value="">' + bxT('— کھاتہ چنیں —', '— choose account —') + '</option>' + names.map(n => '<option value="' + bxEsc(n) + '"' + (n === sel ? ' selected' : '') + '>' + bxEsc(n) + '</option>').join('');
+        }
+        const bxTileOpen = {};
+        function bxRender() {
+            document.getElementById('bxTitle').textContent = bxT('🧮 ڈیش بورڈ کا ملاپ بکس (اس برانچ کے لیے)', '🧮 Dashboard combo box (this branch)');
+            document.getElementById('bxHint').innerHTML = bxT(
+                '<b>ملاپ بکس:</b> اپنی مرضی کا نام دیں اور دو کھاتے چنیں۔ جمع + جمع = رقوم جمع (نتیجہ جمع)۔ بنام + بنام = رقوم جمع (نتیجہ بنام)۔ ایک جمع ایک بنام = بڑی رقم میں سے چھوٹی مائنس، اور جس کا بیلنس زیادہ ہو وہی فائنل (رنگ کے ساتھ) آئے گا۔',
+                '<b>Combo box:</b> give it any name and choose two accounts. Jama + Jama = added (Jama). Bnam + Bnam = added (Bnam). One Jama, one Bnam = smaller subtracted from larger; the larger balance is the final result, shown in colour.');
+            document.getElementById('bxAddGrate').textContent = bxT('➕ فائنل ریٹ', '➕ Final Rate');
+            document.getElementById('bxAddTiles').textContent = bxT('➕ کھاتہ', '➕ Tiles');
+            document.getElementById('bxAddRate2').textContent = bxT('➕ ریٹ', '➕ Rate');
+            document.getElementById('bxAddCombo').textContent = bxT('➕ ملاپ', '➕ Combo');
+            document.getElementById('bxSave').textContent = bxT('بکس محفوظ کریں ✅', 'Save boxes ✅');
+            layRender();
+            document.getElementById('bxList').innerHTML = bxState.length ? bxState.map((b, i) => {
+                const nm = cmbNames(b);
+                if (b.type === 'grate') return '<div class="bx-ed" data-i="' + i + '"><div class="bx-grid">'
+                    + '<div><label>' + bxT('بکس کا نام (اختیاری)', 'Box name (optional)') + '</label><input type="text" data-f="title" maxlength="60" value="' + bxEsc(b.title) + '"></div>'
+                    + '<div><label>' + bxT('کھاتہ (اس کا فائنل بیلنس ÷ فائنل وزن = ریٹ)', 'Account (final balance ÷ final weight = rate)') + '</label><select data-f="billName">' + bxOpts(b.billName) + '</select></div>'
+                    + '</div><button type="button" class="bx-del" data-del="' + i + '">🗑️ ' + bxT('بکس ہٹائیں', 'Remove box') + '</button></div>';
+                if (b.type === 'tiles') {
+                    const tl = Array.isArray(b.tiles) ? b.tiles : [], op = bxTileOpen[b.id];
+                    return '<div class="bx-ed" data-i="' + i + '"><div class="bx-grid">'
+                        + '<div><label>' + bxT('بکس کا نام', 'Box name') + '</label><input type="text" data-f="title" maxlength="60" value="' + bxEsc(b.title) + '"></div>'
+                        + '<div><label>' + bxT('کھاتہ (جس سے ٹوٹل اٹھانے ہیں)', 'Account (totals are read from it)') + '</label><select data-f="billName">' + bxOpts(b.billName) + '</select></div>'
+                        + '<div style="grid-column:1/-1"><label>' + bxT('چھوٹے باکس (کلک کر کے نام اور بیلنس لکھیں)', 'Small boxes (click one to type name and balance)') + '</label>'
+                        + '<div class="tl-chips">' + tl.map((t, k) => '<button type="button" class="tl-chip' + (op === k ? ' on' : '') + '" data-tlo="' + k + '">' + bxEsc(t.n || bxT('نیا باکس', 'New box')) + '</button>').join('') + '<button type="button" class="tl-chip add" data-tladd="1">＋</button></div>'
+                        + (tl[op] ? '<div class="tl-form"><input type="text" data-tk="n" data-k="' + op + '" maxlength="40" placeholder="' + bxT('نام (مثلاً خرچہ، مزدوری)', 'Name (e.g. expense, labour)') + '" value="' + bxEsc(tl[op].n) + '"><input type="number" inputmode="decimal" data-tk="bal" data-k="' + op + '" placeholder="' + bxT('بیلنس (اختیاری، ٹوٹل میں جمع ہوگا)', 'Balance (optional, added to total)') + '" value="' + (parseFloat(tl[op].bal) || '') + '"><button type="button" data-tldel="' + op + '">🗑️</button></div>' : '')
+                        + '</div></div><button type="button" class="bx-del" data-del="' + i + '">🗑️ ' + bxT('بکس ہٹائیں', 'Remove box') + '</button></div>';
+                }
+                if (b.type === 'frate') return '<div class="bx-ed" data-i="' + i + '"><div class="bx-grid">'
+                    + '<div><label>' + bxT('بکس کا نام (ریٹ بکس)', 'Box name (rate box)') + '</label><input type="text" data-f="title" maxlength="60" value="' + bxEsc(b.title) + '"></div>'
+                    + '<div><label>' + bxT('بل کھاتہ (اس کا فائنل بیلنس اور فائنل وزن لیا جائے گا)', 'Bill account (its final balance and weight)') + '</label><select data-f="billName">' + bxOpts(b.billName) + '</select></div>'
+                    + '<div><label>' + bxT('وزن کا کھاتہ (اس کا جمع وزن مائنس ہوگا)', 'Weight account (its Jama weight is subtracted)') + '</label><select data-f="wtName">' + bxOpts(b.wtName) + '</select></div>'
+                    + '<div><label>' + bxT('خرچہ (اپنی رقم لکھیں — صرف ریٹ کے لیے، کسی کھاتے میں شامل نہیں)', 'Expense (type amount — only for the rate, not added to any account)') + '</label><input type="number" inputmode="decimal" data-f="exp" placeholder="0" value="' + (parseFloat(b.exp) || '') + '"></div>'
+                    + '</div><button type="button" class="bx-del" data-del="' + i + '">🗑️ ' + bxT('بکس ہٹائیں', 'Remove box') + '</button></div>';
+                return '<div class="bx-ed" data-i="' + i + '"><div class="bx-grid">'
+                + '<div><label>' + bxT('بکس کا نام', 'Box name') + '</label><input type="text" data-f="title" maxlength="60" value="' + bxEsc(b.title) + '"></div>'
+                + '<div><label>' + bxT('پہلا کھاتہ', 'First account') + '</label><select data-cn="0">' + bxOpts(nm[0]) + '</select></div>'
+                + '<div><label>' + bxT('دوسرا کھاتہ', 'Second account') + '</label><select data-cn="1">' + bxOpts(nm[1]) + '</select></div>'
+                + '</div><button type="button" class="bx-del" data-del="' + i + '">🗑️ ' + bxT('بکس ہٹائیں', 'Remove box') + '</button></div>';
+            }).join('')
+                : '<p class="bx-hint">' + bxT('ابھی کوئی بکس نہیں۔ نیچے سے شامل کریں۔', 'No boxes yet. Add one below.') + '</p>';
+        }
+        function bxInit() { const L = App.readObject(activeBranchId + '_dash_layout'); layState = { order: Array.isArray(L.order) ? L.order.slice() : [], hide: Array.isArray(L.hide) ? L.hide.slice() : [], hideKpi: Array.isArray(L.hideKpi) ? L.hideKpi.slice() : [], kpiOrder: Array.isArray(L.kpiOrder) ? L.kpiOrder.slice() : [], w: (L.w && typeof L.w === 'object' && !Array.isArray(L.w)) ? Object.assign({}, L.w) : {}, labels: (L.labels && typeof L.labels === 'object' && !Array.isArray(L.labels)) ? Object.assign({}, L.labels) : {} }; bxState = App.readArray(activeBranchId + '_dash_boxes').filter(b => b && typeof b === 'object' && (b.type === 'combo' || b.type === 'frate' || b.type === 'tiles' || b.type === 'grate')).map(b => Object.assign({}, b, b.type === 'combo' ? { names: cmbNames(b) } : {})); bxState.filter(b => b.type === 'combo').forEach(b => { b.names = [cmbNames(b)[0] || '', cmbNames(b)[1] || '']; }); bxRender(); }
+        function bxAdd(type) { bxState.push(Object.assign({ id: 'bx' + Date.now().toString(36) + Math.floor(Math.random() * 1e4), type: type === 'grate' ? 'grate' : type === 'frate' ? 'frate' : type === 'tiles' ? 'tiles' : 'combo', title: '' }, type === 'grate' ? { billName: '' } : type === 'tiles' ? { billName: '', tiles: [{ n: '', bal: 0 }] } : type === 'frate' ? { billName: '', wtName: '', exp: 0 } : { names: ['', ''] })); bxRender(); bxPersist(); }
+        document.getElementById('bxList').addEventListener('input', e => { const tk = e.target.dataset.tk, w1 = e.target.closest('.bx-ed'); if (tk && w1) { const bb = bxState[+w1.dataset.i], t = (bb.tiles || [])[+e.target.dataset.k]; if (t) { if (tk === 'n') { t.n = e.target.value; const c = w1.querySelector('.tl-chip.on'); if (c) c.textContent = t.n || bxT('نیا باکس', 'New box'); } else t.bal = parseFloat(e.target.value) || 0; bxPersist(); } } });
+        document.getElementById('bxList').addEventListener('click', e => {
+            const w1 = e.target.closest('.bx-ed'); if (!w1) return; const bb = bxState[+w1.dataset.i], o = e.target.closest('[data-tlo]'), a = e.target.closest('[data-tladd]'), d = e.target.closest('[data-tldel]');
+            if (!bb || bb.type !== 'tiles') return; bb.tiles = Array.isArray(bb.tiles) ? bb.tiles : [];
+            if (o) bxTileOpen[bb.id] = bxTileOpen[bb.id] === +o.dataset.tlo ? -1 : +o.dataset.tlo;
+            else if (a) { bb.tiles.push({ n: '', bal: 0 }); bxTileOpen[bb.id] = bb.tiles.length - 1; bxPersist(); }
+            else if (d) { bb.tiles.splice(+d.dataset.tldel, 1); bxTileOpen[bb.id] = -1; bxPersist(); }
+            else return;
+            bxRender();
+        });
+        document.getElementById('bxList').addEventListener('input', e => { const f = e.target.dataset.f, w = e.target.closest('.bx-ed'); if (f && w) { bxState[+w.dataset.i][f] = e.target.value; bxPersist(); } });
+        document.getElementById('bxList').addEventListener('change', e => { const k = e.target.dataset.cn, w = e.target.closest('.bx-ed'); if (k !== undefined && w) { const bb = bxState[+w.dataset.i]; bb.names = cmbNames(bb); bb.names[+k] = e.target.value; bxPersist(); } });
+        document.getElementById('bxList').addEventListener('click', e => { const d = e.target.closest('[data-del]'); if (d && confirm(bxT('یہ بکس ہٹا دیں؟', 'Remove this box?'))) { bxState.splice(+d.dataset.del, 1); bxRender(); bxPersist(); } });
+        function bxSave() {
+            const bad = bxState.filter(b => !dashBoxOk(b));
+            bxPersist();
+            alert(bad.length ? bxT('⚠️ ' + bad.length + ' بکس نامکمل ہیں (کم از کم 2 کھاتے چنیں) — وہ ڈیش بورڈ پر نہیں آئیں گے۔', '⚠️ ' + bad.length + ' box(es) incomplete (choose at least 2 accounts) — they will not show.') : bxT('✅ سب محفوظ ہو گیا', '✅ All saved'));
+        }
+
+        function openMasterSettingsModal() {
+            let userRole = App.getRole();
+            if (userRole === 'owner') {
+                alert("⚠️ آپ کے پاس سیٹنگز تبدیل کرنے کی اجازت نہیں ہے!");
+                return;
+            }
+
+            let masterConfig = App.loadSettings(activeBranchId);
+
+            document.getElementById('settingMaundUnit').value = masterConfig.maundUnit || '37.324';
+            document.getElementById('settingRateThreshold').value = (masterConfig.rateThreshold === '' || isNaN(parseFloat(masterConfig.rateThreshold))) ? 25000 : masterConfig.rateThreshold;
+            document.getElementById('settingEnablePercent').checked = masterConfig.enablePercent === true;
+            document.getElementById('settingPercentVal').value = masterConfig.percentVal || '';
+            document.getElementById('settingPercentMode').value = masterConfig.percentMode || 'deduct';
+
+            colInit(masterConfig);
+
+            document.getElementById('settingSummaryBoxPos').value = (masterConfig.summaryBoxPos === 'top' || masterConfig.summaryBoxPos === 'under_tables') ? 'top' : 'bottom';
+            document.getElementById('settingLedgerBoxPos').value = masterConfig.ledgerBoxPos || 'bottom';
+            document.getElementById('settingCompactNums').checked = masterConfig.compactNums === true;
+
+            bxInit();
+            showSettingsTab('formula');
+            document.getElementById('masterSettingsModal').style.display = 'flex';
+        }
+
+        let colState = null;
+        const COL_BASE = [['pcs', 'پیس / کارٹن (Pcs)'], ['weight', 'وزن (Weight)'], ['rate', 'ریٹ (Rate)'], ['amount', 'کل رقم (Amount)']];
+        function colInit(cfg) {
+            colState = { base: {}, extras: (cfg.extras || []).map(e => ({ id: e.id, name: e.name, visible: e.visible !== false, formula: e.formula || '' })), order: (cfg.colOrder || []).slice() };
+            colState.base.pcs = { visible: cfg.cols.pcs.visible !== false, name: cfg.cols.pcs.name || 'پیس', formula: cfg.cols.pcs.formula || '' };
+            colState.base.weight = { visible: cfg.cols.weight.visible !== false, name: cfg.cols.weight.name || 'وزن', formula: cfg.cols.weight.formula || '' };
+            colState.base.rate = { visible: cfg.cols.rate.visible !== false, name: cfg.cols.rate.name || 'ریٹ', formula: cfg.cols.rate.formula || '' };
+            colState.base.amount = { visible: true, name: cfg.cols.amount.name || 'کل رقم', formula: '' };
+            colRender();
+        }
+        function colCollect() {
+            const b = colState.base, first = colState.extras.find(e => e.visible) || colState.extras[0];
+            return {
+                pcs: { visible: b.pcs.visible, name: b.pcs.name.trim() || 'پیس', formula: b.pcs.formula.trim() },
+                weight: { visible: b.weight.visible, name: b.weight.name.trim() || 'وزن', formula: b.weight.formula.trim() },
+                rate: { visible: b.rate.visible, name: b.rate.name.trim() || 'ریٹ', formula: b.rate.formula.trim() },
+                amount: { name: b.amount.name.trim() || 'کل رقم' },
+                extra: { visible: colState.extras.some(e => e.visible), name: first ? (first.name.trim() || 'اضافی کالم') : 'اضافی کالم' }
+            };
+        }
+        function colMove(key, d) {
+            const i = colState.order.indexOf(key), j = i + d;
+            if (i < 0 || j < 0 || j >= colState.order.length) return;
+            colState.order.splice(j, 0, colState.order.splice(i, 1)[0]);
+            colRender();
+        }
+        function colAddExtra() {
+            let n = 1; const ids = colState.extras.map(e => e.id);
+            while (ids.indexOf('e' + n) >= 0) n++;
+            colState.extras.push({ id: 'e' + n, name: 'اضافی کالم ' + (colState.extras.length + 1), visible: true, formula: '' });
+            colState.order.push('x_e' + n);
+            colRender();
+            const rows = document.querySelectorAll('#colTbody tr'); const last = rows[rows.length - 1];
+            if (last) { const inp = last.querySelector('input[type=text]'); if (inp) { inp.focus(); inp.select(); } }
+        }
+        function colDelExtra(id) {
+            if (!confirm('یہ اضافی کالم ہٹا دیں؟ (پرانی انٹریوں میں اس کی ویلیو محفوظ رہے گی مگر دکھائی نہیں دے گی)')) return;
+            colState.extras = colState.extras.filter(e => e.id !== id);
+            colState.order = colState.order.filter(k => k !== 'x_' + id);
+            colRender();
+        }
+        function colRender() {
+            const tb = document.getElementById('colTbody'); tb.innerHTML = '';
+            const n = colState.order.length;
+            colState.order.forEach((key, idx) => {
+                const isX = key.indexOf('x_') === 0;
+                const ex = isX ? colState.extras.find(e => 'x_' + e.id === key) : null;
+                const st = isX ? ex : colState.base[key];
+                if (!st) return;
+                const tr = document.createElement('tr');
+                const tdMv = document.createElement('td'); tdMv.style.whiteSpace = 'nowrap';
+                const up = document.createElement('button'); up.type = 'button'; up.className = 'col-mv'; up.textContent = '▲'; up.disabled = idx === 0; up.onclick = () => colMove(key, -1);
+                const dn = document.createElement('button'); dn.type = 'button'; dn.className = 'col-mv'; dn.textContent = '▼'; dn.disabled = idx === n - 1; dn.onclick = () => colMove(key, 1);
+                tdMv.appendChild(up); tdMv.appendChild(dn);
+                const tdL = document.createElement('td');
+                if (isX) { tdL.style.fontWeight = '900'; tdL.textContent = 'اضافی کالم'; const bd = document.createElement('span'); bd.className = 'col-xbadge'; bd.dir = 'ltr'; bd.textContent = 'x' + (colState.extras.indexOf(ex) + 1); tdL.appendChild(bd); }
+                else tdL.textContent = COL_BASE.find(c => c[0] === key)[1];
+                const tdV = document.createElement('td');
+                if (key === 'amount') tdV.textContent = 'ہمیشہ فعال';
+                else {
+                    const lb = document.createElement('label'); lb.className = 'checkbox-container';
+                    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = st.visible; cb.onchange = () => { st.visible = cb.checked; };
+                    lb.appendChild(cb); lb.appendChild(document.createTextNode(' فعال')); tdV.appendChild(lb);
+                }
+                const tdN = document.createElement('td');
+                const ni = document.createElement('input'); ni.type = 'text'; ni.className = 'field-input'; ni.value = st.name; ni.placeholder = isX ? 'کالم کا نام (مثلاً: بنڈل # / گاڑی #)' : '';
+                ni.oninput = () => { st.name = ni.value; }; tdN.appendChild(ni);
+                const tdF = document.createElement('td');
+                if (key === 'amount') tdF.textContent = '—';
+                else {
+                    const fi = document.createElement('input'); fi.type = 'text'; fi.className = 'field-input'; fi.dir = 'ltr'; fi.value = st.formula; fi.placeholder = 'مثلاً: pcs * 2';
+                    fi.oninput = () => { st.formula = fi.value; }; tdF.appendChild(fi);
+                }
+                const tdD = document.createElement('td');
+                if (isX) { const d = document.createElement('button'); d.type = 'button'; d.className = 'col-del'; d.textContent = '✕'; d.title = 'ہٹائیں'; d.onclick = () => colDelExtra(ex.id); tdD.appendChild(d); }
+                [tdMv, tdL, tdV, tdN, tdF, tdD].forEach(t => tr.appendChild(t)); tb.appendChild(tr);
+            });
+        }
+
+        function showSettingsTab(name) {
+            document.querySelectorAll('.settings-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+            document.querySelectorAll('.settings-card-group').forEach(g => g.classList.toggle('tab-on', g.dataset.tab === name));
+            document.querySelector('.modal-body-scroll').scrollTop = 0;
+        }
+        document.getElementById('settingsTabs').addEventListener('click', e => {
+            const t = e.target.closest('.settings-tab');
+            if (t) showSettingsTab(t.dataset.tab);
+        });
+
+        function closeMasterSettingsModal() {
+            document.getElementById('masterSettingsModal').style.display = 'none';
+        }
+
+        function saveMasterSettings() {
+            let userRole = App.getRole();
+            if (userRole === 'owner') return;
+
+            let masterConfig = {
+                maundUnit: document.getElementById('settingMaundUnit').value,
+                rateThreshold: isNaN(parseFloat(document.getElementById('settingRateThreshold').value)) ? 25000 : Math.max(0, parseFloat(document.getElementById('settingRateThreshold').value)),
+                enablePercent: document.getElementById('settingEnablePercent').checked,
+                percentVal: Math.max(0, Math.min(100, parseFloat(document.getElementById('settingPercentVal').value) || 0)),
+                percentMode: document.getElementById('settingPercentMode').value,
+                cols: colCollect(),
+                extras: colState.extras.map(e => ({ id: e.id, name: e.name.trim() || 'اضافی کالم', visible: e.visible, formula: e.formula.trim() })),
+                colOrder: colState.order.slice(),
+                summaryBoxPos: document.getElementById('settingSummaryBoxPos').value,
+                ledgerBoxPos: document.getElementById('settingLedgerBoxPos').value,
+                compactNums: document.getElementById('settingCompactNums').checked,
+            };
+
+            App.store.set(`rohan_branch_master_settings_${activeBranchId}`, JSON.stringify(masterConfig));
+
+            let branchOverrides = App.readObject('rohan_branch_lang_overrides');
+            let globalLang = App.store.get('rohan_global_lang') || 'ur';
+            let activeBranchLang = sessionStorage.getItem('active_branch_lang') || branchOverrides[activeBranchId] || globalLang;
+            let isEn = (activeBranchLang === 'en');
+
+            alert(isEn ? "✅ All master settings, formula and column placements saved!" : "✅ تمام فارمولے، کالمز اور بکسز کی سیٹنگز کامیابی سے محفوظ ہو گئیں!");
+            location.reload();
+        }
+
+        function resetMasterSettings() {
+            if (App.getRole() === 'owner') return;
+            if (!confirm('کیا اس برانچ کی تمام سیٹنگز ڈیفالٹ پر لوٹا دیں؟ / Reset all settings of this branch to defaults?')) return;
+            App.store.remove(`rohan_branch_master_settings_${activeBranchId}`);
+            location.reload();
+        }
+
+        function initDash(stage, { load, isEn, compact, currency }) {
+  const T = (u, e) => isEn ? e : u;
+  const LB = k => { const o = ((data && data.layout) || {}).labels; const v = o && typeof o[k] === 'string' ? o[k].trim() : ''; return v || (DASH_TXT[k] ? (isEn ? DASH_TXT[k][1] : DASH_TXT[k][0]) : k); };
+  const LBX = (bx, f) => { const o = ((data && data.layout) || {}).labels, ty = dashBxType(bx), v = o && typeof o['box:' + bx.id + '.' + f] === 'string' ? o['box:' + bx.id + '.' + f].trim() : ''; return v || (DASH_TXT['bx.' + ty + '.' + f] ? DASH_TXT['bx.' + ty + '.' + f][isEn ? 1 : 0] : f); };
+  const canEdit = App.getRole() === 'admin';
+  const E = k => canEdit ? '<span class="ed" data-lk="' + esc(k) + '">' + esc(LB(k)) + '</span>' : esc(LB(k));
+  const EX = (bx, f) => canEdit ? '<span class="ed" data-lk="box:' + esc(bx.id) + '.' + f + '">' + esc(LBX(bx, f)) + '</span>' : esc(LBX(bx, f));
+  const BKEY = () => activeBranchId + '_dash_boxes', LKEY = () => activeBranchId + '_dash_layout';
+  const digits = v => String(v == null ? '' : v).replace(/[٠-٩]/g, c => c.charCodeAt(0) - 1632).replace(/[۰-۹]/g, c => c.charCodeAt(0) - 1776).replace(/[,٬،\s]/g, '').replace('٫', '.');
+  const num = v => { const n = parseFloat(digits(v)); return isFinite(n) ? n : 0; };
+  let editing = 0;
+  function saveLabel(k, v) { const L = App.readObject(LKEY()); L.labels = (L.labels && typeof L.labels === 'object' && !Array.isArray(L.labels)) ? L.labels : {}; v = String(v || '').trim().slice(0, 80); if (v) L.labels[k] = v; else delete L.labels[k]; App.store.set(LKEY(), JSON.stringify(L)); }
+  function saveBox(id, fn) { const arr = App.readArray(BKEY()), b = arr.find(x => x && x.id === id); if (!b) return; fn(b); App.store.set(BKEY(), JSON.stringify(arr)); }
+  function startEdit(el) {
+    if (el.querySelector('input')) return;
+    const isNum = el.dataset.ex === 'w' || el.dataset.ex === 'a', cur = isNum ? (num(el.textContent) || '') : el.textContent, inp = document.createElement('input');
+    inp.className = 'ed-in'; inp.type = 'text'; inp.value = cur; inp.maxLength = 80; if (isNum) inp.inputMode = 'decimal';
+    inp.style.width = Math.max(70, Math.min(260, el.offsetWidth + 24)) + 'px';
+    el.textContent = ''; el.appendChild(inp); editing++; inp.focus(); inp.select();
+    let done = false;
+    const finish = save => {
+      if (done) return; done = true; editing--;
+      if (save) {
+        const v = inp.value;
+        if (el.dataset.lk) saveLabel(el.dataset.lk, v);
+        else if (el.dataset.bt) saveBox(el.dataset.bt, b => { b.title = String(v).trim().slice(0, 60); });
+        else if (el.dataset.ex) saveBox(el.dataset.b, b => { const rows = Array.isArray(b.rows) ? b.rows : []; const r = rows[+el.dataset.i]; if (r) { if (el.dataset.ex === 'n') r.n = String(v).trim().slice(0, 60); else r[el.dataset.ex] = num(v); } b.rows = rows; });
+      }
+      refresh();
+    };
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); finish(true); } else if (e.key === 'Escape') { e.preventDefault(); finish(false); } });
+    inp.addEventListener('blur', () => finish(true));
+  }
+  stage.addEventListener('click', e => {
+    if (!canEdit) return;
+    const t = e.target, ed = t.closest && t.closest('.ed');
+    if (ed && !ed.querySelector('input')) { startEdit(ed); return; }
+    const add = t.closest && t.closest('[data-exadd]'), del = t.closest && t.closest('[data-exdel]'), clr = t.closest && t.closest('[data-exclr]');
+    if (add) { const id = add.dataset.exadd; let n = 0; saveBox(id, b => { b.rows = Array.isArray(b.rows) ? b.rows : []; b.rows.push({ n: '', w: 0, a: 0 }); n = b.rows.length - 1; }); refresh(); const c = stage.querySelector('[data-ex="n"][data-b="' + id + '"][data-i="' + n + '"]'); if (c) startEdit(c); }
+    else if (del) { saveBox(del.dataset.b, b => { (b.rows || []).splice(+del.dataset.exdel, 1); }); refresh(); }
+    else if (clr && confirm(isEn ? 'Clear all rows of this box?' : 'اس بکس کی سب سطریں صاف کر دیں؟')) { saveBox(clr.dataset.exclr, b => { b.rows = []; }); refresh(); }
+  });
+  const fmtN = n => Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 3 });
+  const fmtC = n => { const a = Math.abs(n), s = n < 0 ? '-' : ''; return a >= 1e9 ? s + +(a / 1e9).toFixed(2) + 'B' : a >= 1e6 ? s + +(a / 1e6).toFixed(2) + 'M' : a >= 1e4 ? s + +(a / 1e3).toFixed(1) + 'K' : s + fmtN(a); };
+  const fmtT = n => compact ? fmtC(n) : fmtN(n);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const pad = n => (n < 10 ? '0' : '') + n;
+  const MON = isEn ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                   : ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'];
+  const MS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const CJ = '#12b886', CB = '#f76707', CN = '#339af0', CWI = '#15aabf', CWO = '#9c36b5';
+  const now = new Date();
+  let year = now.getFullYear(), month = now.getMonth(), data = null, byDay = {}, years = [], lastDay = '';
+
+  stage.innerHTML = '<div class="db-top"><div class="db-date"></div><div class="db-sel"><label><span id="dbYearL"></span> <select id="dbYear"></select></label></div></div>'
+    + '<div class="db-body" id="dbBody">'
+    + '<div class="db-months" id="dbMonths" data-sec="months"></div>'
+    + '<div class="db-kpis" id="dbKpis" data-sec="kpis"></div>'
+    + '<section class="db-card db-main" data-sec="main"><h3 id="dbMainT"></h3><div class="db-tbl" id="dbTbl"></div>'
+    + '<div class="db-leg" id="dbLegMain"></div><div class="db-cv db-cv-main"><canvas id="dbMainCv"></canvas><div class="db-tip"></div></div></section>'
+    + '<section class="db-card db-don" data-sec="donut"><h3 id="dbDonT"></h3><div class="db-cv db-cv-don"><canvas id="dbDonCv"></canvas></div><div class="db-dleg" id="dbDonL"></div></section>'
+    + '<section class="db-card" data-sec="branches"><h3 id="dbBrT"></h3><div id="dbBr"></div></section><section class="db-card" data-sec="top3"><h3 id="dbTopT"></h3><div id="dbTop"></div></section>'
+    + '<section class="db-card" data-sec="daily"><h3 id="dbDayT"></h3><div class="db-leg" id="dbLegDay"></div><div class="db-cv db-cv-day"><canvas id="dbDayCv"></canvas><div class="db-tip"></div></div></section></div>';
+  const $ = s => stage.querySelector(s);
+
+  function zero() { return { j: 0, b: 0, wj: 0, wb: 0, nj: 0, nb: 0 }; }
+  function build() {
+    data = load(); byDay = {};
+    const ys = {};
+    data.recs.forEach(r => {
+      if (!r || (r.isOpening && data.openInTotals === false)) return;
+      const d = String(r.date || ''); if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+      const a = parseFloat(r.totalAmount) || 0, wt = parseFloat(r.weight) || 0, o = byDay[d] || (byDay[d] = zero());
+      if (r.type === 'JAMA') { o.j += a; o.wb += wt; o.nj++; } else { o.b += a; o.wj += wt; o.nb++; }
+      ys[d.slice(0, 4)] = 1;
+    });
+    ys[String(now.getFullYear())] = 1;
+    years = Object.keys(ys).map(Number).sort((a, b) => b - a);
+    if (years.indexOf(year) < 0) year = years[0];
+    lastDay = App.localDate();
+  }
+  function sumPrefix(p) { const o = zero(); Object.keys(byDay).forEach(k => { if (k.indexOf(p) === 0) { const x = byDay[k]; for (const f in o) o[f] += x[f]; } }); return o; }
+  const monthKey = () => year + '-' + pad(month + 1);
+  function addDays(s, n) { const d = new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10) + n); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+
+  function setup(cv) {
+    const p = cv.parentNode, W = p.clientWidth, H = p.clientHeight; if (!W || !H) return null;
+    const dpr = Math.min(2, window.devicePixelRatio || 1); cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); return { g, W, H };
+  }
+  function niceMax(m) { if (m <= 0) return 1; const e = Math.pow(10, Math.floor(Math.log10(m))), f = m / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * e; }
+  function curve(g, pts) {
+    const n = pts.length; if (n < 2) { if (n) g.moveTo(pts[0][0], pts[0][1]); return; }
+    const dx = [], m = [], t = new Array(n);
+    for (let i = 0; i < n - 1; i++) { dx[i] = pts[i + 1][0] - pts[i][0]; m[i] = (pts[i + 1][1] - pts[i][1]) / dx[i]; }
+    t[0] = m[0]; t[n - 1] = m[n - 2];
+    for (let i = 1; i < n - 1; i++) t[i] = m[i - 1] * m[i] <= 0 ? 0 : (m[i - 1] + m[i]) / 2;
+    for (let i = 0; i < n - 1; i++) { if (m[i] === 0) { t[i] = t[i + 1] = 0; continue; } const a = t[i] / m[i], b = t[i + 1] / m[i], h = Math.hypot(a, b); if (h > 3) { t[i] = 3 * a / h * m[i]; t[i + 1] = 3 * b / h * m[i]; } }
+    g.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 0; i < n - 1; i++) g.bezierCurveTo(pts[i][0] + dx[i] / 3, pts[i][1] + t[i] * dx[i] / 3, pts[i + 1][0] - dx[i] / 3, pts[i + 1][1] - t[i + 1] * dx[i] / 3, pts[i + 1][0], pts[i + 1][1]);
+  }
+  const AX = '#5f7d86', GR = 'rgba(95,125,134,0.25)', FONT = '11px Tahoma, Arial, sans-serif';
+  const yLab = n => n >= 1e6 ? +(n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? +(n / 1e3).toFixed(1) + 'K' : String(+n.toFixed(1));
+  function axes(g, W, H, L, R, Tp, B, ymax, labels, hot) {
+    g.font = FONT; g.textBaseline = 'middle'; g.lineWidth = 1;
+    for (let k = 0; k <= 4; k++) { const y = Math.round(Tp + (H - Tp - B) * (1 - k / 4)) + 0.5; g.strokeStyle = GR; g.beginPath(); g.moveTo(L, y); g.lineTo(W - R, y); g.stroke(); g.fillStyle = AX; g.textAlign = 'right'; g.fillText(k ? yLab(ymax * k / 4) : '0', L - 5, y); }
+    g.textAlign = 'center'; labels.forEach((l, i) => { g.fillStyle = i === hot ? '#e8590c' : AX; g.font = (i === hot ? 'bold ' : '') + FONT; if (l) g.fillText(l, labels.x(i), H - B / 2 + 3); });
+  }
+
+  function renderTop() {
+    $('.db-date').innerHTML = '📅 ' + E('date.today') + ': ' + esc(lastDay);
+    const sel = $('#dbYear'); sel.innerHTML = years.map(y => '<option value="' + y + '"' + (y === year ? ' selected' : '') + '>' + y + '</option>').join('');
+    $('#dbMonths').innerHTML = MON.map((m, i) => '<button type="button" data-m="' + i + '" class="' + (i === month ? 'on' : '') + '">' + m + '</button>').join('');
+  }
+
+  function renderKpis() {
+    const t = byDay[lastDay] || zero(), days = []; for (let k = 6; k >= 0; k--) days.push(byDay[addDays(lastDay, -k)] || zero());
+    const all = [
+      { c: 'c1', ic: '⬆️', t: E('kpi.c1.t'), v: t.j, s: t.nj + ' ' + E('kpi.entries'), f: x => x.j },
+      { c: 'c2', ic: '⬇️', t: E('kpi.c2.t'), v: t.b, s: t.nb + ' ' + E('kpi.entries'), f: x => x.b },
+      { c: 'c3', ic: '💵', t: E('kpi.c3.t'), v: t.j - t.b, s: E('kpi.c3.s'), f: x => x.j - x.b },
+      { c: 'c4', ic: '⚖️', t: E('kpi.c4.t'), v: t.wj, s: E('kpi.c4.s'), f: x => x.wj },
+      { c: 'c5', ic: '🚚', t: E('kpi.c5.t'), v: t.wb, s: E('kpi.c5.s'), f: x => x.wb }
+    ], hk = (data.layout && data.layout.hideKpi) || [], ko = dashNormKpi(data.layout && data.layout.kpiOrder), cards = all.filter(k => hk.indexOf(k.c) < 0).sort((a, b) => ko.indexOf(a.c) - ko.indexOf(b.c));
+    $('#dbKpis').style.setProperty('--n', Math.max(1, cards.length)); $('#dbKpis').style.display = cards.length ? '' : 'none';
+    $('#dbKpis').innerHTML = cards.map((k, i) => '<div class="db-kpi ' + k.c + '"><div class="kt">' + k.ic + ' ' + k.t + '</div><div class="kv' + (fmtT(k.v).length > 11 ? ' sm' : '') + '" dir="ltr">' + esc(fmtT(k.v)) + '</div><div class="ks">' + k.s + '</div><canvas data-i="' + i + '"></canvas></div>').join('');
+    stage.querySelectorAll('.db-kpi canvas').forEach(cv => {
+      const k = cards[+cv.dataset.i], vals = days.map(k.f), s = setup(cv); if (!s) return;
+      const mn = Math.min.apply(null, vals.concat(0)), mx = Math.max.apply(null, vals.concat(1)), x = i => 4 + (s.W - 8) * i / 6, y = v => s.H - 3 - (s.H - 8) * (v - mn) / ((mx - mn) || 1);
+      const pts = vals.map((v, i) => [x(i), y(v)]);
+      s.g.beginPath(); curve(s.g, pts); s.g.lineTo(pts[6][0], s.H); s.g.lineTo(pts[0][0], s.H); s.g.closePath(); s.g.fillStyle = 'rgba(255,255,255,0.22)'; s.g.fill();
+      s.g.beginPath(); curve(s.g, pts); s.g.strokeStyle = 'rgba(255,255,255,0.9)'; s.g.lineWidth = 2; s.g.stroke();
+      s.g.beginPath(); s.g.arc(pts[6][0], pts[6][1], 3, 0, 6.3); s.g.fillStyle = '#fff'; s.g.fill();
+    });
+  }
+
+  function renderMain() {
+    const m = sumPrefix(monthKey()), y = sumPrefix(String(year));
+    $('#dbMainT').innerHTML = '📅 ' + E('main.t');
+    const rows = [
+      [E('main.r1'), o => o.j, CJ], [E('main.r2'), o => o.b, CB], [E('main.r3'), o => o.j - o.b, CN],
+      [E('main.r4'), o => o.wj, CWI], [E('main.r5'), o => o.wb, CWO], [E('main.r6'), o => o.wj - o.wb, '#868e96'], [E('main.r7'), o => o.nj + o.nb, '#868e96']
+    ];
+    $('#dbTbl').innerHTML = '<div class="r h"><span></span><b>' + esc(MON[month] + ' ' + year) + '</b><b>' + E('year.l') + ' ' + year + '</b></div>'
+      + rows.map(r => { const a = r[1](m), b = r[1](y); return '<div class="r"><span><i style="background:' + r[2] + '"></i>' + r[0] + '</span><b dir="ltr" class="' + (a < 0 ? 'neg' : '') + '">' + esc(fmtT(a)) + '</b><b dir="ltr" class="' + (b < 0 ? 'neg' : '') + '">' + esc(fmtT(b)) + '</b></div>'; }).join('');
+    drawMain();
+  }
+  let mainGeo = null;
+  function drawMain(hot) {
+    const cv = $('#dbMainCv'), s = setup(cv); if (!s) return; const { g, W, H } = s;
+    const mv = []; for (let i = 0; i < 12; i++) mv.push(byDay && sumPrefix(year + '-' + pad(i + 1)));
+    const L = 40, R = 8, Tp = 10, B = 22, ymax = niceMax(Math.max.apply(null, mv.map(o => Math.max(o.j, o.b)).concat(0))), slot = (W - L - R) / 12;
+    const x = i => L + slot * (i + 0.5), yy = v => Tp + (H - Tp - B) * (1 - v / ymax);
+    const labels = MS.slice(); labels.x = x; const sel = hot === undefined ? month : hot;
+    axes(g, W, H, L, R, Tp, B, ymax, labels, sel);
+    mv.forEach((o, i) => {
+      const bw = Math.max(6, slot * 0.5), top = yy(o.j), grd = g.createLinearGradient(0, top, 0, H - B); grd.addColorStop(0, i === sel ? '#38d9a9' : '#20c997'); grd.addColorStop(1, i === sel ? '#0ca678' : '#0b7285');
+      g.fillStyle = grd; if (o.j > 0) { g.beginPath(); g.roundRect ? g.roundRect(x(i) - bw / 2, top, bw, H - B - top, 3) : g.rect(x(i) - bw / 2, top, bw, H - B - top); g.fill(); }
+      if (i === month) { g.strokeStyle = 'rgba(232,89,12,0.7)'; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(x(i), Tp); g.lineTo(x(i), H - B); g.stroke(); g.setLineDash([]); }
+    });
+    const pts = mv.map((o, i) => [x(i), yy(o.b)]);
+    g.beginPath(); curve(g, pts); g.lineTo(pts[11][0], H - B); g.lineTo(pts[0][0], H - B); g.closePath(); g.fillStyle = 'rgba(247,103,7,0.10)'; g.fill();
+    g.beginPath(); curve(g, pts); g.strokeStyle = CB; g.lineWidth = 2.4; g.stroke();
+    pts.forEach((p, i) => { g.beginPath(); g.arc(p[0], p[1], i === sel ? 5 : 3.2, 0, 6.3); g.fillStyle = CB; g.fill(); g.lineWidth = 1.5; g.strokeStyle = '#fff'; g.stroke(); });
+    mainGeo = { L, slot, mv };
+  }
+
+  function renderDonut() {
+    const m = sumPrefix(monthKey()), tot = m.j + m.b;
+    $('#dbDonT').innerHTML = '🍩 ' + E('donut.t') + ' — ' + esc(MON[month]);
+    const s = setup($('#dbDonCv'));
+    if (s) {
+      const { g, W, H } = s, r = Math.min(W, H) / 2 - 6, cx = W / 2, cy = H / 2, lw = r * 0.34;
+      g.lineWidth = lw; g.lineCap = 'butt';
+      const arc = (a0, a1, c) => { g.beginPath(); g.arc(cx, cy, r - lw / 2, a0, a1); g.strokeStyle = c; g.stroke(); };
+      if (!tot) { arc(0, 6.2832, 'rgba(95,125,134,0.25)'); }
+      else { const a = -Math.PI / 2, sj = m.j / tot * 6.2832; arc(a, a + sj, CJ); arc(a + sj, a + 6.2832, CB); if (m.j && m.b) { g.lineWidth = 3; g.strokeStyle = '#fff'; [a, a + sj].forEach(q => { g.beginPath(); g.moveTo(cx + (r - lw) * Math.cos(q), cy + (r - lw) * Math.sin(q)); g.lineTo(cx + r * Math.cos(q), cy + r * Math.sin(q)); g.stroke(); }); } }
+      g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#12303a';
+      g.font = '12px Tahoma, Arial, sans-serif'; g.fillText(tot ? LB('tag.j') : LB('donut.nodata'), cx, cy - 14);
+      if (tot) { g.font = 'bold ' + Math.round(r * 0.36) + 'px Tahoma, Arial, sans-serif'; g.fillText(Math.round(m.j / tot * 100) + '%', cx, cy + 8); }
+    }
+    $('#dbDonL').innerHTML = '<div><i style="background:' + CJ + '"></i>' + E('tag.j') + ' <b dir="ltr">' + esc(fmtT(m.j)) + '</b></div><div><i style="background:' + CB + '"></i>' + E('tag.b') + ' <b dir="ltr">' + esc(fmtT(m.b)) + '</b></div>';
+  }
+
+  function renderBranches() {
+    $('#dbBrT').innerHTML = '🏭 ' + E('br.t');
+    const rows = data.branches.slice().sort((a, b) => (b.wi - b.wo) - (a.wi - a.wo));
+    const mx = Math.max.apply(null, rows.map(r => Math.max(r.wi, r.wo)).concat(1e-9));
+    $('#dbBr').innerHTML = rows.length ? '<div class="r h"><span>' + E('br.h0') + '</span><b>' + E('br.in') + '</b><b>' + E('br.out') + '</b><b>' + E('br.stock') + '</b></div>'
+      + rows.map(r => '<div class="br"><div class="r"><span>' + esc(r.name) + '</span><b dir="ltr">' + esc(fmtT(r.wi)) + '</b><b dir="ltr">' + esc(fmtT(r.wo)) + '</b><b dir="ltr" class="' + (r.wi - r.wo < 0 ? 'neg' : 'pos') + '">' + esc(fmtT(r.wi - r.wo)) + '</b></div>'
+        + '<div class="bar"><u style="width:' + (r.wi / mx * 100) + '%;background:' + CWI + '"></u><u style="width:' + (r.wo / mx * 100) + '%;background:' + CWO + '"></u></div></div>').join('')
+      : '<div class="empty">' + E('br.nodata') + '</div>';
+  }
+  function renderTop3() {
+    $('#dbTopT').innerHTML = '🏅 ' + E('top.t') + ' — ' + esc(MON[month]);
+    const p = monthKey(), by = {};
+    data.recs.forEach(r => { if (!r || (r.isOpening && data.openInTotals === false) || String(r.date || '').indexOf(p) !== 0) return; const k = App.norm(r.customerName), a = parseFloat(r.totalAmount) || 0, o = by[k] || (by[k] = { n: r.customerName, j: 0, b: 0 }); if (r.type === 'JAMA') o.j += a; else o.b += a; });
+    const list = Object.keys(by).map(k => by[k]).sort((a, b) => (b.j + b.b) - (a.j + a.b)).slice(0, 3), mx = Math.max.apply(null, list.map(o => o.j + o.b).concat(1e-9));
+    $('#dbTop').innerHTML = list.length ? '<div class="r h"><span></span><b>' + E('tag.j') + '</b><b>' + E('tag.b') + '</b></div>' + list.map((o, i) => '<div class="br"><div class="r"><span>' + (i + 1) + '. ' + esc(o.n || '') + '</span><b dir="ltr">' + esc(fmtC(o.j)) + '</b><b dir="ltr">' + esc(fmtC(o.b)) + '</b></div><div class="bar"><u style="width:' + (o.j / mx * 100) + '%;background:' + CJ + '"></u><u style="width:' + (o.b / mx * 100) + '%;background:' + CB + '"></u></div></div>').join('') : '<div class="empty">' + T('اس مہینے کوئی انٹری نہیں', 'No entries this month') + '</div>';
+  }
+
+  let dayGeo = null;
+  function drawDaily(hot) {
+    $('#dbDayT').innerHTML = '📈 ' + E('day.t') + ' — ' + esc(MON[month] + ' ' + year);
+    const s = setup($('#dbDayCv')); if (!s) return; const { g, W, H } = s, n = new Date(year, month + 1, 0).getDate(), p = monthKey() + '-';
+    const a = [], b = []; for (let d = 1; d <= n; d++) { const o = byDay[p + pad(d)] || zero(); a.push(o.wj); b.push(o.wb); }
+    const L = 40, R = 10, Tp = 10, B = 22, ymax = niceMax(Math.max.apply(null, a.concat(b, 0))), x = i => L + 6 + (W - L - R - 12) * i / Math.max(1, n - 1), y = v => Tp + (H - Tp - B) * (1 - v / ymax);
+    const labels = []; for (let i = 0; i < n; i++) labels.push((i + 1) % 5 === 0 || i === 0 ? String(i + 1) : ''); labels.x = x;
+    axes(g, W, H, L, R, Tp, B, ymax, labels, hot === undefined ? -1 : hot);
+    [[a, CWI], [b, CWO]].forEach(([arr, col]) => {
+      const pts = arr.map((v, i) => [x(i), y(v)]);
+      g.beginPath(); curve(g, pts); g.lineTo(pts[n - 1][0], H - B); g.lineTo(pts[0][0], H - B); g.closePath(); g.fillStyle = col + '22'; g.fill();
+      g.beginPath(); curve(g, pts); g.strokeStyle = col; g.lineWidth = 2.2; g.stroke();
+      if (hot !== undefined && hot >= 0) { g.beginPath(); g.arc(pts[hot][0], pts[hot][1], 4.5, 0, 6.3); g.fillStyle = col; g.fill(); g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.stroke(); }
+    });
+    dayGeo = { L, W, R, n, a, b };
+  }
+
+  const tipOf = el => el.parentNode.querySelector('.db-tip');
+  function showTip(cv, e, html) {
+    const tip = tipOf(cv), box = cv.parentNode.getBoundingClientRect(); tip.innerHTML = html; tip.style.display = 'block';
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    tip.style.left = Math.max(2, Math.min(box.width - tw - 2, e.clientX - box.left - tw / 2)) + 'px'; tip.style.top = Math.max(2, e.clientY - box.top - th - 12) + 'px';
+  }
+  const hide = cv => { tipOf(cv).style.display = 'none'; };
+  function mainIdx(e) { const r = $('#dbMainCv').getBoundingClientRect(); return Math.min(11, Math.max(0, Math.floor((e.clientX - r.left - mainGeo.L) / mainGeo.slot))); }
+  const mainCv = $('#dbMainCv'), dayCv = $('#dbDayCv');
+  mainCv.addEventListener('pointermove', e => { if (!mainGeo) return; const i = mainIdx(e), o = mainGeo.mv[i]; drawMain(i); showTip(mainCv, e, '<b>' + MON[i] + ' ' + year + '</b><div style="color:#38d9a9">' + T('جمع', 'Jama') + ': ' + esc(fmtT(o.j)) + '</div><div style="color:#ff922b">' + T('بنام', 'Bnam') + ': ' + esc(fmtT(o.b)) + '</div><div>' + T('خالص', 'Net') + ': ' + esc(fmtT(o.j - o.b)) + (currency ? ' ' + esc(currency) : '') + '</div><small>' + T('ٹچ/کلک سے منتخب کریں', 'Click to select') + '</small>'); });
+  mainCv.addEventListener('pointerleave', () => { hide(mainCv); drawMain(); });
+  mainCv.addEventListener('click', e => { if (!mainGeo) return; month = mainIdx(e); renderAll(); });
+  dayCv.addEventListener('pointermove', e => { if (!dayGeo) return; const r = dayCv.getBoundingClientRect(), G = dayGeo; let i = Math.round((e.clientX - r.left - G.L - 6) / ((G.W - G.L - G.R - 12) / Math.max(1, G.n - 1))); i = Math.min(G.n - 1, Math.max(0, i)); drawDaily(i); showTip(dayCv, e, '<b>' + (i + 1) + ' ' + MON[month] + '</b><div style="color:#3bc9db">' + T('وزن آیا', 'In') + ': ' + esc(fmtT(G.a[i])) + '</div><div style="color:#da77f2">' + T('وزن گیا', 'Out') + ': ' + esc(fmtT(G.b[i])) + '</div>'); });
+  dayCv.addEventListener('pointerleave', () => { hide(dayCv); drawDaily(); });
+  $('#dbMonths').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { month = +b.dataset.m; renderAll(); } });
+  $('#dbYear').addEventListener('change', e => { year = +e.target.value; renderAll(); });
+
+  function acct(box, name, id) {
+    const o = { j: 0, b: 0, wj: 0, wb: 0, n: 0 };
+    data.recs.forEach(r => {
+      if (!r || (id && r.customerId ? r.customerId !== id : r.customerName !== name)) return;
+      const a = parseFloat(r.totalAmount) || 0, w = parseFloat(r.weight) || 0; o.n++;
+      if (r.type === 'JAMA') { o.j += a; o.wj += w; } else { o.b += a; o.wb += w; }
+    });
+    return o;
+  }
+  function renderCustom() {
+    const body = $('#dbBody'), known = data.custNames || [];
+    body.querySelectorAll(':scope > .cb').forEach(x => x.remove());
+    (data.boxes || []).forEach(bx => {
+      if (bx.type === 'grate') {
+        const A = acct(bx, bx.billName, bx.billId), fA = A.b - A.j, fW = A.wb - A.wj, ok = fW > 0;
+        const tt = bx.title || bx.billName, ttl4 = canEdit ? '<span class="ed" data-bt="' + esc(bx.id) + '">' + esc(tt) + '</span>' : esc(tt);
+        body.insertAdjacentHTML('beforeend', '<section class="db-card cb grt" data-sec="box:' + esc(bx.id) + '"><div class="gr-top"><span class="gr-badge">' + T('فائنل ریٹ', 'FINAL RATE') + '</span><span class="gr-nm">' + ttl4 + '</span></div>'
+          + '<div class="gr-ring"><div class="gr-in">' + (ok ? '<b dir="ltr">' + esc(fmtN(fA / fW)) + '</b>' : '<b class="no">—</b>') + '</div></div>'
+          + (ok ? '' : '<div class="gr-no">' + T('ریٹ نہیں (فائنل وزن صفر یا کم)', 'No rate (final weight is zero or less)') + '</div>')
+          + '<div class="gr-eq"><div><small>' + T('فائنل بیلنس', 'Final balance') + '</small><b dir="ltr">' + esc(fmtN(fA)) + '</b></div><span>÷</span><div><small>' + T('فائنل وزن', 'Final weight') + '</small><b dir="ltr">' + esc(fmtN(fW)) + '</b></div></div>'
+          + (bx.billName && known.length && known.indexOf(bx.billName) < 0 ? '<div class="wn">⚠️ ' + esc(bx.billName) + '</div>' : '') + '</section>');
+        return;
+      }
+      if (bx.type === 'tiles') {
+        const today = App.localDate(), nm = x => String(x || '').trim().toLowerCase();
+        const recs = (data.recs || []).filter(r => r && (bx.billId && r.customerId ? r.customerId === bx.billId : r.customerName === bx.billName));
+        const sg = r => (r.type === 'JAMA' ? 1 : -1) * (parseFloat(r.totalAmount) || 0);
+        const tt = bx.title || bx.billName, ttl3 = canEdit ? '<span class="ed" data-bt="' + esc(bx.id) + '">' + esc(tt) + '</span>' : esc(tt);
+        const tag = v => v >= 0 ? ['jm', E('tag.j')] : ['bn', E('tag.b')];
+        const val = v => { const t = tag(v); return '<b class="' + t[0] + '" dir="ltr">' + esc(fmtN(Math.abs(v))) + '</b><span class="tg ' + t[0] + '">' + t[1] + '</span>'; };
+        const tl = (Array.isArray(bx.tiles) ? bx.tiles : []).filter(t => t && nm(t.n));
+        const cells = tl.map(t => {
+          const key = nm(t.n), m = recs.filter(r => nm(r.details).indexOf(key) >= 0);
+          const td = m.filter(r => String(r.date || '') === today).reduce((a, r) => a + sg(r), 0), all = m.reduce((a, r) => a + sg(r), 0) + (parseFloat(t.bal) || 0);
+          return '<div class="tl-c"><div class="tl-n">' + esc(t.n) + '</div><div class="tl-r"><span>' + T('آج کا', 'Today') + ' ' + esc(t.n) + '</span><span class="tl-v">' + val(td) + '</span></div><div class="tl-r"><span>' + T('ٹوٹل', 'Total') + ' ' + esc(t.n) + '</span><span class="tl-v">' + val(all) + '</span></div></div>';
+        }).join('');
+        body.insertAdjacentHTML('beforeend', '<section class="db-card cb tls" data-sec="box:' + esc(bx.id) + '"><div class="tl-h"><span>' + ttl3 + '</span><small>' + esc(bx.billName) + '</small></div><div class="tl-g">' + (cells || '<div class="wn" style="color:#5f7d86">' + T('سیٹنگز میں چھوٹے باکس شامل کریں', 'Add small boxes in settings') + '</div>') + '</div>'
+          + (bx.billName && known.length && known.indexOf(bx.billName) < 0 ? '<div class="wn">⚠️ ' + esc(bx.billName) + '</div>' : '') + '</section>');
+        return;
+      }
+      if (bx.type === 'frate') {
+        const A = acct(bx, bx.billName, bx.billId), W = bx.wtName ? acct(bx, bx.wtName, bx.wtId) : { wj: 0 };
+        const fW = A.wb - A.wj, fA = A.b - A.j, wJ = W.wj, ex = parseFloat(bx.exp) || 0, remW = fW - wJ, remA = fA - ex;
+        const tt = bx.title || T('ریٹ بکس', 'Rate box'), ttl2 = canEdit ? '<span class="ed" data-bt="' + esc(bx.id) + '">' + esc(tt) + '</span>' : esc(tt);
+        const ln = (l, v, c) => '<div class="fr-l"><span>' + l + '</span><b' + (c ? ' class="' + c + '"' : '') + ' dir="ltr">' + esc(fmtN(v)) + '</b></div>';
+        const miss = [bx.billName, bx.wtName].filter(n => n && known.length && known.indexOf(n) < 0);
+        body.insertAdjacentHTML('beforeend', '<section class="db-card cb frt" data-sec="box:' + esc(bx.id) + '"><div class="fr-h"><span>' + ttl2 + '</span><small>' + esc(bx.billName) + '</small></div>'
+          + '<div class="fr-g"><div class="fr-c"><div class="fr-t">' + T('فائنل بیلنس', 'Final balance') + '</div>' + ln(esc(bx.billName || T('بل', 'Bill')), fA) + ln(T('− خرچہ', '− Expense'), ex, 'bn') + '<div class="fr-s">' + ln(T('باقی بیلنس', 'Remaining'), remA) + '</div></div>'
+          + '<div class="fr-c"><div class="fr-t">' + T('فائنل وزن', 'Final weight') + '</div>' + ln(esc(bx.billName || T('بل', 'Bill')), fW) + ln(esc(bx.wtName || T('جمع وزن', 'Jama wt')), wJ, 'bn') + '<div class="fr-s">' + ln(T('باقی وزن', 'Remaining'), remW) + '</div></div></div>'
+          + (remW > 0 ? '<div class="fr-r"><span>' + T('ریٹ', 'Rate') + '</span><b dir="ltr">' + esc(fmtN(remA / remW)) + '</b></div>' : '<div class="fr-r no"><span>' + T('ریٹ نہیں (باقی وزن صفر یا کم)', 'No rate (remaining weight is zero or less)') + '</span></div>')
+          + (miss.length ? '<div class="wn">⚠️ ' + esc(miss.join('، ')) + '</div>' : '') + '</section>');
+        return;
+      }
+    const names = cmbNames(bx).slice(0, 2), T0 = bx.title || T('ملاپ بکس', 'Combo box');
+    const ttl = canEdit ? '<span class="ed" data-bt="' + esc(bx.id) + '">' + esc(T0) + '</span>' : esc(T0);
+    const items = names.map((n, k) => { const A = acct(bx, n, (bx.ids || [])[k]); return { n, v: A.j - A.b, miss: known.length && known.indexOf(n) < 0 }; });
+    // جمع+جمع = جمع، بنام+بنام = بنام، جمع+بنام = بڑی میں سے چھوٹی مائنس، نتیجہ بڑی کا نام
+    const sumJ = items.filter(x => x.v > 0).reduce((t, x) => t + x.v, 0), sumB = items.filter(x => x.v < 0).reduce((t, x) => t - x.v, 0);
+    const res = Math.abs(sumJ - sumB), side = sumJ >= sumB ? 'jm' : 'bn', sideTx = side === 'jm' ? E('tag.j') : E('tag.b');
+    const rowH = x => { const t = x.v >= 0 ? ['jm', E('tag.j')] : ['bn', E('tag.b')]; return '<div class="cr"><span class="cn">' + esc(x.n) + '</span><span class="cv"><b class="' + t[0] + '">' + esc(fmtN(Math.abs(x.v))) + '</b><span class="tg ' + t[0] + '">' + t[1] + '</span></span></div>'; };
+    const miss = items.filter(x => x.miss).map(x => x.n);
+    body.insertAdjacentHTML('beforeend', '<section class="db-card cb cmb ' + side + '" data-sec="box:' + esc(bx.id) + '"><h4><span>' + ttl + '</span></h4>' + items.map(rowH).join('')
+      + '<div class="cr big res"><span>' + T('فائنل', 'Final') + '</span><span class="cv"><b class="' + side + '">' + esc(fmtN(res)) + '</b><span class="tg ' + side + '">' + sideTx + '</span></span></div>'
+      + (miss.length ? '<div class="wn">⚠️ ' + esc(miss.join('، ')) + '</div>' : '') + '</section>');
+    });
+  }
+
+  function applyLayout() {
+    const L = data.layout || {}, bxs = data.boxes || [], ord = dashNormOrder(L.order, bxs.map(b => b.id)), off = Array.isArray(L.hide) ? L.hide : [];
+    ord.forEach((id, i) => {
+      const el = stage.querySelector('[data-sec="' + id.replace(/"/g, '') + '"]'); if (!el) return;
+      const bx = id.indexOf('box:') === 0 ? bxs.find(b => 'box:' + b.id === id) : null;
+      el.style.order = i; el.style.gridColumn = 'span ' + dashWidth(L, id, bx && bx.w); el.classList.toggle('sec-off', off.indexOf(id) >= 0);
+    });
+  }
+  function renderLegends() {
+    $('#dbYearL').innerHTML = E('year.l');
+    $('#dbLegMain').innerHTML = '<i style="background:' + CJ + '"></i>' + E('tag.j') + ' <i style="background:' + CB + '"></i>' + E('tag.b');
+    $('#dbLegDay').innerHTML = '<i style="background:' + CWI + '"></i>' + E('day.in') + ' <i style="background:' + CWO + '"></i>' + E('day.out');
+  }
+  function renderAll() {
+    renderLegends(); renderCustom(); applyLayout(); renderTop(); renderKpis(); renderMain(); renderDonut(); renderBranches(); renderTop3(); drawDaily();
+  }
+  function refresh() { if (editing) return; try { build(); renderAll(); } catch (err) { console.warn('dashboard', err); } }
+  refresh();
+  window.dashRefresh = refresh;
+  let q = false;
+  new ResizeObserver(() => { if (q) return; q = true; requestAnimationFrame(() => { q = false; renderKpis(); drawMain(); renderDonut(); drawDaily(); }); }).observe(stage);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refresh(); });
+  window.addEventListener('storage', () => refresh());
+  setInterval(() => { if (document.visibilityState === 'visible' && App.localDate() !== lastDay) refresh(); }, 60000);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let userRole = App.getRole();
+
+            if (userRole === 'owner') {
+                const btnSettings = document.getElementById('btnSettingsMenu');
+                if (btnSettings) btnSettings.remove();
+            }
+
+            let activeBranchName = (sessionStorage.getItem('active_branch_name') || 'ڈرایی فروٹ ہاؤس').trim();
+
+            let branchOverrides = App.readObject('rohan_branch_lang_overrides');
+            let globalLang = App.store.get('rohan_global_lang') || 'ur';
+            let activeBranchLang = sessionStorage.getItem('active_branch_lang') || branchOverrides[activeBranchId] || globalLang;
+            let isEn = (activeBranchLang === 'en');
+
+            let savedConfig = App.store.get('rohan_branches_custom_config_v2');
+            let ownerName = '';
+            if (savedConfig) {
+                try {
+                    let branchesList = JSON.parse(savedConfig);
+                    let currentB = branchesList.find(b => b.id === activeBranchId);
+                    if (currentB && currentB.owner && currentB.owner.trim()) {
+                        ownerName = currentB.owner.trim();
+                    }
+                } catch(e){}
+            }
+
+            if (isEn) {
+                document.body.classList.add('lang-en');
+                document.documentElement.lang = 'en';
+                document.title = `Unit Business Group - ${activeBranchName}`;
+
+                document.getElementById('backToBranchesBtn').innerHTML = '🔙 Back';
+                if(document.getElementById('btnSettingsMenu')) document.getElementById('btnSettingsMenu').innerHTML = '⚙️ Settings';
+                document.getElementById('lblBtnJama').innerText = 'Credit Sheet (JAMA)';
+                document.getElementById('lblBtnBnam').innerText = 'Debit Sheet (BNAM)';
+                document.getElementById('lblBtnJournal').innerText = '📖 View Daily Journal';
+                document.getElementById('lblBtnSummary').innerText = '💰 Cash / Ledger Summary';
+                if(document.getElementById('btnAddCustomer')) document.getElementById('btnAddCustomer').innerText = '➕ Add New Customer';
+                document.getElementById('lblBtnDeleted').innerText = '🗑️ Deleted Accounts Records';
+
+                document.getElementById('graph_title').innerText = `📊 Accounts Dashboard`;
+                document.getElementById('btnDashPrint').innerText = '🖨️ Print';
+
+                document.getElementById('mHeaderTitle').innerText = '⚙ Branch Configuration & Settings';
+                document.getElementById('lblSecFormula').innerText = '1. Calculation & Percentage Formula Setup:';
+                document.getElementById('lblSecColumns').innerText = '2. Columns Visibility, Renaming & Extra Fields:';
+                document.getElementById('lblSecPlacement').innerText = '3. Three Total Boxes Placement Settings:';
+                document.getElementById('btnSaveMasterSettings').innerText = 'Save All ✅';
+                document.getElementById('btnResetMasterSettings').innerText = '↩️ Reset to Defaults';
+                [['tabFormula', 'Formula'], ['tabColumns', 'Columns'], ['tabLayout', 'Layout']].forEach(([id, t]) => { document.getElementById(id).innerText = t; });
+            } else {
+                document.body.classList.remove('lang-en');
+                document.documentElement.lang = 'ur';
+                document.title = `یونٹ بزنس گروپ - ${activeBranchName}`;
+
+                document.getElementById('backToBranchesBtn').innerHTML = '🔙 واپس';
+                if(document.getElementById('btnSettingsMenu')) document.getElementById('btnSettingsMenu').innerHTML = '⚙️ سیٹنگز';
+                document.getElementById('lblBtnJama').innerText = 'جمع کی شیٹ';
+                document.getElementById('lblBtnBnam').innerText = 'بنام کی شیٹ';
+                document.getElementById('lblBtnJournal').innerText = '📖 روزانہ کا روزنامچہ دیکھیں';
+                document.getElementById('lblBtnSummary').innerText = '💰 روکڑ سلیش سمری';
+                if(document.getElementById('btnAddCustomer')) document.getElementById('btnAddCustomer').innerText = '➕ نیا گاہک شامل کریں';
+                document.getElementById('lblBtnDeleted').innerText = '🗑️ ڈیلیٹ شدہ کھاتوں کا ریکارڈ';
+
+                document.getElementById('graph_title').innerText = `📊 کھاتوں کا ڈیش بورڈ`;
+                document.getElementById('btnDashPrint').innerText = '🖨️ پرنٹ';
+            }
+
+            document.getElementById('main_branch_title').innerText = activeBranchName;
+            document.getElementById('dashBranchName').innerText = '🏭 ' + activeBranchName;
+            window.printDashboard = function () {
+                const d = new Date(), p2 = n => String(n).padStart(2, '0');
+                document.getElementById('dashPrintHead').innerText = activeBranchName + ' — ' + p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear();
+                const old = document.title; document.title = '';
+                (window.App&&App.printNow?App.printNow({hide:'.btn,.btn-header,.btn-print,.btn-back,.bar,.noprint,.search-wrapper,.date-wrap,.date-wrapper,.top-actions'}):window.print());
+                setTimeout(() => { document.title = old; }, 500);
+            };
+            let ownerBadgeEl = document.getElementById('main_branch_owner');
+            if (ownerName) {
+                ownerBadgeEl.innerText = isEn ? `(Owner: ${ownerName})` : `(اونر: ${ownerName})`;
+                ownerBadgeEl.style.display = 'inline-block';
+            } else {
+                ownerBadgeEl.style.display = 'none';
+            }
+
+            const _allBr = App.getBranches();
+            const _curBr = _allBr.find(b => b.id === activeBranchId) || _allBr[0];
+            let currentTheme = {
+                bg: `linear-gradient(135deg, ${_curBr.color1}, ${_curBr.color2})`,
+                text: _curBr.text || '#ffffff',
+                border: _curBr.color1
+            };
+
+            let activeBg = sessionStorage.getItem('active_branch_bg') || currentTheme.bg;
+            let activeText = sessionStorage.getItem('active_branch_text') || currentTheme.text;
+            let solidColor = currentTheme.border;
+
+            document.querySelectorAll('.dynamic-branch-bg').forEach(btn => {
+                btn.style.background = activeBg;
+                btn.style.color = activeText;
+                btn.addEventListener('mouseover', function() { btn.style.opacity = "0.85"; });
+                btn.addEventListener('mouseout', function() { btn.style.opacity = "1"; });
+            });
+
+            document.getElementById('mainChartBox').style.borderColor = solidColor;
+            document.getElementById('mainDashboardMenu').style.borderColor = solidColor;
+            let customCurrency = App.loadSettings(activeBranchId).currency;
+            let currencyLabel = customCurrency ? ' ' + customCurrency : (isEn ? " PKR" : " روپے");
+
+            const sets = App.loadSettings(activeBranchId);
+            const branchList = (App.getRole() === 'admin' || App.ownerCan('allBranches')) ? App.visibleBranches() : App.getBranches().filter(b => b.id === activeBranchId);
+            const nameOf = b => { const lang = App.readObject('rohan_branch_lang_overrides')[b.id] || App.store.get('rohan_global_lang') || 'ur'; return (lang === 'en' ? b.en : b.ur) || b.ur || b.id; };
+            const loadDash = () => ({
+                openInTotals: App.loadSettings(activeBranchId).openingInTotals !== false,
+                recs: App.readArray(activeBranchId + '_bnam_records'),
+                boxes: App.readArray(activeBranchId + '_dash_boxes').filter(dashBoxOk),
+                custNames: App.readArray(activeBranchId + '_customer_list'),
+                layout: App.readObject(activeBranchId + '_dash_layout'),
+                branches: branchList.map(b => {
+                    let wi = 0, wo = 0, n = 0;
+                    App.readArray(App.keysFor(b.id).records).forEach(r => { if (!r) return; const w = parseFloat(r.weight) || 0; n++; if (r.type === 'JAMA') wo += w; else wi += w; });
+                    return { name: nameOf(b), wi, wo, n };
+                }).filter((r, i) => r.n > 0 || branchList[i].id === activeBranchId)
+            });
+            initDash(document.getElementById('terrainStage'), { load: loadDash, currency: currencyLabel.trim(), isEn, compact: sets.compactNums === true });
+            sets.hiddenBtns.concat(Object.keys(App.ownerPerms()).filter(id => !App.ownerCan(id))).forEach(id => { const el = document.getElementById(id); if (el) el.remove(); });
+        });
+
+        (function () {
+            const bid = activeBranchId;
+            const en = (sessionStorage.getItem('active_branch_lang') || (App.readObject('rohan_branch_lang_overrides')[bid]) || App.store.get('rohan_global_lang') || 'ur') === 'en';
+            const fmt = n => Number(n || 0).toLocaleString('en-US');
+            const L = (id, ur, e) => { const el = document.getElementById(id); if (!el) return; const sp = el.querySelector('span'); const t = en ? e : ur; if (id === 'btnAudit') { el.firstChild.nodeValue = t + ' '; } else el.textContent = t; };
+            L('btnAging', '⏰ ایجنگ رپورٹ (پرانا بقایا)', '⏰ Ageing Report (Old Balances)');
+            L('btnDelEntries', '♻️ ڈیلیٹ شدہ انٹریاں (ری سائیکل بن)', '♻️ Deleted Entries (Recycle Bin)');
+            L('btnAudit', '📜 آڈٹ لاگ (تبدیلیوں کا ریکارڈ)', '📜 Audit Log (Change History)');
+            if (en) {
+                const set = (id, t) => { const e = document.getElementById(id); if (e) e.innerText = t; };
+                set('tabBoxes', 'Dashboard');
+            }
+            const owner = App.getRole() === 'owner';
+
+            try { const n = App.auditUnseen(bid); const b = document.getElementById('auditBadge'); if (b && n > 0) { b.textContent = n + (en ? ' new' : ' نئی'); b.style.display = 'inline-block'; } } catch (e) {}
+        })();
+    </script>
+</body>
+</html>
